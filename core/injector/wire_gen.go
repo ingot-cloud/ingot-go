@@ -17,11 +17,11 @@ import (
 // Injectors from wire.go:
 
 func BuildContainer() (*container.Container, func(), error) {
-	authentication, cleanup, err := provider.BuildAuthentication()
+	authentication, cleanup, err := provider.AuthenticationProvider()
 	if err != nil {
 		return nil, nil, err
 	}
-	db, cleanup2, err := provider.BuildGorm()
+	db, cleanup2, err := provider.GormProvider()
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -39,7 +39,7 @@ func BuildContainer() (*container.Container, func(), error) {
 		Auth: authentication,
 		Test: apiTest,
 	}
-	engine := provider.BuildHTTPHandler(routerRouter)
+	engine := provider.HTTPHandlerProvider(routerRouter)
 	containerContainer := &container.Container{
 		Engine: engine,
 	}

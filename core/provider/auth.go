@@ -9,8 +9,8 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
-// BuildAuthentication for auth
-func BuildAuthentication() (security.Authentication, func(), error) {
+// AuthenticationProvider for auth
+func AuthenticationProvider() (security.Authentication, func(), error) {
 	authCfg := config.CONFIG.Auth.Jwt
 	redisCfg := config.CONFIG.Redis
 

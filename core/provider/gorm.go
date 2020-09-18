@@ -13,8 +13,8 @@ import (
 	"gorm.io/gorm"
 )
 
-// BuildGorm init gorm
-func BuildGorm() (*gorm.DB, func(), error) {
+// GormProvider init gorm
+func GormProvider() (*gorm.DB, func(), error) {
 
 	cfg := config.CONFIG
 	db, cleanFunc, err := newGormDB(cfg)

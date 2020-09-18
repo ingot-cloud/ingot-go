@@ -16,9 +16,9 @@ func BuildContainer() (*container.Container, func(), error) {
 		provider.RouterSet,
 		provider.ServiceSet,
 		provider.DaoSet,
-		provider.BuildHTTPHandler,
-		provider.BuildGorm,
-		provider.BuildAuthentication,
+		provider.HTTPHandlerProvider,
+		provider.GormProvider,
+		provider.AuthenticationProvider,
 		container.ContainerSet,
 	)
 	return new(container.Container), nil, nil

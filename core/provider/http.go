@@ -8,8 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// BuildHTTPHandler to get gin.Engine
-func BuildHTTPHandler(r core.IRouter) *gin.Engine {
+// HTTPHandlerProvider to get gin.Engine
+func HTTPHandlerProvider(r core.IRouter) *gin.Engine {
 	cfg := config.CONFIG.Server
 	gin.SetMode(cfg.Mode)
 
