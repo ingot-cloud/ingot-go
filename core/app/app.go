@@ -40,7 +40,7 @@ func banner() {
 	fmt.Println(" \\__ \\ |  __/ | (__  | | | | | | | (_| | | (_) | | |_   _  | (__  | (_) | | | | | | |")
 	fmt.Println(" |___/  \\___|  \\___| |_| |_| |_|  \\__, |  \\___/   \\__| (_)  \\___|  \\___/  |_| |_| |_|")
 	fmt.Println("                                  |___/")
-	fmt.Println(":: Power by Motcwang ::")
+	fmt.Println(":: Power by motcwang ::")
 }
 
 func initModule(ctx context.Context) (func(), error) {
