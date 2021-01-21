@@ -3,9 +3,8 @@ package dao
 import (
 	"context"
 
-	"github.com/ingot-cloud/ingot-go/internal/app/core/wrapper/contextwrapper"
-
 	commonDto "github.com/ingot-cloud/ingot-go/pkg/framework/core/model/dto"
+	contextwrapper "github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/context"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/response"
 
 	"gorm.io/gorm"

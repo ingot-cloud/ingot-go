@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ingot-cloud/ingot-go/internal/app/core/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/errors"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"

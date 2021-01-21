@@ -1,11 +1,11 @@
 package middleware
 
 import (
-	"github.com/ingot-cloud/ingot-go/internal/app/core/security"
-	"github.com/ingot-cloud/ingot-go/internal/app/core/wrapper/contextwrapper"
-	"github.com/ingot-cloud/ingot-go/internal/app/core/wrapper/ginwrapper"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/errors"
+	contextwrapper "github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/context"
+	ginwrapper "github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/gin"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/response"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 
 	"github.com/gin-gonic/gin"
 )

@@ -2,8 +2,9 @@ package jwt
 
 import (
 	"context"
-	"github.com/ingot-cloud/ingot-go/internal/app/core/security"
 	"time"
+
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 
 	jwt "github.com/dgrijalva/jwt-go"
 )

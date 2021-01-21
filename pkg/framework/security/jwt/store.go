@@ -3,8 +3,9 @@ package jwt
 import (
 	"context"
 	"fmt"
-	"github.com/ingot-cloud/ingot-go/internal/app/core/store"
 	"time"
+
+	"github.com/ingot-cloud/ingot-go/pkg/framework/store"
 )
 
 // NewTokenStore for jwt

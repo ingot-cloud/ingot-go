@@ -2,7 +2,8 @@ package contextwrapper
 
 import (
 	"context"
-	"github.com/ingot-cloud/ingot-go/internal/app/core/security"
+
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 )
 
 type (

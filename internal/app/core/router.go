@@ -1,7 +1,7 @@
 package core
 
 import (
-	"github.com/ingot-cloud/ingot-go/internal/app/core/security"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 
 	"github.com/gin-gonic/gin"
 )

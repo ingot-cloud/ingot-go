@@ -4,7 +4,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/internal/app/api"
 	"github.com/ingot-cloud/ingot-go/internal/app/config"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/middleware"
-	"github.com/ingot-cloud/ingot-go/internal/app/core/security"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 
 	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"

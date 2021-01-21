@@ -1,6 +1,6 @@
 package provider
 
-import "github.com/ingot-cloud/ingot-go/internal/app/core/security/password"
+import "github.com/ingot-cloud/ingot-go/pkg/framework/security/password"
 
 // BuildPasswordEncoder for inject Encoder
 func BuildPasswordEncoder() (password.Encoder, func(), error) {

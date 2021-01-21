@@ -2,9 +2,9 @@ package provider
 
 import (
 	"github.com/ingot-cloud/ingot-go/internal/app/config"
-	"github.com/ingot-cloud/ingot-go/internal/app/core/security"
-	jwtAuth "github.com/ingot-cloud/ingot-go/internal/app/core/security/jwt"
-	"github.com/ingot-cloud/ingot-go/internal/app/core/store"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
+	jwtAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/jwt"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/store"
 
 	jwt "github.com/dgrijalva/jwt-go"
 )

@@ -5,13 +5,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ingot-cloud/ingot-go/internal/app/core/security"
-	"github.com/ingot-cloud/ingot-go/internal/app/core/security/password"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/domain"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dto"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/errors"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/model/enums"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/password"
 )
 
 // Auth service
