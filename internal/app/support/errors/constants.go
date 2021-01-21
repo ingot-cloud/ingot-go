@@ -2,8 +2,9 @@ package errors
 
 import (
 	"fmt"
-	"github.com/ingot-cloud/ingot-go/internal/app/support/code"
 	"net/http"
+
+	"github.com/ingot-cloud/ingot-go/internal/app/support/code"
 )
 
 var (
@@ -23,6 +24,8 @@ var (
 	ErrUserAppForbidden = New(http.StatusForbidden, code.UserAppForbidden, "No access to the app")
 	// ErrUserEnterpriseDisabled for login
 	ErrUserEnterpriseDisabled = New(http.StatusForbidden, code.UserEnterpriseDisabled, "The enterprise has been disabled")
+	// ErrIDClockBack clock callback
+	ErrIDClockBack = New(http.StatusOK, code.IDClockBack, "Clock callback")
 )
 
 // IllegalArgument error

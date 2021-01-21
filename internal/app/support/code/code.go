@@ -13,6 +13,7 @@ const (
 	NoRoute             = 99990404
 	NoMethod            = 99990405
 	InternalServerError = 99990500
+	IDClockBack         = 99991000
 )
 
 // Token Code
