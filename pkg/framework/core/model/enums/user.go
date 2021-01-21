@@ -5,7 +5,7 @@ type CommonStatus string
 
 const (
 	// StatusEnabled User enable
-	StatusEnabled CommonStatus = "enable"
+	StatusEnabled CommonStatus = "0"
 	// StatusDisabled User disabled
-	StatusDisabled CommonStatus = "disabled"
+	StatusDisabled CommonStatus = "9"
 )
