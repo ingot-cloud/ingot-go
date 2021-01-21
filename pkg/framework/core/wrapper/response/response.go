@@ -1,9 +1,10 @@
 package response
 
 import (
-	"github.com/ingot-cloud/ingot-go/internal/app/support/code"
-	"github.com/ingot-cloud/ingot-go/internal/app/support/errors"
 	"net/http"
+
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/code"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/errors"
 
 	"github.com/gin-gonic/gin"
 )

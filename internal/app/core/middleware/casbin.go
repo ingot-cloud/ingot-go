@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"github.com/ingot-cloud/ingot-go/internal/app/core/wrapper/ginwrapper"
-	"github.com/ingot-cloud/ingot-go/internal/app/support/errors"
-	"github.com/ingot-cloud/ingot-go/internal/app/support/response"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/errors"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/response"
 
 	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/ingot-cloud/ingot-go/internal/app/support/code"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/code"
 )
 
 var (

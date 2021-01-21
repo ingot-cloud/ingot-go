@@ -2,33 +2,32 @@ package log
 
 import (
 	"fmt"
-	"github.com/ingot-cloud/ingot-go/internal/app/common/utils"
-	"github.com/ingot-cloud/ingot-go/internal/app/config"
 	"io"
 	"os"
 	"time"
+
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/utils"
 
 	"github.com/gin-gonic/gin"
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 )
 
 // InitLogger 初始化日志
-func InitLogger() (func(), error) {
-	cfg := config.CONFIG.Log
+func InitLogger(config Config) (func(), error) {
 
-	SetLevel(cfg.Level)
-	SetFormatter(cfg.Format)
+	SetLevel(config.Level)
+	SetFormatter(config.Format)
 
 	var file *os.File
-	if cfg.Output != "" {
-		switch cfg.Output {
+	if config.Output != "" {
+		switch config.Output {
 		case "stdout":
 			SetOutput(os.Stdout)
 		case "stderr":
 			SetOutput(os.Stderr)
 		case "file":
-			if dir := cfg.OutputFileDir; dir != "" {
-				if fileWriter := rotate(cfg); fileWriter != nil {
+			if dir := config.OutputFileDir; dir != "" {
+				if fileWriter := rotate(config); fileWriter != nil {
 					gin.DefaultWriter = io.MultiWriter(fileWriter, os.Stdout)
 					SetOutput(fileWriter)
 				}
@@ -43,7 +42,7 @@ func InitLogger() (func(), error) {
 	}, nil
 }
 
-func rotate(c config.Log) io.Writer {
+func rotate(c Config) io.Writer {
 	if ok, _ := utils.PathExists(c.OutputFileDir); !ok {
 		// directory not exist
 		fmt.Println("create log directory")

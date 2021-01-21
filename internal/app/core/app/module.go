@@ -2,12 +2,13 @@ package app
 
 import (
 	"context"
-	"github.com/ingot-cloud/ingot-go/internal/app/common/log"
+	"net/http"
+	"time"
+
 	"github.com/ingot-cloud/ingot-go/internal/app/config"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/injector"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/server"
-	"net/http"
-	"time"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 )
 
 func initModule(ctx context.Context, options *Options) (func(), error) {
@@ -21,7 +22,7 @@ func initModule(ctx context.Context, options *Options) (func(), error) {
 	// 赋值 casbin 模型路径
 	config.CONFIG.Casbin.ModelPath = options.CasbinModelFile
 
-	loggerCleanFunc, err := log.InitLogger()
+	loggerCleanFunc, err := log.InitLogger(config.CONFIG.Log)
 	if err != nil {
 		return nil, err
 	}

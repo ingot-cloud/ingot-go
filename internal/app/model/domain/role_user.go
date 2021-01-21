@@ -1,8 +1,8 @@
 package domain
 
 import (
-	"github.com/ingot-cloud/ingot-go/internal/app/common/utils"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dto"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/utils"
 )
 
 // RoleUsers array

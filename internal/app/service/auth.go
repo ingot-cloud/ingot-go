@@ -10,8 +10,8 @@ import (
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/domain"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dto"
-	"github.com/ingot-cloud/ingot-go/internal/app/model/enums"
-	"github.com/ingot-cloud/ingot-go/internal/app/support/errors"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/errors"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/model/enums"
 )
 
 // Auth service

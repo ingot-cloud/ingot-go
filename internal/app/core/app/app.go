@@ -2,9 +2,10 @@ package app
 
 import (
 	"context"
-	"github.com/ingot-cloud/ingot-go/internal/app/common/log"
 	"os"
 	"os/signal"
+
+	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 )
 
 // Options 配置

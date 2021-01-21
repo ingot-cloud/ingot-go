@@ -2,9 +2,11 @@ package dao
 
 import (
 	"context"
+
 	"github.com/ingot-cloud/ingot-go/internal/app/core/wrapper/contextwrapper"
-	"github.com/ingot-cloud/ingot-go/internal/app/model/dto"
-	"github.com/ingot-cloud/ingot-go/internal/app/support/response"
+
+	commonDto "github.com/ingot-cloud/ingot-go/pkg/framework/core/model/dto"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/response"
 
 	"gorm.io/gorm"
 )
@@ -30,12 +32,12 @@ func GetDBWithModel(ctx context.Context, defDB *gorm.DB, m interface{}) *gorm.DB
 }
 
 // PageScan 分页
-func PageScan(ctx context.Context, db *gorm.DB, page dto.Pagination, out interface{}) (*response.Pagination, error) {
+func PageScan(ctx context.Context, db *gorm.DB, page commonDto.Pagination, out interface{}) (*response.Pagination, error) {
 	return PageScanWithSelect(ctx, db, page, out, "")
 }
 
 // PageScanWithSelect 分页查询，设置指定查询结果
-func PageScanWithSelect(ctx context.Context, db *gorm.DB, page dto.Pagination, out interface{}, query string) (*response.Pagination, error) {
+func PageScanWithSelect(ctx context.Context, db *gorm.DB, page commonDto.Pagination, out interface{}, query string) (*response.Pagination, error) {
 	var count int64
 	err := db.Count(&count).Error
 	if err != nil {
@@ -70,7 +72,7 @@ func PageScanWithSelect(ctx context.Context, db *gorm.DB, page dto.Pagination, o
 }
 
 // PageFind 分页查询
-func PageFind(ctx context.Context, db *gorm.DB, page dto.Pagination, out interface{}) (*response.Pagination, error) {
+func PageFind(ctx context.Context, db *gorm.DB, page commonDto.Pagination, out interface{}) (*response.Pagination, error) {
 	var count int64
 	err := db.Count(&count).Error
 	if err != nil {

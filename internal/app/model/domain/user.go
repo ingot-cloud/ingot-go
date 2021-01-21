@@ -1,10 +1,11 @@
 package domain
 
 import (
-	"github.com/ingot-cloud/ingot-go/internal/app/common/utils"
-	"github.com/ingot-cloud/ingot-go/internal/app/common/uuid"
-	"github.com/ingot-cloud/ingot-go/internal/app/model/dto"
 	"time"
+
+	"github.com/ingot-cloud/ingot-go/internal/app/model/dto"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/utils"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/utils/uuid"
 
 	"gorm.io/gorm"
 )

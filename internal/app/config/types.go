@@ -1,17 +1,21 @@
 package config
 
-import "time"
+import (
+	"time"
+
+	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
+)
 
 // Config struct
 type Config struct {
-	App    App    `yaml:"app"`
-	Server Server `yaml:"server"`
-	Log    Log    `yaml:"log"`
-	Gorm   Gorm   `yaml:"gorm"`
-	MySQL  MySQL  `yaml:"mysql"`
-	Redis  Redis  `yaml:"redis"`
-	Auth   Auth   `yaml:"auth"`
-	Casbin Casbin `yaml:"casbin"`
+	App    App        `yaml:"app"`
+	Server Server     `yaml:"server"`
+	Log    log.Config `yaml:"log"`
+	Gorm   Gorm       `yaml:"gorm"`
+	MySQL  MySQL      `yaml:"mysql"`
+	Redis  Redis      `yaml:"redis"`
+	Auth   Auth       `yaml:"auth"`
+	Casbin Casbin     `yaml:"casbin"`
 }
 
 // App struct
@@ -26,15 +30,6 @@ type Server struct {
 	ReadTimeout  time.Duration `yaml:"readTimeout"`
 	WriteTimeout time.Duration `yaml:"writeTimeout"`
 	Prefix       string        `yaml:"prefix"`
-}
-
-// Log struct
-type Log struct {
-	Level         int    `yaml:"level"`
-	Format        string `yaml:"format"`
-	Output        string `yaml:"output"`
-	OutputFileDir string `yaml:"outputFileDir"`
-	LogSoftLink   string `yaml:"logSoftLink"`
 }
 
 // Gorm config

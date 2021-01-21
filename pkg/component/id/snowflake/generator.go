@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ingot-cloud/ingot-go/internal/app/support/errors"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/errors"
 )
 
 const (

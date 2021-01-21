@@ -3,10 +3,11 @@ package middleware
 import (
 	"bytes"
 	"fmt"
-	"github.com/ingot-cloud/ingot-go/internal/app/common/log"
-	"github.com/ingot-cloud/ingot-go/internal/app/support/response"
 	"io/ioutil"
 	"runtime"
+
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/response"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 
 	"github.com/gin-gonic/gin"
 )

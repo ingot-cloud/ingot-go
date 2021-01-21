@@ -3,9 +3,9 @@ package dao
 import (
 	"context"
 
-	"github.com/ingot-cloud/ingot-go/internal/app/common/log"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/domain"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dto"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 
 	"gorm.io/gorm"
 )

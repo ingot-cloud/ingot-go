@@ -1,13 +1,13 @@
 package api
 
 import (
-	"github.com/ingot-cloud/ingot-go/internal/app/common/log"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/security"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/wrapper/ginwrapper"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dto"
 	"github.com/ingot-cloud/ingot-go/internal/app/service"
-	"github.com/ingot-cloud/ingot-go/internal/app/support/errors"
-	"github.com/ingot-cloud/ingot-go/internal/app/support/response"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/errors"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/response"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 
 	"github.com/gin-gonic/gin"
 )

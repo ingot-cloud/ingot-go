@@ -1,6 +1,6 @@
 package vo
 
-import "github.com/ingot-cloud/ingot-go/internal/app/support/response"
+import "github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/response"
 
 // PageResult 分页结果
 type PageResult struct {

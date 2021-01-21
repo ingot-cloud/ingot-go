@@ -4,7 +4,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/ingot-cloud/ingot-go/pkg/id/snowflake"
+	"github.com/ingot-cloud/ingot-go/pkg/component/id/snowflake"
 )
 
 func TestID(t *testing.T) {

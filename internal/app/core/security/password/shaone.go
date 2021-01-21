@@ -1,8 +1,9 @@
 package password
 
 import (
-	"github.com/ingot-cloud/ingot-go/internal/app/common/digest"
 	"strings"
+
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/utils/digest"
 )
 
 // NewSha1Encoder return Encoder

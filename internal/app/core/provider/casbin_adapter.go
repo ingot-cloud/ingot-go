@@ -3,10 +3,11 @@ package provider
 import (
 	"context"
 	"fmt"
-	"github.com/ingot-cloud/ingot-go/internal/app/common/log"
+
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dto"
-	"github.com/ingot-cloud/ingot-go/internal/app/model/enums"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/model/enums"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 
 	casbinModel "github.com/casbin/casbin/v2/model"
 	"github.com/casbin/casbin/v2/persist"

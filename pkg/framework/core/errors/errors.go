@@ -1,8 +1,9 @@
 package errors
 
 import (
-	"github.com/ingot-cloud/ingot-go/internal/app/support/code"
 	"net/http"
+
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/code"
 
 	"github.com/pkg/errors"
 )

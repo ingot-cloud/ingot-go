@@ -1,8 +1,11 @@
 package dto
 
 import (
-	"github.com/ingot-cloud/ingot-go/internal/app/model/enums"
 	"time"
+
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/model/enums"
+
+	commonDto "github.com/ingot-cloud/ingot-go/pkg/framework/core/model/dto"
 )
 
 // Users for user array
@@ -31,7 +34,7 @@ type UserQueryParams struct {
 
 // UserPageQueryParams params
 type UserPageQueryParams struct {
-	Pagination
+	commonDto.Pagination
 	UserQueryParams
 }
 
@@ -63,7 +66,7 @@ type StaffQueryParams struct {
 	Number       string             `json:"number" form:"number"`
 	Username     string             `json:"username" form:"username"`
 	Status       enums.CommonStatus `json:"status" form:"status"`
-	Pagination
+	commonDto.Pagination
 }
 
 // StaffLoginInfoQuery 员工登录信息查询参数

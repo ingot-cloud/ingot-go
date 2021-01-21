@@ -3,6 +3,7 @@ package app
 import "fmt"
 
 func banner() {
+	fmt.Println("")
 	fmt.Println("  _____                   _      _____ _                 _")
 	fmt.Println(" |_   _|                 | |    / ____| |               | |")
 	fmt.Println("   | |  _ __   __ _  ___ | |_  | |    | | ___  _   _  __| |")
@@ -12,4 +13,5 @@ func banner() {
 	fmt.Println("               __/ |")
 	fmt.Println("              |___/")
 	fmt.Println(":: Power by jymot ::")
+	fmt.Println("")
 }

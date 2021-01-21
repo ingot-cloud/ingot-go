@@ -3,10 +3,11 @@ package provider
 import (
 	"errors"
 	"fmt"
-	"github.com/ingot-cloud/ingot-go/internal/app/common/log"
-	"github.com/ingot-cloud/ingot-go/internal/app/config"
 	"strings"
 	"time"
+
+	"github.com/ingot-cloud/ingot-go/internal/app/config"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
