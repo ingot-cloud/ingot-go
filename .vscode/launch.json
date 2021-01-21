@@ -9,9 +9,9 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${workspaceRoot}/main.go",
+            "program": "${workspaceRoot}/cmd/ingot/main.go",
             "env": {},
-            "args": []
+            "args": ["s", "-c", "${workspaceRoot}/configs/config.yml", "-m", "${workspaceRoot}/configs/casbin_model.conf"]
         }
     ]
 }
