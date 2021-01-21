@@ -3,7 +3,6 @@ module github.com/ingot-cloud/ingot-go
 go 1.15
 
 require (
-	github.com/Azure/azure-storage-blob-go v0.12.0
 	github.com/casbin/casbin/v2 v2.20.2
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
