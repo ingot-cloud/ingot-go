@@ -10,7 +10,7 @@ import (
 )
 
 // Result for api request
-func Result(ctx *gin.Context, statusCode int, code int, data interface{}, message string) {
+func Result(ctx *gin.Context, statusCode int, code string, data interface{}, message string) {
 	ctx.JSON(statusCode, &R{
 		code,
 		data,
@@ -42,7 +42,7 @@ func OKWithEmpty(ctx *gin.Context) {
 }
 
 // Failure response struct
-func Failure(ctx *gin.Context, code int, message string) {
+func Failure(ctx *gin.Context, code string, message string) {
 	Result(ctx, http.StatusInternalServerError, code, &D{}, message)
 }
 

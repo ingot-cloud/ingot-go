@@ -9,7 +9,7 @@ import (
 
 var (
 	// ErrUnknown err
-	ErrUnknown = New(http.StatusInternalServerError, code.Unknown, "Unknow")
+	ErrUnknown = New(http.StatusInternalServerError, code.InternalServerError, "Unknow")
 	// ErrUnauthorized for auth
 	ErrUnauthorized = New(http.StatusUnauthorized, code.Unauthorized, "User unauthorized")
 	// ErrInvalidToken for auth
@@ -22,8 +22,6 @@ var (
 	ErrUserDisabled = New(http.StatusForbidden, code.UserDisabled, "The user has been disabled")
 	// ErrUserAppForbidden for login
 	ErrUserAppForbidden = New(http.StatusForbidden, code.UserAppForbidden, "No access to the app")
-	// ErrUserEnterpriseDisabled for login
-	ErrUserEnterpriseDisabled = New(http.StatusForbidden, code.UserEnterpriseDisabled, "The enterprise has been disabled")
 	// ErrIDClockBack clock callback
 	ErrIDClockBack = New(http.StatusOK, code.IDClockBack, "Clock callback")
 )

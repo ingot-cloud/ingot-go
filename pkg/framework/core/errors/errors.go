@@ -22,7 +22,7 @@ var (
 )
 
 // New error
-func New(statusCode int, code int, message string) error {
+func New(statusCode int, code string, message string) error {
 	return &E{
 		StatusCode: statusCode,
 		Code:       code,
@@ -43,7 +43,7 @@ func Unpack(err error) *E {
 
 	return &E{
 		StatusCode: http.StatusInternalServerError,
-		Code:       code.Unknown,
+		Code:       code.InternalServerError,
 		Message:    message,
 	}
 }
@@ -51,7 +51,7 @@ func Unpack(err error) *E {
 // E is error wrapper
 type E struct {
 	StatusCode int
-	Code       int
+	Code       string
 	Message    string
 }
 

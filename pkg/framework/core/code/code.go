@@ -1,31 +1,33 @@
 package code
 
 // SUCCESS code
-const SUCCESS = 99990200
+const SUCCESS = "0200"
 
 // Common code
 const (
-	Unknown             = 99990001
-	IllegalArgument     = 99990002
-	IllegalOperation    = 99990003
-	Unauthorized        = 99990401
-	Forbidden           = 99990403
-	NoRoute             = 99990404
-	NoMethod            = 99990405
-	InternalServerError = 99990500
-	IDClockBack         = 99991000
+	BadRequest          = "0400"
+	Unauthorized        = "0401"
+	Forbidden           = "0403"
+	NoRoute             = "0404"
+	NoMethod            = "0405"
+	InternalServerError = "0500"
+
+	RequestFallback  = "0001"
+	IllegalOperation = "0002"
+	IllegalArgument  = "0003"
+
+	IDClockBack = "1000"
 )
 
 // Token Code
 const (
-	TokenInvalid = 99991000 + iota
-	TokenExpired
+	TokenInvalid = "S0001"
+	TokenExpired = "S0002"
 )
 
 // User Code
 const (
-	UserInvalid = 99992000 + iota
-	UserDisabled
-	UserAppForbidden
-	UserEnterpriseDisabled
+	UserInvalid      = "U0001"
+	UserDisabled     = "U0002"
+	UserAppForbidden = "U0003"
 )

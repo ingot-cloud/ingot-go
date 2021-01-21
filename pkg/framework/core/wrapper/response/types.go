@@ -5,7 +5,7 @@ type D map[string]interface{}
 
 // R is the Response struct
 type R struct {
-	Code    int         `json:"code"`
+	Code    string      `json:"code"`
 	Data    interface{} `json:"data"`
 	Message string      `json:"message"`
 }
