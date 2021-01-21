@@ -13,7 +13,7 @@ func TestID(t *testing.T) {
 		WorkID: 1,
 	}
 
-	count := 1_000
+	count := 1_000_000
 	ch := make(chan int64, count)
 	wg.Add(count)
 	defer close(ch)
