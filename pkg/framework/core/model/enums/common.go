@@ -4,8 +4,8 @@ package enums
 type CommonStatus string
 
 const (
-	// StatusEnabled User enable
+	// StatusEnabled enable
 	StatusEnabled CommonStatus = "0"
-	// StatusDisabled User disabled
+	// StatusDisabled disabled
 	StatusDisabled CommonStatus = "9"
 )
