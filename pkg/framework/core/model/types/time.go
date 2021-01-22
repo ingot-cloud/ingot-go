@@ -37,6 +37,7 @@ func (ts TimeStamp) String() string {
 	return ts.ToTime().Format("2006-01-02 15:04:05")
 }
 
+// Value 获取值
 func (ts TimeStamp) Value() (driver.Value, error) {
 	var zeroTime time.Time
 	var ti = time.Time(ts)
