@@ -24,6 +24,9 @@ func (id *ID) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON int64转字符串
 func (id ID) MarshalJSON() ([]byte, error) {
-	val := strconv.FormatInt(int64(id), 10)
-	return []byte(val), nil
+	return []byte(id.String()), nil
+}
+
+func (id ID) String() string {
+	return strconv.FormatInt(int64(id), 10)
 }
