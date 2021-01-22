@@ -11,7 +11,7 @@
  Target Server Version : 50732
  File Encoding         : 65001
 
- Date: 22/01/2021 09:04:58
+ Date: 22/01/2021 11:28:48
 */
 
 SET NAMES utf8mb4;
@@ -29,6 +29,7 @@ CREATE TABLE `sys_authority` (
   `name` varchar(100) NOT NULL COMMENT '权限名称',
   `code` varchar(100) NOT NULL COMMENT '权限编码',
   `path` varchar(128) DEFAULT NULL COMMENT 'URL',
+  `method` varchar(32) DEFAULT NULL COMMENT '方法',
   `status` char(1) CHARACTER SET utf8 DEFAULT '0' COMMENT '状态, 0:正常，9:禁用',
   `remark` varchar(255) CHARACTER SET utf8 DEFAULT '' COMMENT '备注',
   `created_at` datetime DEFAULT NULL COMMENT '创建日期',
@@ -42,7 +43,7 @@ CREATE TABLE `sys_authority` (
 -- Records of sys_authority
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_authority` VALUES (1, NULL, 1, NULL, '所有权限', 'all', '/*', '0', '所有权限', '2021-01-22 09:04:00', NULL, NULL);
+INSERT INTO `sys_authority` VALUES (1, NULL, 1, NULL, '所有权限', 'all', '/*', NULL, '0', '所有权限', '2021-01-22 09:04:00', NULL, NULL);
 COMMIT;
 
 -- ----------------------------
