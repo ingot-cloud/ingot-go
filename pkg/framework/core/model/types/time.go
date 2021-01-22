@@ -28,16 +28,7 @@ func (ts TimeStamp) MarshalJSON() ([]byte, error) {
 	return []byte(strconv.FormatInt(origin.UnixNano()/1000000, 10)), nil
 }
 
-// ToTime to time.Time
-func (ts *TimeStamp) ToTime() time.Time {
-	return time.Time(*ts)
-}
-
-func (ts TimeStamp) String() string {
-	return ts.ToTime().Format("2006-01-02 15:04:05")
-}
-
-// Value 获取值
+// Value 实现 driver.Valuer 接口
 func (ts TimeStamp) Value() (driver.Value, error) {
 	var zeroTime time.Time
 	var ti = time.Time(ts)
@@ -47,14 +38,22 @@ func (ts TimeStamp) Value() (driver.Value, error) {
 	return ti, nil
 }
 
-// Scan valueof time.Time
+// Scan 实现 sql.Scanner 接口
 func (ts *TimeStamp) Scan(v interface{}) error {
 	value, ok := v.(time.Time)
 	if ok {
 		*ts = TimeStamp(value)
 		return nil
 	}
-	//i, err = strconv.ParseInt(sc, 10, 64)
 
-	return fmt.Errorf("can not convert %v to timestamp", v)
+	return fmt.Errorf("Can not convert %v to timestamp", v)
+}
+
+func (ts TimeStamp) String() string {
+	return ts.ToTime().Format("2006-01-02 15:04:05")
+}
+
+// ToTime to time.Time
+func (ts *TimeStamp) ToTime() time.Time {
+	return time.Time(*ts)
 }
