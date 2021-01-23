@@ -23,10 +23,10 @@ func (s *Sha1Encoder) Encode(raw string) (string, error) {
 // Matches Verify the encoded password obtained from storage matches the submitted raw
 // password after it too is encoded. Returns true if the passwords match, false if
 // they do not
-func (s *Sha1Encoder) Matches(raw string, encodedPassword string) bool {
+func (s *Sha1Encoder) Matches(raw string, encodedPassword string) (bool, error) {
 	encoderRaw, err := s.Encode(raw)
 	if err != nil {
-		return false
+		return false, nil
 	}
-	return strings.Compare(encoderRaw, encodedPassword) == 0
+	return strings.Compare(encoderRaw, encodedPassword) == 0, nil
 }

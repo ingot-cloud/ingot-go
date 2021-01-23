@@ -42,3 +42,7 @@ func TestID(t *testing.T) {
 
 	t.Logf("所有ID生成完成，共计%d个", len(m))
 }
+
+func Test2(t *testing.T) {
+
+}

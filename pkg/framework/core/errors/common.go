@@ -36,3 +36,8 @@ func NoRoute(path string) error {
 func NoMethod(method string) error {
 	return New(http.StatusMethodNotAllowed, code.NoMethod, fmt.Sprintf("Method [%s] not allow", method))
 }
+
+// InternalServer 服务器内部错误
+func InternalServer(message string) error {
+	return New(http.StatusInternalServerError, code.InternalServerError, message)
+}
