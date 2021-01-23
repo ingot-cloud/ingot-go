@@ -40,6 +40,9 @@ func (r *Role) List(ctx context.Context, condition dto.QueryCondition) (*domain.
 	if status := condition.Status; status != "" {
 		db = db.Where("status = ?", status)
 	}
+	if ids := condition.IDs; len(ids) != 0 {
+		db = db.Where("id IN ?", ids)
+	}
 
 	var roles domain.SysRoles
 	err := db.Scan(roles).Error

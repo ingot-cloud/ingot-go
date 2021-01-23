@@ -10,7 +10,11 @@ import (
 // User for Auth
 type User struct {
 	ID       types.ID `json:"id"`
+	DeptID   types.ID `json:"deptId"`
+	TenantID int      `json:"tenantId"`
+	AuthType string   `json:"authType"`
 	Username string   `json:"username"`
+	Password string
 	Roles    []string `json:"roles"`
 }
 

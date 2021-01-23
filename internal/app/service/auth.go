@@ -18,6 +18,7 @@ import (
 type Auth struct {
 	UserDao         *dao.User
 	RoleUserDao     *dao.RoleUser
+	RoleDao         *dao.Role
 	Auth            security.Authentication
 	PasswordEncoder password.Encoder
 }
@@ -37,17 +38,25 @@ func (a *Auth) VerifyUserInfo(ctx context.Context, params dto.LoginParams) (*dom
 		return nil, nil, errors.ErrUserDisabled
 	}
 
-	// roleUserResult, err := a.RoleUserDao.GetUserRole(ctx, user.ID)
-	// if err != nil {
-	// 	return nil, nil, err
-	// }
+	roleIds, err := a.RoleUserDao.GetUserRoleIDs(ctx, user.ID)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	roleList, err := a.RoleDao.List(ctx, dto.QueryCondition{
+		IDs: *roleIds,
+	})
+
+	roles := make([]string, 0, len(*roleList))
+	for _, role := range *roleList {
+		roles = append(roles, role.Code)
+	}
 
 	// roleAppList, err := a.RoleAppDao.GetAppRole(ctx, params.AppID)
 	// if err != nil {
 	// 	return nil, nil, err
 	// }
 
-	var roles []string
 	// for _, roleUser := range roleUserResult.List {
 	// 	if !a.appIncludeRole(roleAppList, roleUser.RoleID) {
 	// 		return nil, nil, errors.ErrUserAppForbidden

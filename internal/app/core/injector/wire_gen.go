@@ -67,6 +67,7 @@ func BuildContainer() (*container.Container, func(), error) {
 	auth := &service.Auth{
 		UserDao:         user,
 		RoleUserDao:     roleUser,
+		RoleDao:         role,
 		Auth:            authentication,
 		PasswordEncoder: encoder,
 	}
