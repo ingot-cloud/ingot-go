@@ -72,7 +72,7 @@ func (a *Auth) GenerateToken(ctx context.Context, user security.User) (*dto.Logi
 
 	return &dto.LoginResult{
 		Username:    user.Username,
-		Role:        user.Role,
+		Roles:       user.Roles,
 		AccessToken: accessToken.GetValue(),
 		TokenType:   accessToken.GetTokenType(),
 		Expiration:  accessToken.GetExpiration(),

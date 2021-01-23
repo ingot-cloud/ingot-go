@@ -10,7 +10,7 @@ type LoginParams struct {
 // LoginResult for response
 type LoginResult struct {
 	Username    string   `json:"username"`
-	Role        []string `json:"role"`
+	Roles       []string `json:"roles"`
 	AccessToken string   `json:"accessToken"`
 	TokenType   string   `json:"tokenType"`
 	Expiration  int64    `json:"expiration"`
