@@ -22,3 +22,6 @@ type SysAuthority struct {
 	UpdatedAt time.Time
 	DeletedAt *time.Time
 }
+
+// SysAuthoritys 权限列表
+type SysAuthoritys []*SysAuthority

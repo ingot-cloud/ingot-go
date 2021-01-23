@@ -26,36 +26,36 @@ func BuildContainer() (*container.Container, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	user := &dao.User{
-		DB: db,
-	}
-	authority := &dao.Authority{
-		DB: db,
-	}
 	role := &dao.Role{
-		DB: db,
-	}
-	roleUser := &dao.RoleUser{
 		DB: db,
 	}
 	roleAuthority := &dao.RoleAuthority{
 		DB: db,
 	}
-	casbinAdapter := &provider.CasbinAdapter{
-		UserDao:          user,
-		AuthorityDao:     authority,
+	authority := &dao.Authority{
+		DB: db,
+	}
+	user := &dao.User{
+		DB: db,
+	}
+	roleUser := &dao.RoleUser{
+		DB: db,
+	}
+	permission := &service.Permission{
 		RoleDao:          role,
-		RoleUserDao:      roleUser,
 		RoleAuthorityDao: roleAuthority,
+		AuthorityDao:     authority,
+		UserDao:          user,
+		RoleUserDao:      roleUser,
+	}
+	casbinAdapter := &provider.CasbinAdapter{
+		PermissionService: permission,
 	}
 	syncedEnforcer, cleanup3, err := provider.BuildCasbin(casbinAdapter)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
-	}
-	roleApp := &dao.RoleApp{
-		DB: db,
 	}
 	encoder, cleanup4, err := provider.BuildPasswordEncoder()
 	if err != nil {
@@ -67,7 +67,6 @@ func BuildContainer() (*container.Container, func(), error) {
 	auth := &service.Auth{
 		UserDao:         user,
 		RoleUserDao:     roleUser,
-		RoleAppDao:      roleApp,
 		Auth:            authentication,
 		PasswordEncoder: encoder,
 	}

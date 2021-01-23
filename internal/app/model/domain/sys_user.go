@@ -18,3 +18,6 @@ type SysUser struct {
 	UpdatedAt string
 	DeletedAt string
 }
+
+// SysUsers 用户列表
+type SysUsers []*SysUser

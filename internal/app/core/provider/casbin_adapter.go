@@ -4,9 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"
-	"github.com/ingot-cloud/ingot-go/internal/app/model/dto"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/core/model/enums"
+	"github.com/ingot-cloud/ingot-go/internal/app/service"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 
 	casbinModel "github.com/casbin/casbin/v2/model"
@@ -19,11 +17,7 @@ var CasbinAdapterSet = wire.NewSet(wire.Struct(new(CasbinAdapter), "*"), wire.Bi
 
 // CasbinAdapter casbin适配器
 type CasbinAdapter struct {
-	UserDao          *dao.User
-	AuthorityDao     *dao.Authority
-	RoleDao          *dao.Role
-	RoleUserDao      *dao.RoleUser
-	RoleAuthorityDao *dao.RoleAuthority
+	PermissionService *service.Permission
 }
 
 // LoadPolicy loads all policy rules from the storage.
@@ -67,59 +61,34 @@ func (c *CasbinAdapter) RemoveFilteredPolicy(sec string, ptype string, fieldInde
 	return nil
 }
 
+// 加载角色策略. p,角色,租户,资源,操作
 func (c *CasbinAdapter) loadRolePolicy(ctx context.Context, model casbinModel.Model) error {
-	result, err := c.AuthorityDao.RoleAuthority(ctx, dto.QueryStatusParams{Status: enums.StatusEnabled})
+	policys, err := c.PermissionService.GetRolePolicy(ctx)
 	if err != nil {
 		return nil
 	}
 
-	roleAuthorityList := result.List
-	if len(roleAuthorityList) == 0 {
-		return nil
-	}
-
-	for _, item := range roleAuthorityList {
-		line := fmt.Sprintf("p,%s,%s,%s", item.RoleID, item.Path, "[GET|POST|PUT|DELETE|HEAD]")
-		persist.LoadPolicyLine(line, model)
+	for _, item := range *policys {
+		for _, authority := range item.AuthorityList {
+			line := fmt.Sprintf("p,%s,%d,%s,%s", item.RoleID, item.TenantID, authority.Path, authority.Method) //"[GET|POST|PUT|DELETE|HEAD]"
+			persist.LoadPolicyLine(line, model)
+		}
 	}
 
 	return nil
 }
 
+// 用户角色关联策略. g,用户,角色,租户
 func (c *CasbinAdapter) loadUserPolicy(ctx context.Context, model casbinModel.Model) error {
-	userResult, err := c.UserDao.List(ctx, dto.UserQueryParams{Status: enums.StatusEnabled})
+	policys, err := c.PermissionService.GetUserPolicy(ctx)
 	if err != nil {
 		return nil
 	}
 
-	users := userResult.List
-	if len(users) == 0 {
-		return nil
-	}
-
-	roleUserResult, err := c.RoleUserDao.List(ctx, dto.RoleUserQueryParams{})
-	if err != nil {
-		return nil
-	}
-
-	roleUsers := roleUserResult.List
-	if len(roleUsers) == 0 {
-		return nil
-	}
-
-	// roleUsers 改变结构为 userId => [roleId, roleId]
-	mapUserIDRoleIds := make(map[string][]string)
-	for _, item := range roleUsers {
-		mapUserIDRoleIds[item.UserID] = append(mapUserIDRoleIds[item.UserID], item.RoleID)
-	}
-
-	for _, user := range users {
-		userID := user.ID
-		if roleIds, ok := mapUserIDRoleIds[userID]; ok {
-			for _, roleID := range roleIds {
-				line := fmt.Sprintf("g,%s,%s", userID, roleID)
-				persist.LoadPolicyLine(line, model)
-			}
+	for _, item := range *policys {
+		for _, role := range item.RoleList {
+			line := fmt.Sprintf("g,%s,%s,%d", item.UserID, role, item.TenantID)
+			persist.LoadPolicyLine(line, model)
 		}
 	}
 

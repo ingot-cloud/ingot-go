@@ -42,7 +42,7 @@ func (a *Auth) Login(ctx *gin.Context) {
 	user := &security.User{
 		ID:       userResult.ID,
 		Username: userResult.Username,
-		Role:     roles,
+		Roles:    roles,
 	}
 
 	ginwrapper.SetUser(ctx, user)

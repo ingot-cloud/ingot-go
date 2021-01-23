@@ -20,3 +20,6 @@ type SysRole struct {
 	UpdatedAt time.Time
 	DeletedAt *time.Time
 }
+
+// SysRoles 角色列表
+type SysRoles []*SysRole

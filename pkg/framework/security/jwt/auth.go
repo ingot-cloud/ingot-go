@@ -19,8 +19,7 @@ func NewAuthentication(store security.TokenStore, params *Params) security.Authe
 
 // Claims custom
 type Claims struct {
-	Username string   `json:"username"`
-	Role     []string `json:"role"`
+	security.User
 	jwt.StandardClaims
 }
 
@@ -44,13 +43,11 @@ func (a *Authentication) GenerateToken(ctx context.Context, user security.User) 
 	now := time.Now()
 	expiration := now.Add(time.Duration(a.params.Expired) * time.Second).Unix()
 	token := jwt.NewWithClaims(a.params.SigningMethod, &Claims{
-		Username: user.Username,
-		Role:     user.Role,
+		User: user,
 		StandardClaims: jwt.StandardClaims{
 			IssuedAt:  now.Unix(),
 			ExpiresAt: expiration,
 			NotBefore: now.Unix(),
-			Subject:   user.ID,
 		},
 	})
 
@@ -93,11 +90,7 @@ func (a *Authentication) ParseUser(ctx context.Context, accessToken string) (*se
 		return nil, err
 	}
 
-	return &security.User{
-		ID:       claims.Subject,
-		Username: claims.Username,
-		Role:     claims.Role,
-	}, nil
+	return &claims.User, nil
 }
 
 // RevokeToken 销毁令牌

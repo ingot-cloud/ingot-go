@@ -3,13 +3,15 @@ package security
 import (
 	"context"
 	"time"
+
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/model/types"
 )
 
 // User for Auth
 type User struct {
-	ID       string
-	Username string
-	Role     []string
+	ID       types.ID `json:"id"`
+	Username string   `json:"username"`
+	Roles    []string `json:"roles"`
 }
 
 // AccessToken interface

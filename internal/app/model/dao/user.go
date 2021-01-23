@@ -11,7 +11,7 @@ import (
 )
 
 func getUserDB(ctx context.Context, db *gorm.DB) *gorm.DB {
-	return GetDBWithModel(ctx, db, new(domain.User))
+	return GetDBWithModel(ctx, db, new(domain.SysUser))
 }
 
 // User Dao
@@ -20,42 +20,37 @@ type User struct {
 }
 
 // List user list
-func (u *User) List(ctx context.Context, params dto.UserQueryParams) (*dto.UserQueryResult, error) {
-
+func (u *User) List(ctx context.Context, condition dto.QueryCondition) (*domain.SysUsers, error) {
 	db := getUserDB(ctx, u.DB)
-	if p := params.Username; p != "" {
-		db = db.Where("username = ?", p)
-	}
-	if p := params.Status; p != "" {
-		db = db.Where("status = ?", p)
+
+	if status := condition.Status; status != "" {
+		db = db.Where("status = ?", status)
 	}
 
-	var list domain.Users
-	err := db.Find(&list).Error
+	var list domain.SysUsers
+	err := db.Scan(&list).Error
 
-	return &dto.UserQueryResult{
-		List: list.To(),
-	}, err
+	return &list, err
 }
 
 // GetByID 根据ID获取User
-func (u *User) GetByID(ctx context.Context, id string) (*domain.User, error) {
+func (u *User) GetByID(ctx context.Context, id string) (*domain.SysUser, error) {
 	db := getUserDB(ctx, u.DB)
 
 	db = db.Where("id = ?", id)
 
-	var user domain.User
+	var user domain.SysUser
 	err := db.First(&user).Error
 
 	return &user, err
 }
 
 // One user
-func (u *User) One(ctx context.Context, username string) (*domain.User, error) {
+func (u *User) One(ctx context.Context, username string) (*domain.SysUser, error) {
 	db := getUserDB(ctx, u.DB)
 	db = db.Where("username = ?", username)
 
-	var user domain.User
+	var user domain.SysUser
 	err := db.First(&user).Error
 
 	log.Debug("user = %v", user)

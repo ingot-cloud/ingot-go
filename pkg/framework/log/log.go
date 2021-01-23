@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/model/types"
 	"github.com/sirupsen/logrus"
 )
 
@@ -96,7 +97,7 @@ func FromTraceIDContext(ctx context.Context) string {
 }
 
 // NewUserIDContext 创建用户ID上下文
-func NewUserIDContext(ctx context.Context, userID string) context.Context {
+func NewUserIDContext(ctx context.Context, userID types.ID) context.Context {
 	return context.WithValue(ctx, userIDKey{}, userID)
 }
 

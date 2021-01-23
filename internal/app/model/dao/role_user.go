@@ -4,14 +4,13 @@ import (
 	"context"
 
 	"github.com/ingot-cloud/ingot-go/internal/app/model/domain"
-	"github.com/ingot-cloud/ingot-go/internal/app/model/dto"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/core/utils"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/model/types"
 
 	"gorm.io/gorm"
 )
 
 func getRoleUserDB(ctx context.Context, db *gorm.DB) *gorm.DB {
-	return GetDBWithModel(ctx, db, new(domain.RoleUser))
+	return GetDBWithModel(ctx, db, new(domain.SysRoleUser))
 }
 
 // RoleUser DAO
@@ -19,38 +18,23 @@ type RoleUser struct {
 	DB *gorm.DB
 }
 
-// List for role user
-func (ru *RoleUser) List(ctx context.Context, params dto.RoleUserQueryParams) (*dto.RoleUserQueryResult, error) {
-	db := getRoleUserDB(ctx, ru.DB)
-
-	var list domain.RoleUsers
-	db.Find(&list)
-
-	return &dto.RoleUserQueryResult{
-		List: list.To(),
-	}, nil
-}
-
-// GetUserRole 获取用户的角色
-func (ru *RoleUser) GetUserRole(ctx context.Context, userID string) (*dto.RoleUserQueryResult, error) {
+// GetUserRoleIDs 获取用户的角色
+func (ru *RoleUser) GetUserRoleIDs(ctx context.Context, userID types.ID) (*[]types.ID, error) {
 	db := getRoleUserDB(ctx, ru.DB).Where("user_id = ?", userID)
 
-	var list domain.RoleUsers
-	err := db.Find(&list).Error
+	var list []*domain.SysRoleUser
+	err := db.Scan(&list).Error
 
-	return &dto.RoleUserQueryResult{
-		List: list.To(),
-	}, err
-}
+	if err != nil {
+		return nil, err
+	}
 
-// BindRoleToUser 绑定角色到用户
-func (ru *RoleUser) BindRoleToUser(ctx context.Context, params dto.RoleUser) error {
-	db := getRoleUserDB(ctx, ru.DB)
+	ids := make([]types.ID, 0, len(list))
+	for _, item := range list {
+		ids = append(ids, item.RoleID)
+	}
 
-	roleUser := new(domain.RoleUser)
-	utils.Copy(params, roleUser)
+	// todo 需要获取用户所属部门的角色，和当前角色进行合并
 
-	result := db.Create(roleUser)
-
-	return result.Error
+	return &ids, nil
 }

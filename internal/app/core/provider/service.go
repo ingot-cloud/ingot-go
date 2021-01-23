@@ -7,8 +7,10 @@ import (
 )
 
 var serviceAuthSet = wire.NewSet(wire.Struct(new(service.Auth), "*"))
+var servicePermissionSet = wire.NewSet(wire.Struct(new(service.Permission), "*"))
 
 // ServiceSet inject
 var ServiceSet = wire.NewSet(
 	serviceAuthSet,
+	servicePermissionSet,
 )
