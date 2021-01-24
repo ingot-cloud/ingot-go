@@ -19,7 +19,7 @@ type Authority struct {
 }
 
 // GetAuthoritysWithIDs 根据权限ID获取相应可以使用的权限列表
-func (a *Authority) GetAuthoritysWithIDs(ctx context.Context, condition dto.QueryCondition) (*domain.SysAuthoritys, error) {
+func (a *Authority) GetAuthoritysWithIDs(ctx context.Context, condition dto.QueryCondition) (*[]*domain.SysAuthority, error) {
 	db := getAuthorityDB(ctx, a.DB)
 
 	if ids := condition.IDs; len(ids) != 0 {
@@ -29,14 +29,14 @@ func (a *Authority) GetAuthoritysWithIDs(ctx context.Context, condition dto.Quer
 		db = db.Where("status = ?", status)
 	}
 
-	var list domain.SysAuthoritys
+	var list []*domain.SysAuthority
 	err := db.Scan(&list).Error
 
 	return &list, err
 }
 
 // GetChildWithPID 获取子权限
-func (a *Authority) GetChildWithPID(ctx context.Context, condition dto.QueryCondition) (*domain.SysAuthoritys, error) {
+func (a *Authority) GetChildWithPID(ctx context.Context, condition dto.QueryCondition) (*[]*domain.SysAuthority, error) {
 	db := getAuthorityDB(ctx, a.DB)
 
 	if status := condition.Status; status != "" {
@@ -46,7 +46,7 @@ func (a *Authority) GetChildWithPID(ctx context.Context, condition dto.QueryCond
 		db = db.Where("pid = ?", pid)
 	}
 
-	var list domain.SysAuthoritys
+	var list []*domain.SysAuthority
 	err := db.Scan(&list).Error
 
 	return &list, err

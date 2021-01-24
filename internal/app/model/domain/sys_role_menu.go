@@ -7,3 +7,8 @@ type SysRoleMenu struct {
 	RoleID types.ID `gorm:"primary_key;size:20"`
 	MenuID types.ID `gorm:"primary_key;size:20"`
 }
+
+// TableName 表名
+func (*SysRoleMenu) TableName() string {
+	return "sys_role_menu"
+}

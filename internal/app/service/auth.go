@@ -10,6 +10,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dto"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/errors"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/model/enums"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/crypto/password"
 )
@@ -30,7 +31,8 @@ func (a *Auth) VerifyUserInfo(ctx context.Context, params dto.LoginParams) (*dom
 		return nil, nil, errors.ErrUserInvalid
 	}
 
-	if !a.PasswordEncoder.Matches(params.Password, user.Password) {
+	if result, err := a.PasswordEncoder.Matches(params.Password, user.Password); !result || err != nil {
+		log.Error(err)
 		return nil, nil, errors.ErrUserInvalid
 	}
 

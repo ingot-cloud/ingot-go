@@ -19,5 +19,7 @@ type SysUser struct {
 	DeletedAt string
 }
 
-// SysUsers 用户列表
-type SysUsers []*SysUser
+// TableName 表名
+func (*SysUser) TableName() string {
+	return "sys_user"
+}

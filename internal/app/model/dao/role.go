@@ -34,7 +34,7 @@ func (r *Role) GetRoleByID(ctx context.Context, condition dto.QueryCondition) (*
 }
 
 // List 获取角色列表
-func (r *Role) List(ctx context.Context, condition dto.QueryCondition) (*domain.SysRoles, error) {
+func (r *Role) List(ctx context.Context, condition dto.QueryCondition) (*[]*domain.SysRole, error) {
 	db := getRoleDB(ctx, r.DB)
 
 	if status := condition.Status; status != "" {
@@ -44,8 +44,8 @@ func (r *Role) List(ctx context.Context, condition dto.QueryCondition) (*domain.
 		db = db.Where("id IN ?", ids)
 	}
 
-	var roles domain.SysRoles
-	err := db.Scan(roles).Error
+	var roles []*domain.SysRole
+	err := db.Scan(&roles).Error
 
 	return &roles, err
 }

@@ -9,7 +9,7 @@ import (
 type RolePolicy struct {
 	RoleID        types.ID
 	TenantID      int
-	AuthorityList domain.SysAuthoritys
+	AuthorityList []*domain.SysAuthority
 }
 
 // RolePolicys 角色策略列表

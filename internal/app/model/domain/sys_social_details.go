@@ -21,3 +21,8 @@ type SysSocialDetails struct {
 	UpdatedAt   time.Time
 	DeletedAt   *time.Time
 }
+
+// TableName 表名
+func (*SysSocialDetails) TableName() string {
+	return "sys_social_details"
+}

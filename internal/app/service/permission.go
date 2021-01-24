@@ -64,7 +64,7 @@ func (p *Permission) GetRolePolicy(ctx context.Context) (*dto.RolePolicys, error
 	return &result, nil
 }
 
-func (p *Permission) deepAuthority(ctx context.Context, list *domain.SysAuthoritys, result *map[types.ID]domain.SysAuthority) error {
+func (p *Permission) deepAuthority(ctx context.Context, list *[]*domain.SysAuthority, result *map[types.ID]domain.SysAuthority) error {
 	for _, authority := range *list {
 		if _, ok := (*result)[authority.ID]; !ok {
 			(*result)[authority.ID] = *authority

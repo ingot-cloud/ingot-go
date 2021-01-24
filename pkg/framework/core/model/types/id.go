@@ -1,8 +1,6 @@
 package types
 
 import (
-	"database/sql/driver"
-	"fmt"
 	"strconv"
 )
 
@@ -31,20 +29,4 @@ func (id ID) MarshalJSON() ([]byte, error) {
 
 func (id ID) String() string {
 	return strconv.FormatInt(int64(id), 10)
-}
-
-// Scan sql.Scanner interface
-func (id *ID) Scan(value interface{}) error {
-	result, ok := value.(int64)
-	if ok {
-		*id = ID(result)
-		return nil
-	}
-
-	return fmt.Errorf("Can not convert %v to ID", value)
-}
-
-// Value driver.Valuer interface
-func (id ID) Value() (driver.Value, error) {
-	return int64(id), nil
 }

@@ -21,5 +21,7 @@ type SysRole struct {
 	DeletedAt *time.Time
 }
 
-// SysRoles 角色列表
-type SysRoles []*SysRole
+// TableName 表名
+func (*SysRole) TableName() string {
+	return "sys_role"
+}

@@ -23,5 +23,7 @@ type SysAuthority struct {
 	DeletedAt *time.Time
 }
 
-// SysAuthoritys 权限列表
-type SysAuthoritys []*SysAuthority
+// TableName 表名
+func (*SysAuthority) TableName() string {
+	return "sys_authority"
+}

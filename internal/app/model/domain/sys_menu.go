@@ -26,3 +26,8 @@ type SysMenu struct {
 	UpdatedAt time.Time
 	DeletedAt *time.Time
 }
+
+// TableName 表名
+func (*SysMenu) TableName() string {
+	return "sys_menu"
+}

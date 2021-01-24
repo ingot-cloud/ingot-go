@@ -20,3 +20,8 @@ type SysDept struct {
 	UpdatedAt time.Time
 	DeletedAt *time.Time
 }
+
+// TableName 表名
+func (*SysDept) TableName() string {
+	return "sys_dept"
+}

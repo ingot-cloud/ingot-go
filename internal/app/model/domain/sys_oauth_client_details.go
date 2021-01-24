@@ -31,3 +31,8 @@ type SysOauthClientDetails struct {
 	UpdatedAt             time.Time
 	DeletedAt             *time.Time
 }
+
+// TableName 表名
+func (*SysOauthClientDetails) TableName() string {
+	return "sys_oauth_client_details"
+}

@@ -7,3 +7,8 @@ type SysRoleOauthClient struct {
 	RoleID   types.ID `gorm:"primary_key;size:20"`
 	ClientID types.ID `gorm:"primary_key;size:20"`
 }
+
+// TableName 表名
+func (*SysRoleOauthClient) TableName() string {
+	return "sys_role_oauth_client"
+}

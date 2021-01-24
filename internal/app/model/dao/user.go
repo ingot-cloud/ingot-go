@@ -20,14 +20,14 @@ type User struct {
 }
 
 // List user list
-func (u *User) List(ctx context.Context, condition dto.QueryCondition) (*domain.SysUsers, error) {
+func (u *User) List(ctx context.Context, condition dto.QueryCondition) (*[]*domain.SysUser, error) {
 	db := getUserDB(ctx, u.DB)
 
 	if status := condition.Status; status != "" {
 		db = db.Where("status = ?", status)
 	}
 
-	var list domain.SysUsers
+	var list []*domain.SysUser
 	err := db.Scan(&list).Error
 
 	return &list, err

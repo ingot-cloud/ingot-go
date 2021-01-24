@@ -15,3 +15,8 @@ type SysTenant struct {
 	UpdateAt  time.Time
 	DeletedAt *time.Time
 }
+
+// TableName 表名
+func (*SysTenant) TableName() string {
+	return "sys_tenant"
+}
