@@ -12,6 +12,6 @@ func CreateDelegatingPasswordEncoder() password.Encoder {
 	encoders["sha1"] = &password.Sha1Encoder{}
 	return &password.DelegatingEncoder{
 		IDForEncode:         idForEncode,
-		IDToPasswordEncoder: nil,
+		IDToPasswordEncoder: encoders,
 	}
 }
