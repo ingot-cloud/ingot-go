@@ -16,20 +16,22 @@ func TestID(t *testing.T) {
 	count := 1_000_000
 	ch := make(chan int64, count)
 	wg.Add(count)
-	defer close(ch)
 
 	for i := 0; i < count; i++ {
-		go func() {
-			defer wg.Done()
+		go func(wg *sync.WaitGroup, out chan<- int64) {
 			id, _ := generator.NextID()
-			ch <- id
-		}()
+			out <- id
+			wg.Done()
+		}(&wg, ch)
 	}
-	wg.Wait()
+
+	go func() {
+		wg.Wait()
+		close(ch)
+	}()
 
 	m := make(map[int64]int)
-	for i := 0; i < count; i++ {
-		id := <-ch
+	for id := range ch {
 		// 判断是否有重复ID
 		_, ok := m[id]
 		if ok {
@@ -37,7 +39,7 @@ func TestID(t *testing.T) {
 			return
 		}
 
-		m[id] = i
+		m[id] = 1
 	}
 
 	t.Logf("所有ID生成完成，共计%d个", len(m))

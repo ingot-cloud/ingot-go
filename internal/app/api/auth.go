@@ -26,10 +26,10 @@ func (a *Auth) Login(ctx *gin.Context) {
 		return
 	}
 
-	if params.AppID == "" {
-		response.FailureWithError(ctx, errors.IllegalArgument("AppID can not be empty"))
-		return
-	}
+	// if params.AppID == "" {
+	// 	response.FailureWithError(ctx, errors.IllegalArgument("AppID can not be empty"))
+	// 	return
+	// }
 
 	context := ctx.Request.Context()
 
