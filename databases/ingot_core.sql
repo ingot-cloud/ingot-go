@@ -11,7 +11,7 @@
  Target Server Version : 50732
  File Encoding         : 65001
 
- Date: 22/01/2021 11:28:48
+ Date: 26/01/2021 15:07:20
 */
 
 SET NAMES utf8mb4;
@@ -29,7 +29,7 @@ CREATE TABLE `sys_authority` (
   `name` varchar(100) NOT NULL COMMENT '权限名称',
   `code` varchar(100) NOT NULL COMMENT '权限编码',
   `path` varchar(128) DEFAULT NULL COMMENT 'URL',
-  `method` varchar(32) DEFAULT NULL COMMENT '方法',
+  `method` varchar(32) DEFAULT '*' COMMENT '方法',
   `status` char(1) CHARACTER SET utf8 DEFAULT '0' COMMENT '状态, 0:正常，9:禁用',
   `remark` varchar(255) CHARACTER SET utf8 DEFAULT '' COMMENT '备注',
   `created_at` datetime DEFAULT NULL COMMENT '创建日期',
@@ -43,7 +43,7 @@ CREATE TABLE `sys_authority` (
 -- Records of sys_authority
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_authority` VALUES (1, NULL, 1, NULL, '所有权限', 'all', '/*', NULL, '0', '所有权限', '2021-01-22 09:04:00', NULL, NULL);
+INSERT INTO `sys_authority` VALUES (1, NULL, 1, NULL, '所有权限', 'all', '/*', '*', '0', '所有权限', '2021-01-22 09:04:00', NULL, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -170,8 +170,8 @@ COMMIT;
 DROP TABLE IF EXISTS `sys_role_authority`;
 CREATE TABLE `sys_role_authority` (
   `role_id` bigint(20) NOT NULL COMMENT '角色ID',
-  `authority` bigint(20) NOT NULL COMMENT '权限ID',
-  PRIMARY KEY (`role_id`,`authority`)
+  `authority_id` bigint(20) NOT NULL COMMENT '权限ID',
+  PRIMARY KEY (`role_id`,`authority_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -309,7 +309,7 @@ CREATE TABLE `sys_user` (
 -- Records of sys_user
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_user` VALUES (1, 0, 1, 1, 'admin', '{noop}admin', '超级管理员', '18603243837', '', '0', '2021-01-03 11:02:46', NULL, NULL);
+INSERT INTO `sys_user` VALUES (1, 0, 1, 1, 'admin', '{noop}admin', '超级管理员', '18603243837', 'admin@ingot.com', '0', '2021-01-03 11:02:46', NULL, NULL);
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
