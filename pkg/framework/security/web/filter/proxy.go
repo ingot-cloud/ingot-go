@@ -7,7 +7,7 @@ import (
 
 // ChainProxy 过滤器链代理
 type ChainProxy struct {
-	filterChains []SecurityFilterChain
+	FilterChains []SecurityFilterChain
 }
 
 // Order 排序
@@ -35,7 +35,7 @@ func (p *ChainProxy) DoFilter(context *ingot.Context, chain Chain) error {
 
 // GetFilters 获取指定请求需要执行的过滤器列表
 func (p *ChainProxy) GetFilters(context *ingot.Context) Filters {
-	for _, chain := range p.filterChains {
+	for _, chain := range p.FilterChains {
 		if chain.Matches(context) {
 			return chain.GetFilters()
 		}
