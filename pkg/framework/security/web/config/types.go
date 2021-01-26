@@ -6,11 +6,11 @@ import (
 
 // WebSecurityConfigurer Web security 配置
 type WebSecurityConfigurer interface {
+	Configure(*WebSecurity) error
 }
 
 // HTTPSecurityConfigurer HTTP security 配置
-type HTTPSecurityConfigurer interface {
-}
+type HTTPSecurityConfigurer func(*HTTPSecurity) error
 
 // WebSecurityBuilder 构造器
 type WebSecurityBuilder interface {

@@ -5,7 +5,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/utils"
 )
 
-// WebSecurity web
+// WebSecurity web 配置
 type WebSecurity struct {
 	securityFilterChainBuilders []HTTPSecurityBuilder
 	ignoredRequests             []utils.RequestMatcher
