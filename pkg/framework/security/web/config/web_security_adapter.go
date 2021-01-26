@@ -2,7 +2,7 @@ package config
 
 // WebSecurityConfigurerAdapter 安全配置适配器
 type WebSecurityConfigurerAdapter struct {
-	AdditionalConfigurers []HTTPSecurityConfigurer
+	additionalConfigurers []HTTPSecurityConfigurer
 }
 
 // Configure Web安全配置
@@ -41,8 +41,8 @@ func (adapter *WebSecurityConfigurerAdapter) applyDefaultConfiguration(http *HTT
 }
 
 func (adapter *WebSecurityConfigurerAdapter) applyAdditionalConfiguration(http *HTTPSecurity) error {
-	for _, configurer := range adapter.AdditionalConfigurers {
-		if err := configurer(http); err != nil {
+	for _, item := range adapter.additionalConfigurers {
+		if err := item.Configure(http); err != nil {
 			return err
 		}
 	}

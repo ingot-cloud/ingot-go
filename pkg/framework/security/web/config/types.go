@@ -10,14 +10,16 @@ type WebSecurityConfigurer interface {
 }
 
 // HTTPSecurityConfigurer HTTP security 配置
-type HTTPSecurityConfigurer func(*HTTPSecurity) error
+type HTTPSecurityConfigurer interface {
+	Configure(*HTTPSecurity) error
+}
 
 // WebSecurityBuilder 构造器
 type WebSecurityBuilder interface {
-	Build() filter.Filter
+	Build() (filter.Filter, error)
 }
 
 // HTTPSecurityBuilder 构造器
 type HTTPSecurityBuilder interface {
-	Build() filter.SecurityFilterChain
+	Build() (filter.SecurityFilterChain, error)
 }

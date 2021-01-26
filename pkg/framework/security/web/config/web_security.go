@@ -12,23 +12,29 @@ type WebSecurity struct {
 }
 
 // Build 构建Web过滤器
-func (w *WebSecurity) Build() filter.Filter {
+func (w *WebSecurity) Build() (filter.Filter, error) {
 	chainSize := len(w.ignoredRequests) + len(w.securityFilterChainBuilders)
 	securityFilterChains := make([]filter.SecurityFilterChain, 0, chainSize)
 
+	// 忽略的请求
 	for _, ignoredRequest := range w.ignoredRequests {
 		securityFilterChains = append(securityFilterChains, &filter.DefaultSecurityFilterChain{
 			RequestMatcher: ignoredRequest,
 		})
 	}
+	// 安全校验链
 	for _, builder := range w.securityFilterChainBuilders {
-		securityFilterChains = append(securityFilterChains, builder.Build())
+		chain, err := builder.Build()
+		if err != nil {
+			return nil, err
+		}
+		securityFilterChains = append(securityFilterChains, chain)
 	}
 
 	filterChainProxy := &filter.ChainProxy{
 		FilterChains: securityFilterChains,
 	}
-	return filterChainProxy
+	return filterChainProxy, nil
 }
 
 // AddSecurityFilterChainBuilder 添加创建 SecurityFilterChain 的构建器
