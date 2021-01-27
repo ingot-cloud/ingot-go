@@ -23,3 +23,6 @@ type WebSecurityBuilder interface {
 type HTTPSecurityBuilder interface {
 	Build() (filter.SecurityFilterChain, error)
 }
+
+// WebSecurityConfigurers 定义 Web Security 配置列表
+type WebSecurityConfigurers []WebSecurityConfigurer
