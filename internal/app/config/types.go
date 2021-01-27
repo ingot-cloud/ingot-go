@@ -1,35 +1,25 @@
 package config
 
 import (
-	"time"
-
+	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/server"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 )
 
 // Config struct
 type Config struct {
-	App    App        `yaml:"app"`
-	Server Server     `yaml:"server"`
-	Log    log.Config `yaml:"log"`
-	Gorm   Gorm       `yaml:"gorm"`
-	MySQL  MySQL      `yaml:"mysql"`
-	Redis  Redis      `yaml:"redis"`
-	Auth   Auth       `yaml:"auth"`
-	Casbin Casbin     `yaml:"casbin"`
+	App    App           `yaml:"app"`
+	Server server.Config `yaml:"server"`
+	Log    log.Config    `yaml:"log"`
+	Gorm   Gorm          `yaml:"gorm"`
+	MySQL  MySQL         `yaml:"mysql"`
+	Redis  Redis         `yaml:"redis"`
+	Auth   Auth          `yaml:"auth"`
+	Casbin Casbin        `yaml:"casbin"`
 }
 
 // App struct
 type App struct {
 	Name string `yaml:"name"`
-}
-
-// Server struct
-type Server struct {
-	Mode         string        `yaml:"mode"`
-	Address      string        `yaml:"address"`
-	ReadTimeout  time.Duration `yaml:"readTimeout"`
-	WriteTimeout time.Duration `yaml:"writeTimeout"`
-	Prefix       string        `yaml:"prefix"`
 }
 
 // Gorm config

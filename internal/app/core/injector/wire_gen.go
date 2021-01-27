@@ -7,16 +7,17 @@ package injector
 
 import (
 	"github.com/ingot-cloud/ingot-go/internal/app/api"
-	"github.com/ingot-cloud/ingot-go/internal/app/core/container"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/provider"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"
 	"github.com/ingot-cloud/ingot-go/internal/app/router"
 	"github.com/ingot-cloud/ingot-go/internal/app/service"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/server"
 )
 
 // Injectors from wire.go:
 
-func BuildContainer() (*container.Container, func(), error) {
+func BuildContainer(config server.Config) (*container.Container, func(), error) {
 	authentication, cleanup, err := provider.BuildAuthentication()
 	if err != nil {
 		return nil, nil, err
@@ -79,9 +80,9 @@ func BuildContainer() (*container.Container, func(), error) {
 		CasbinEnforcer: syncedEnforcer,
 		AuthAPI:        apiAuth,
 	}
-	engine := provider.BuildHTTPHandler(routerRouter)
 	containerContainer := &container.Container{
-		Engine: engine,
+		Router:     routerRouter,
+		HTTPConfig: config,
 	}
 	return containerContainer, func() {
 		cleanup4()

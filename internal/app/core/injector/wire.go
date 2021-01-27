@@ -4,19 +4,18 @@
 package injector
 
 import (
-	"github.com/ingot-cloud/ingot-go/internal/app/core/container"
-	"github.com/ingot-cloud/ingot-go/internal/app/core/provider"
-
 	"github.com/google/wire"
+	"github.com/ingot-cloud/ingot-go/internal/app/core/provider"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/server"
 )
 
-func BuildContainer() (*container.Container, func(), error) {
+func BuildContainer(config server.Config) (*container.Container, func(), error) {
 	wire.Build(
 		provider.APISet,
 		provider.RouterSet,
 		provider.ServiceSet,
 		provider.DaoSet,
-		provider.BuildHTTPHandler,
 		provider.BuildGorm,
 		provider.BuildAuthentication,
 		provider.BuildCasbin,
@@ -24,5 +23,5 @@ func BuildContainer() (*container.Container, func(), error) {
 		provider.BuildPasswordEncoder,
 		container.ContainerSet,
 	)
-	return new(container.Container), nil, nil
+	return nil, nil, nil
 }

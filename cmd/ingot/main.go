@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ingot-cloud/ingot-go/internal/app/core/app"
+	"github.com/ingot-cloud/ingot-go/internal/app"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 
 	"github.com/urfave/cli/v2"
