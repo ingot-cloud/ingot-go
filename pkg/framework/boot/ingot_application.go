@@ -12,21 +12,29 @@ import (
 
 // IngotApplication 应用入口
 type IngotApplication struct {
-	Context   context.Context
-	Container *container.Container
+	Context context.Context
+	Factory container.Factory
 }
 
 // Run 运行Application
-func (app *IngotApplication) Run() {
+func (app *IngotApplication) Run() error {
 	banner()
+
+	contaienr, cleanFunc, err := app.Factory(app.Context)
+	if err != nil {
+		return nil
+	}
+
 	httpServer := &server.HTTPServer{
 		Context: app.Context,
-		Router:  app.Container.Router,
-		Config:  app.Container.HTTPConfig,
+		Router:  contaienr.Router,
+		Config:  contaienr.HTTPConfig,
 	}
 	clean := httpServer.Run()
 
 	app.listeningSignal(clean)
+	cleanFunc()
+	return nil
 }
 
 func (app *IngotApplication) listeningSignal(doExit func()) {

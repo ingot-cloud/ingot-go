@@ -14,7 +14,6 @@ type Config struct {
 	MySQL  MySQL         `yaml:"mysql"`
 	Redis  Redis         `yaml:"redis"`
 	Auth   Auth          `yaml:"auth"`
-	Casbin Casbin        `yaml:"casbin"`
 }
 
 // App struct
@@ -67,9 +66,4 @@ type Jwt struct {
 	SigningMethod string `yaml:"signingMethod"`
 	SigningKey    string `yaml:"signingKey"`
 	Expired       int    `yaml:"expired"`
-}
-
-// Casbin config
-type Casbin struct {
-	ModelPath string `yaml:"modelPath"`
 }

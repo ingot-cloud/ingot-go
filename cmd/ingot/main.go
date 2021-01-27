@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"os"
 
 	"github.com/ingot-cloud/ingot-go/internal/app"
+	"github.com/ingot-cloud/ingot-go/internal/app/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 
 	"github.com/urfave/cli/v2"
@@ -51,8 +51,7 @@ func serverCmd(ctx context.Context) *cli.Command {
 			},
 		},
 		Action: func(c *cli.Context) error {
-			fmt.Printf("config = %s", c.String("conf"))
-			return app.Run(ctx, &app.Options{
+			return app.Run(ctx, &config.Options{
 				ConfigFile:      c.String("conf"),
 				CasbinModelFile: c.String("model"),
 			})

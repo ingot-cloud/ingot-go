@@ -14,16 +14,15 @@ import (
 )
 
 // BuildGorm init gorm
-func BuildGorm() (*gorm.DB, func(), error) {
+func BuildGorm(config *config.Config) (*gorm.DB, func(), error) {
 
-	cfg := config.CONFIG
-	db, cleanFunc, err := newGormDB(cfg)
+	db, cleanFunc, err := newGormDB(config)
 	if err != nil {
 		return nil, cleanFunc, err
 	}
 
-	if cfg.Gorm.EnableAutoMigrate {
-		err := autoMigrate(db, cfg.Gorm.DBType)
+	if config.Gorm.EnableAutoMigrate {
+		err := autoMigrate(db, config.Gorm.DBType)
 		if err != nil {
 			return nil, cleanFunc, err
 		}
@@ -32,7 +31,7 @@ func BuildGorm() (*gorm.DB, func(), error) {
 	return db, cleanFunc, nil
 }
 
-func newGormDB(cfg config.Config) (*gorm.DB, func(), error) {
+func newGormDB(cfg *config.Config) (*gorm.DB, func(), error) {
 	dbType := cfg.Gorm.DBType
 	if dbType != "mysql" {
 		return nil, nil, errors.New("unknown db")

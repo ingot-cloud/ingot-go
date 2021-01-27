@@ -7,11 +7,10 @@ import (
 )
 
 // Run 运行服务
-func Run(context context.Context, container *container.Container, cleanFunc func()) {
+func Run(context context.Context, factory container.Factory) error {
 	app := &IngotApplication{
-		Context:   context,
-		Container: container,
+		Context: context,
+		Factory: factory,
 	}
-	app.Run()
-	cleanFunc()
+	return app.Run()
 }

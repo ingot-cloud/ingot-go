@@ -7,22 +7,30 @@ package injector
 
 import (
 	"github.com/ingot-cloud/ingot-go/internal/app/api"
+	"github.com/ingot-cloud/ingot-go/internal/app/config"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/provider"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"
 	"github.com/ingot-cloud/ingot-go/internal/app/router"
 	"github.com/ingot-cloud/ingot-go/internal/app/service"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/server"
 )
 
 // Injectors from wire.go:
 
-func BuildContainer(config server.Config) (*container.Container, func(), error) {
-	authentication, cleanup, err := provider.BuildAuthentication()
+func BuildConfiguration(options *config.Options) (*config.Config, error) {
+	configConfig, err := provider.LoadConfig(options)
+	if err != nil {
+		return nil, err
+	}
+	return configConfig, nil
+}
+
+func BuildContainer(config2 *config.Config, options *config.Options) (*container.Container, func(), error) {
+	authentication, cleanup, err := provider.BuildAuthentication(config2)
 	if err != nil {
 		return nil, nil, err
 	}
-	db, cleanup2, err := provider.BuildGorm()
+	db, cleanup2, err := provider.BuildGorm(config2)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -52,7 +60,7 @@ func BuildContainer(config server.Config) (*container.Container, func(), error) 
 	casbinAdapter := &provider.CasbinAdapter{
 		PermissionService: permission,
 	}
-	syncedEnforcer, cleanup3, err := provider.BuildCasbin(casbinAdapter)
+	syncedEnforcer, cleanup3, err := provider.BuildCasbin(options, casbinAdapter)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -75,14 +83,32 @@ func BuildContainer(config server.Config) (*container.Container, func(), error) 
 	apiAuth := &api.Auth{
 		AuthService: auth,
 	}
+	serverConfig, err := provider.HTTPConfigSet(config2)
+	if err != nil {
+		cleanup4()
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	configAuth, err := provider.AuthConfigSet(config2)
+	if err != nil {
+		cleanup4()
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
 	routerRouter := &router.Router{
 		Auth:           authentication,
 		CasbinEnforcer: syncedEnforcer,
 		AuthAPI:        apiAuth,
+		HTTPConfig:     serverConfig,
+		AuthConfig:     configAuth,
 	}
 	containerContainer := &container.Container{
 		Router:     routerRouter,
-		HTTPConfig: config,
+		HTTPConfig: serverConfig,
 	}
 	return containerContainer, func() {
 		cleanup4()

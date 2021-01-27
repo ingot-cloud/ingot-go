@@ -8,10 +8,8 @@ import (
 )
 
 // BuildCasbin Casbin
-func BuildCasbin(adapter persist.Adapter) (*casbin.SyncedEnforcer, func(), error) {
-	cfg := config.CONFIG.Casbin
-
-	e, err := casbin.NewSyncedEnforcer(cfg.ModelPath)
+func BuildCasbin(options *config.Options, adapter persist.Adapter) (*casbin.SyncedEnforcer, func(), error) {
+	e, err := casbin.NewSyncedEnforcer(options.CasbinModelFile)
 	if err != nil {
 		return nil, nil, err
 	}

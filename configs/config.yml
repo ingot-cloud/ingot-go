@@ -83,7 +83,3 @@ auth:
     # 过期时间（单位秒）
     expired: 7200 
 
-casbin:
-  # 模型配置文件绝对路径
-  modelPath: ""
-

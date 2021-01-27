@@ -10,41 +10,30 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 )
 
-// Options 配置
-type Options struct {
-	ConfigFile      string
-	CasbinModelFile string
-}
-
 // Run start app
-func Run(context context.Context, options *Options) error {
+func Run(ctx context.Context, options *config.Options) error {
 	// 初始化模块
-	container, cleanupFunc, err := initModule(context, options)
-	if err != nil {
-		return err
+	factory := func(ctx context.Context) (*container.Container, func(), error) {
+		return initContainer(ctx, options)
 	}
 
-	boot.Run(context, container, cleanupFunc)
-	return nil
+	return boot.Run(ctx, factory)
 }
 
-func initModule(ctx context.Context, options *Options) (*container.Container, func(), error) {
+func initContainer(ctx context.Context, options *config.Options) (*container.Container, func(), error) {
 
 	// 初始化 config
-	configCleanFunc, err := config.LoadConfig(options.ConfigFile)
+	config, err := injector.BuildConfiguration(options)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	// 赋值 casbin 模型路径
-	config.CONFIG.Casbin.ModelPath = options.CasbinModelFile
-
-	loggerCleanFunc, err := log.InitLogger(config.CONFIG.Log)
+	loggerCleanFunc, err := log.InitLogger(config.Log)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	container, containerCleanupFunc, err := injector.BuildContainer(config.CONFIG.Server)
+	container, containerCleanupFunc, err := injector.BuildContainer(config, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -52,6 +41,5 @@ func initModule(ctx context.Context, options *Options) (*container.Container, fu
 	return container, func() {
 		containerCleanupFunc()
 		loggerCleanFunc()
-		configCleanFunc()
 	}, nil
 }

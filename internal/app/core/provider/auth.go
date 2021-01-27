@@ -10,9 +10,9 @@ import (
 )
 
 // BuildAuthentication for auth
-func BuildAuthentication() (security.Authentication, func(), error) {
-	authCfg := config.CONFIG.Auth.Jwt
-	redisCfg := config.CONFIG.Redis
+func BuildAuthentication(config *config.Config) (security.Authentication, func(), error) {
+	authCfg := config.Auth.Jwt
+	redisCfg := config.Redis
 
 	store := jwtAuth.NewTokenStore(&store.RedisParams{
 		Address:   redisCfg.Address,
