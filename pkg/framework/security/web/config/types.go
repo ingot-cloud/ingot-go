@@ -1,7 +1,8 @@
 package config
 
 import (
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/filter"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/web/filter"
+	securityFilter "github.com/ingot-cloud/ingot-go/pkg/framework/security/web/filter"
 )
 
 // WebSecurityConfigurer Web security 配置
@@ -21,7 +22,7 @@ type WebSecurityBuilder interface {
 
 // HTTPSecurityBuilder 构造器
 type HTTPSecurityBuilder interface {
-	Build() (filter.SecurityFilterChain, error)
+	Build() (securityFilter.SecurityFilterChain, error)
 }
 
 // WebSecurityConfigurers 定义 Web Security 配置列表

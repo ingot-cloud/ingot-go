@@ -3,7 +3,8 @@ package config
 import (
 	"sort"
 
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/filter"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/web/filter"
+	securityFilter "github.com/ingot-cloud/ingot-go/pkg/framework/security/web/filter"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/utils"
 )
 
@@ -15,7 +16,7 @@ type HTTPSecurity struct {
 }
 
 // Build 构建 SecurityFilterChain
-func (security *HTTPSecurity) Build() (filter.SecurityFilterChain, error) {
+func (security *HTTPSecurity) Build() (securityFilter.SecurityFilterChain, error) {
 	err := security.configure()
 	if err != nil {
 		return nil, err
@@ -53,10 +54,10 @@ func (security *HTTPSecurity) configure() error {
 	return nil
 }
 
-func (security *HTTPSecurity) performBuild() filter.SecurityFilterChain {
+func (security *HTTPSecurity) performBuild() securityFilter.SecurityFilterChain {
 	// 使用升序进行filter排序
 	sort.Sort(security.filters)
-	return &filter.DefaultSecurityFilterChain{
+	return &securityFilter.DefaultSecurityFilterChain{
 		RequestMatcher: security.requestMatcher,
 		Filters:        security.filters,
 	}

@@ -1,7 +1,8 @@
 package config
 
 import (
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/filter"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/web/filter"
+	securityFilter "github.com/ingot-cloud/ingot-go/pkg/framework/security/web/filter"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/utils"
 )
 
@@ -48,11 +49,11 @@ func (w *WebSecurity) configure() error {
 
 func (w *WebSecurity) performBuild() (filter.Filter, error) {
 	chainSize := len(w.ignoredRequests) + len(w.securityFilterChainBuilders)
-	securityFilterChains := make([]filter.SecurityFilterChain, 0, chainSize)
+	securityFilterChains := make([]securityFilter.SecurityFilterChain, 0, chainSize)
 
 	// 忽略的请求
 	for _, ignoredRequest := range w.ignoredRequests {
-		securityFilterChains = append(securityFilterChains, &filter.DefaultSecurityFilterChain{
+		securityFilterChains = append(securityFilterChains, &securityFilter.DefaultSecurityFilterChain{
 			RequestMatcher: ignoredRequest,
 		})
 	}
@@ -65,7 +66,7 @@ func (w *WebSecurity) performBuild() (filter.Filter, error) {
 		securityFilterChains = append(securityFilterChains, chain)
 	}
 
-	filterChainProxy := &filter.ChainProxy{
+	filterChainProxy := &securityFilter.ChainProxy{
 		FilterChains: securityFilterChains,
 	}
 	return filterChainProxy, nil

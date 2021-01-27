@@ -1,6 +1,7 @@
 package filter
 
 import (
+	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/web/filter"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/ingot"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 )
@@ -16,7 +17,7 @@ func (p *ChainProxy) Order() int {
 }
 
 // DoFilter 执行过滤器
-func (p *ChainProxy) DoFilter(context *ingot.Context, chain Chain) error {
+func (p *ChainProxy) DoFilter(context *ingot.Context, chain filter.Chain) error {
 	filters := p.GetFilters(context)
 	if filters == nil {
 		log.Infof("No security for %s", context.Request.RequestURI)
@@ -34,7 +35,7 @@ func (p *ChainProxy) DoFilter(context *ingot.Context, chain Chain) error {
 }
 
 // GetFilters 获取指定请求需要执行的过滤器列表
-func (p *ChainProxy) GetFilters(context *ingot.Context) Filters {
+func (p *ChainProxy) GetFilters(context *ingot.Context) filter.Filters {
 	for _, chain := range p.FilterChains {
 		if chain.Matches(context) {
 			return chain.GetFilters()
@@ -46,8 +47,8 @@ func (p *ChainProxy) GetFilters(context *ingot.Context) Filters {
 // 内部虚拟过滤器链
 type virtualFilterChain struct {
 	context           *ingot.Context
-	originalChain     Chain
-	additionalFilters Filters
+	originalChain     filter.Chain
+	additionalFilters filter.Filters
 	currentPosition   int
 	size              int
 }
