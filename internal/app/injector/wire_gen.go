@@ -8,9 +8,9 @@ package injector
 import (
 	"github.com/ingot-cloud/ingot-go/internal/app/api"
 	"github.com/ingot-cloud/ingot-go/internal/app/config"
-	"github.com/ingot-cloud/ingot-go/internal/app/core/provider"
-	"github.com/ingot-cloud/ingot-go/internal/app/core/provider/factory"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"
+	"github.com/ingot-cloud/ingot-go/internal/app/provider"
+	"github.com/ingot-cloud/ingot-go/internal/app/provider/factory"
 	"github.com/ingot-cloud/ingot-go/internal/app/router"
 	"github.com/ingot-cloud/ingot-go/internal/app/service"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"

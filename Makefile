@@ -13,4 +13,4 @@ watch:
 	air -c .air.conf
 
 wire:
-	wire gen ./internal/app/core/injector/wire.go
+	wire gen ./internal/app/injector/wire.go

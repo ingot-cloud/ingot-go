@@ -2,7 +2,7 @@ package provider
 
 import (
 	"github.com/google/wire"
-	"github.com/ingot-cloud/ingot-go/internal/app/core/provider/set"
+	"github.com/ingot-cloud/ingot-go/internal/app/provider/set"
 )
 
 // AllSet 所有的结构集
