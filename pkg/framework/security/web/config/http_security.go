@@ -3,7 +3,7 @@ package config
 import (
 	"sort"
 
-	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/web/filter"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/filter"
 	securityFilter "github.com/ingot-cloud/ingot-go/pkg/framework/security/web/filter"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/utils"
 )

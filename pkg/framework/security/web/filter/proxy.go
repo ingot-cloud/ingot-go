@@ -1,7 +1,7 @@
 package filter
 
 import (
-	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/web/filter"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/filter"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/ingot"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 )
