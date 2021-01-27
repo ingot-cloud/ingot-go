@@ -9,6 +9,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/internal/app/api"
 	"github.com/ingot-cloud/ingot-go/internal/app/config"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/provider"
+	"github.com/ingot-cloud/ingot-go/internal/app/core/provider/factory"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"
 	"github.com/ingot-cloud/ingot-go/internal/app/router"
 	"github.com/ingot-cloud/ingot-go/internal/app/service"
@@ -18,7 +19,7 @@ import (
 // Injectors from wire.go:
 
 func BuildConfiguration(options *config.Options) (*config.Config, error) {
-	configConfig, err := provider.LoadConfig(options)
+	configConfig, err := provider.NewConfig(options)
 	if err != nil {
 		return nil, err
 	}
@@ -26,11 +27,11 @@ func BuildConfiguration(options *config.Options) (*config.Config, error) {
 }
 
 func BuildContainer(config2 *config.Config, options *config.Options) (*container.Container, func(), error) {
-	authentication, cleanup, err := provider.BuildAuthentication(config2)
+	authentication, cleanup, err := factory.NewAuthentication(config2)
 	if err != nil {
 		return nil, nil, err
 	}
-	db, cleanup2, err := provider.BuildGorm(config2)
+	db, cleanup2, err := factory.NewGorm(config2)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -57,16 +58,16 @@ func BuildContainer(config2 *config.Config, options *config.Options) (*container
 		UserDao:          user,
 		RoleUserDao:      roleUser,
 	}
-	casbinAdapter := &provider.CasbinAdapter{
+	casbinAdapterService := &service.CasbinAdapterService{
 		PermissionService: permission,
 	}
-	syncedEnforcer, cleanup3, err := provider.BuildCasbin(options, casbinAdapter)
+	syncedEnforcer, cleanup3, err := factory.NewCasbin(options, casbinAdapterService)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	encoder, cleanup4, err := provider.BuildPasswordEncoder()
+	encoder, cleanup4, err := factory.NewPasswordEncoder()
 	if err != nil {
 		cleanup3()
 		cleanup2()
@@ -83,7 +84,7 @@ func BuildContainer(config2 *config.Config, options *config.Options) (*container
 	apiAuth := &api.Auth{
 		AuthService: auth,
 	}
-	serverConfig, err := provider.HTTPConfigSet(config2)
+	serverConfig, err := factory.HTTPConfigSet(config2)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -91,7 +92,7 @@ func BuildContainer(config2 *config.Config, options *config.Options) (*container
 		cleanup()
 		return nil, nil, err
 	}
-	configAuth, err := provider.AuthConfigSet(config2)
+	configAuth, err := factory.AuthConfigSet(config2)
 	if err != nil {
 		cleanup4()
 		cleanup3()

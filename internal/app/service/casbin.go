@@ -1,27 +1,22 @@
-package provider
+package service
 
 import (
 	"context"
 	"fmt"
 
-	"github.com/ingot-cloud/ingot-go/internal/app/service"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 
 	casbinModel "github.com/casbin/casbin/v2/model"
 	"github.com/casbin/casbin/v2/persist"
-	"github.com/google/wire"
 )
 
-// CasbinAdapterSet inject persist.Adapter
-var CasbinAdapterSet = wire.NewSet(wire.Struct(new(CasbinAdapter), "*"), wire.Bind(new(persist.Adapter), new(*CasbinAdapter)))
-
-// CasbinAdapter casbin适配器
-type CasbinAdapter struct {
-	PermissionService *service.Permission
+// CasbinAdapterService casbin适配器
+type CasbinAdapterService struct {
+	PermissionService *Permission
 }
 
 // LoadPolicy loads all policy rules from the storage.
-func (c *CasbinAdapter) LoadPolicy(model casbinModel.Model) error {
+func (c *CasbinAdapterService) LoadPolicy(model casbinModel.Model) error {
 	ctx := context.Background()
 	err := c.loadRolePolicy(ctx, model)
 	if err != nil {
@@ -39,30 +34,30 @@ func (c *CasbinAdapter) LoadPolicy(model casbinModel.Model) error {
 }
 
 // SavePolicy saves all policy rules to the storage.
-func (c *CasbinAdapter) SavePolicy(model casbinModel.Model) error {
+func (c *CasbinAdapterService) SavePolicy(model casbinModel.Model) error {
 	return nil
 }
 
 // AddPolicy adds a policy rule to the storage.
 // This is part of the Auto-Save feature.
-func (c *CasbinAdapter) AddPolicy(sec string, ptype string, rule []string) error {
+func (c *CasbinAdapterService) AddPolicy(sec string, ptype string, rule []string) error {
 	return nil
 }
 
 // RemovePolicy removes a policy rule from the storage.
 // This is part of the Auto-Save feature.
-func (c *CasbinAdapter) RemovePolicy(sec string, ptype string, rule []string) error {
+func (c *CasbinAdapterService) RemovePolicy(sec string, ptype string, rule []string) error {
 	return nil
 }
 
 // RemoveFilteredPolicy removes policy rules that match the filter from the storage.
 // This is part of the Auto-Save feature.
-func (c *CasbinAdapter) RemoveFilteredPolicy(sec string, ptype string, fieldIndex int, fieldValues ...string) error {
+func (c *CasbinAdapterService) RemoveFilteredPolicy(sec string, ptype string, fieldIndex int, fieldValues ...string) error {
 	return nil
 }
 
 // 加载角色策略. p,角色,租户,资源,操作
-func (c *CasbinAdapter) loadRolePolicy(ctx context.Context, model casbinModel.Model) error {
+func (c *CasbinAdapterService) loadRolePolicy(ctx context.Context, model casbinModel.Model) error {
 	policys, err := c.PermissionService.GetRolePolicy(ctx)
 	if err != nil {
 		return nil
@@ -79,7 +74,7 @@ func (c *CasbinAdapter) loadRolePolicy(ctx context.Context, model casbinModel.Mo
 }
 
 // 用户角色关联策略. g,用户,角色,租户
-func (c *CasbinAdapter) loadUserPolicy(ctx context.Context, model casbinModel.Model) error {
+func (c *CasbinAdapterService) loadUserPolicy(ctx context.Context, model casbinModel.Model) error {
 	policys, err := c.PermissionService.GetUserPolicy(ctx)
 	if err != nil {
 		return nil

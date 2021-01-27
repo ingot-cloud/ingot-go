@@ -1,4 +1,4 @@
-package provider
+package factory
 
 import "github.com/ingot-cloud/ingot-go/internal/app/model/domain"
 

@@ -1,4 +1,4 @@
-package provider
+package set
 
 import (
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"

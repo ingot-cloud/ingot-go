@@ -1,4 +1,4 @@
-package provider
+package factory
 
 import (
 	"github.com/ingot-cloud/ingot-go/internal/app/config"
@@ -7,8 +7,8 @@ import (
 	"github.com/casbin/casbin/v2/persist"
 )
 
-// BuildCasbin Casbin
-func BuildCasbin(options *config.Options, adapter persist.Adapter) (*casbin.SyncedEnforcer, func(), error) {
+// NewCasbin Casbin
+func NewCasbin(options *config.Options, adapter persist.Adapter) (*casbin.SyncedEnforcer, func(), error) {
 	e, err := casbin.NewSyncedEnforcer(options.CasbinModelFile)
 	if err != nil {
 		return nil, nil, err

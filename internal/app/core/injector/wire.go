@@ -11,22 +11,14 @@ import (
 )
 
 func BuildConfiguration(options *config.Options) (*config.Config, error) {
-	wire.Build(provider.LoadConfig)
+	wire.Build(provider.NewConfig)
 	return nil, nil
 }
 
 func BuildContainer(config *config.Config, options *config.Options) (*container.Container, func(), error) {
 	wire.Build(
-		provider.APISet,
-		provider.RouterSet,
-		provider.ServiceSet,
-		provider.DaoSet,
-		provider.BuildGorm,
-		provider.BuildAuthentication,
-		provider.BuildCasbin,
-		provider.CasbinAdapterSet,
-		provider.BuildPasswordEncoder,
-		provider.ConfigSet,
+		provider.AllSet,
+		provider.AllFactory,
 		container.ContainerSet,
 	)
 	return nil, nil, nil

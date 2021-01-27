@@ -1,4 +1,4 @@
-package provider
+package factory
 
 import (
 	"github.com/ingot-cloud/ingot-go/internal/app/config"
@@ -9,8 +9,8 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
-// BuildAuthentication for auth
-func BuildAuthentication(config *config.Config) (security.Authentication, func(), error) {
+// NewAuthentication for auth
+func NewAuthentication(config *config.Config) (security.Authentication, func(), error) {
 	authCfg := config.Auth.Jwt
 	redisCfg := config.Redis
 

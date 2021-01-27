@@ -1,4 +1,4 @@
-package provider
+package factory
 
 import (
 	"errors"
@@ -13,8 +13,8 @@ import (
 	"gorm.io/gorm"
 )
 
-// BuildGorm init gorm
-func BuildGorm(config *config.Config) (*gorm.DB, func(), error) {
+// NewGorm init gorm
+func NewGorm(config *config.Config) (*gorm.DB, func(), error) {
 
 	db, cleanFunc, err := newGormDB(config)
 	if err != nil {
