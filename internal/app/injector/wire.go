@@ -19,6 +19,7 @@ func BuildContainer(config *config.Config, options *config.Options) (*container.
 	wire.Build(
 		provider.AllSet,
 		provider.AllFactory,
+		provider.Security,
 		container.ContainerSet,
 	)
 	return nil, nil, nil

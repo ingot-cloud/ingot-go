@@ -14,6 +14,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/internal/app/router"
 	"github.com/ingot-cloud/ingot-go/internal/app/service"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
+	config2 "github.com/ingot-cloud/ingot-go/pkg/framework/security/web/config"
 )
 
 // Injectors from wire.go:
@@ -26,12 +27,12 @@ func BuildConfiguration(options *config.Options) (*config.Config, error) {
 	return configConfig, nil
 }
 
-func BuildContainer(config2 *config.Config, options *config.Options) (*container.Container, func(), error) {
-	authentication, cleanup, err := factory.NewAuthentication(config2)
+func BuildContainer(config3 *config.Config, options *config.Options) (*container.Container, func(), error) {
+	authentication, cleanup, err := factory.NewAuthentication(config3)
 	if err != nil {
 		return nil, nil, err
 	}
-	db, cleanup2, err := factory.NewGorm(config2)
+	db, cleanup2, err := factory.NewGorm(config3)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -84,7 +85,7 @@ func BuildContainer(config2 *config.Config, options *config.Options) (*container
 	apiAuth := &api.Auth{
 		AuthService: auth,
 	}
-	serverConfig, err := factory.HTTPConfigSet(config2)
+	serverConfig, err := factory.HTTPConfigSet(config3)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -92,7 +93,7 @@ func BuildContainer(config2 *config.Config, options *config.Options) (*container
 		cleanup()
 		return nil, nil, err
 	}
-	configAuth, err := factory.AuthConfigSet(config2)
+	configAuth, err := factory.AuthConfigSet(config3)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -107,9 +108,26 @@ func BuildContainer(config2 *config.Config, options *config.Options) (*container
 		HTTPConfig:     serverConfig,
 		AuthConfig:     configAuth,
 	}
+	webSecurityConfigurers, err := provider.NewWebSecurityConfigurers()
+	if err != nil {
+		cleanup4()
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	filter, err := config2.BuildWebSecurityFilter(webSecurityConfigurers)
+	if err != nil {
+		cleanup4()
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
 	containerContainer := &container.Container{
 		Router:     routerRouter,
 		HTTPConfig: serverConfig,
+		Filter:     filter,
 	}
 	return containerContainer, func() {
 		cleanup4()

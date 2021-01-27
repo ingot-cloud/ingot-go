@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/server/middleware"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 )
 
 // Config 服务配置
@@ -21,9 +22,10 @@ type Config struct {
 
 // HTTPServer http web server
 type HTTPServer struct {
-	Context context.Context
-	Config  Config
-	Router  Router
+	Context         context.Context
+	Config          Config
+	Router          Router
+	SecurityHandler *security.Handler
 }
 
 // Run 运行Http Web服务
@@ -39,10 +41,9 @@ func (server *HTTPServer) buildHTTPHandler() *gin.Engine {
 	engine := gin.New()
 
 	engine.NoMethod(middleware.NoMethodHandler())
-
 	engine.NoRoute(middleware.NoRouteHandler())
-
 	engine.Use(middleware.RecoveryMiddleware())
+	engine.Use(server.SecurityHandler.Middleware())
 
 	server.Router.Register(engine)
 
