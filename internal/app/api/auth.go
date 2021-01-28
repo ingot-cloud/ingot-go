@@ -62,7 +62,7 @@ func (a *Auth) Login(ctx *gin.Context) {
 // path: /api/auth/logout method: post
 func (a *Auth) Logout(ctx *gin.Context) {
 
-	token := ginwrapper.GetToken(ctx)
+	token := ginwrapper.GetBearerToken(ctx)
 
 	if token == "" {
 		response.FailureWithError(ctx, errors.ErrUnauthorized)

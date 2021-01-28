@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/errors"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/model/enums"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 
 	"github.com/gin-gonic/gin"
@@ -17,14 +18,23 @@ const (
 )
 
 // GetToken 获取Token
-func GetToken(ctx *gin.Context) string {
+func GetToken(ctx *gin.Context, prefix string) string {
 	var token string
-	auth := ctx.GetHeader("Authorization")
-	prefix := "Bearer "
+	auth := ctx.GetHeader(enums.HeaderAuthentication)
 	if auth != "" && strings.HasPrefix(auth, prefix) {
 		token = auth[len(prefix):]
 	}
 	return token
+}
+
+// GetBasicToken 获取 basic token
+func GetBasicToken(ctx *gin.Context) string {
+	return GetToken(ctx, string(enums.BasicWithSpace))
+}
+
+// GetBearerToken 获取 bearer token
+func GetBearerToken(ctx *gin.Context) string {
+	return GetToken(ctx, string(enums.BearerWithSpace))
 }
 
 // GetUser 获取User

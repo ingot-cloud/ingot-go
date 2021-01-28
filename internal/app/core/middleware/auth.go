@@ -19,7 +19,7 @@ func UserAuthMiddleware(auth security.Authentication, permits ...PermitFunc) gin
 			return
 		}
 
-		user, err := auth.ParseUser(ctx.Request.Context(), ginwrapper.GetToken(ctx))
+		user, err := auth.ParseUser(ctx.Request.Context(), ginwrapper.GetBearerToken(ctx))
 		if err != nil {
 			if err == security.ErrInvalidToken || err == security.ErrExpiredToken {
 				response.FailureWithError(ctx, err)
