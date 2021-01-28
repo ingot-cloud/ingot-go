@@ -1,6 +1,7 @@
 package builders
 
 import (
+	coreUtils "github.com/ingot-cloud/ingot-go/pkg/framework/core/utils"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/filter"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	securityFilter "github.com/ingot-cloud/ingot-go/pkg/framework/security/web/filter"
@@ -11,7 +12,7 @@ import (
 type WebSecurity struct {
 	securityFilterChainBuilders []security.HTTPSecurityBuilder
 	ignoredRequests             []utils.RequestMatcher
-	webSecurityConfigurers      []security.WebSecurityConfigurer
+	webSecurityConfigurers      map[string]security.WebSecurityConfigurer
 }
 
 // Build 构建Web过滤器
@@ -35,7 +36,10 @@ func (w *WebSecurity) AddIgnoreRequestMatcher(matcher utils.RequestMatcher) {
 
 // Apply 应用Web安全配置
 func (w *WebSecurity) Apply(configurer security.WebSecurityConfigurer) {
-	w.webSecurityConfigurers = append(w.webSecurityConfigurers, configurer)
+	typeStr := coreUtils.GetType(configurer)
+	if _, ok := w.webSecurityConfigurers[typeStr]; !ok {
+		w.webSecurityConfigurers[typeStr] = configurer
+	}
 }
 
 func (w *WebSecurity) configure() error {

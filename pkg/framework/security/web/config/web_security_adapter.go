@@ -36,8 +36,9 @@ func (adapter *WebSecurityConfigurerAdapter) getHTTP() (security.HTTPSecurityBui
 	return http, err
 }
 
-func (adapter *WebSecurityConfigurerAdapter) applyDefaultConfiguration(http security.HTTPSecurityBuilder) error {
+func (adapter *WebSecurityConfigurerAdapter) applyDefaultConfiguration(http *builders.HTTPSecurity) error {
 	// 应用默认配置
 	// http.A()  http.B()
+
 	return nil
 }
