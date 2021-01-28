@@ -1,16 +1,17 @@
-package config
+package builders
 
 import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/filter"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	securityFilter "github.com/ingot-cloud/ingot-go/pkg/framework/security/web/filter"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/utils"
 )
 
 // WebSecurity web 配置
 type WebSecurity struct {
-	securityFilterChainBuilders []HTTPSecurityBuilder
+	securityFilterChainBuilders []security.HTTPSecurityBuilder
 	ignoredRequests             []utils.RequestMatcher
-	webSecurityConfigurers      []WebSecurityConfigurer
+	webSecurityConfigurers      []security.WebSecurityConfigurer
 }
 
 // Build 构建Web过滤器
@@ -23,7 +24,7 @@ func (w *WebSecurity) Build() (filter.Filter, error) {
 }
 
 // AddSecurityFilterChainBuilder 添加创建 SecurityFilterChain 的构建器
-func (w *WebSecurity) AddSecurityFilterChainBuilder(builder HTTPSecurityBuilder) {
+func (w *WebSecurity) AddSecurityFilterChainBuilder(builder security.HTTPSecurityBuilder) {
 	w.securityFilterChainBuilders = append(w.securityFilterChainBuilders, builder)
 }
 
@@ -33,7 +34,7 @@ func (w *WebSecurity) AddIgnoreRequestMatcher(matcher utils.RequestMatcher) {
 }
 
 // Apply 应用Web安全配置
-func (w *WebSecurity) Apply(configurer WebSecurityConfigurer) {
+func (w *WebSecurity) Apply(configurer security.WebSecurityConfigurer) {
 	w.webSecurityConfigurers = append(w.webSecurityConfigurers, configurer)
 }
 

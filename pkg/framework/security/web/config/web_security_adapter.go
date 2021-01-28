@@ -1,12 +1,17 @@
 package config
 
+import (
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/builders"
+)
+
 // WebSecurityConfigurerAdapter 安全配置适配器
 type WebSecurityConfigurerAdapter struct {
-	AdditionalConfigurer HTTPSecurityConfigurer
+	AdditionalConfigurer security.HTTPSecurityConfigurer
 }
 
 // Configure Web安全配置
-func (adapter *WebSecurityConfigurerAdapter) Configure(web *WebSecurity) error {
+func (adapter *WebSecurityConfigurerAdapter) Configure(web security.WebSecurityBuilder) error {
 	http, err := adapter.getHTTP()
 	if err != nil {
 		return err
@@ -17,9 +22,9 @@ func (adapter *WebSecurityConfigurerAdapter) Configure(web *WebSecurity) error {
 	return nil
 }
 
-func (adapter *WebSecurityConfigurerAdapter) getHTTP() (*HTTPSecurity, error) {
+func (adapter *WebSecurityConfigurerAdapter) getHTTP() (security.HTTPSecurityBuilder, error) {
 
-	http := &HTTPSecurity{}
+	http := &builders.HTTPSecurity{}
 
 	err := adapter.applyDefaultConfiguration(http)
 	if err != nil {
@@ -31,7 +36,7 @@ func (adapter *WebSecurityConfigurerAdapter) getHTTP() (*HTTPSecurity, error) {
 	return http, err
 }
 
-func (adapter *WebSecurityConfigurerAdapter) applyDefaultConfiguration(http *HTTPSecurity) error {
+func (adapter *WebSecurityConfigurerAdapter) applyDefaultConfiguration(http security.HTTPSecurityBuilder) error {
 	// 应用默认配置
 	// http.A()  http.B()
 	return nil

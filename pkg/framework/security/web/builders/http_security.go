@@ -1,9 +1,10 @@
-package config
+package builders
 
 import (
 	"sort"
 
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/filter"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	securityFilter "github.com/ingot-cloud/ingot-go/pkg/framework/security/web/filter"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/utils"
 )
@@ -12,7 +13,7 @@ import (
 type HTTPSecurity struct {
 	requestMatcher utils.RequestMatcher
 	filters        filter.Filters
-	configurers    []HTTPSecurityConfigurer
+	configurers    []security.HTTPSecurityConfigurer
 }
 
 // Build 构建 SecurityFilterChain
@@ -40,7 +41,7 @@ func (security *HTTPSecurity) AddFilter(filter filter.Filter) {
 }
 
 // Apply 应用配置
-func (security *HTTPSecurity) Apply(configurer HTTPSecurityConfigurer) {
+func (security *HTTPSecurity) Apply(configurer security.HTTPSecurityConfigurer) {
 	security.configurers = append(security.configurers, configurer)
 }
 

@@ -1,10 +1,14 @@
 package config
 
-import "github.com/ingot-cloud/ingot-go/pkg/framework/core/web/filter"
+import (
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/filter"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/builders"
+)
 
 // BuildWebSecurityFilter 构建 Filter
-func BuildWebSecurityFilter(configurers WebSecurityConfigurers) (filter.Filter, error) {
-	webSecurity := &WebSecurity{}
+func BuildWebSecurityFilter(configurers security.WebSecurityConfigurers) (filter.Filter, error) {
+	webSecurity := &builders.WebSecurity{}
 
 	for _, configurer := range configurers {
 		webSecurity.Apply(configurer)
