@@ -14,8 +14,8 @@ type User struct {
 }
 
 // GetAuthorities 获取授予用户的权限
-func (u *User) GetAuthorities() *[]core.GrantedAuthority {
-	return &u.Authorities
+func (u *User) GetAuthorities() []core.GrantedAuthority {
+	return u.Authorities
 }
 
 // GetUsername 获取用户名

@@ -5,7 +5,7 @@ import "github.com/ingot-cloud/ingot-go/pkg/framework/security/core"
 // UserDetails 用户信息
 type UserDetails interface {
 	// 获取授予用户的权限
-	GetAuthorities() *[]core.GrantedAuthority
+	GetAuthorities() []core.GrantedAuthority
 	// 获取用户名
 	GetUsername() string
 	// 获取密码
