@@ -19,12 +19,6 @@ const (
 	IDClockBack = "1000"
 )
 
-// Token Code
-const (
-	TokenInvalid = "S0001"
-	TokenExpired = "S0002"
-)
-
 // User Code
 const (
 	UserInvalid      = "U0001"

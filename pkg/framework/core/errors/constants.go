@@ -11,10 +11,6 @@ var (
 	ErrUnknown = New(http.StatusInternalServerError, code.InternalServerError, "Unknow")
 	// ErrUnauthorized for auth
 	ErrUnauthorized = New(http.StatusUnauthorized, code.Unauthorized, "User unauthorized")
-	// ErrInvalidToken for auth
-	ErrInvalidToken = New(http.StatusUnauthorized, code.TokenInvalid, "Token invalid")
-	// ErrExpiredToken for auth
-	ErrExpiredToken = New(http.StatusUnauthorized, code.TokenExpired, "Token expired")
 	// ErrUserInvalid for login
 	ErrUserInvalid = New(http.StatusBadRequest, code.UserInvalid, "Wrong username or password")
 	// ErrUserDisabled for login
