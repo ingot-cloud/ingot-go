@@ -8,8 +8,8 @@ import (
 // AbstractAuthenticationToken 身份验证对象基本实现
 type AbstractAuthenticationToken struct {
 	Authorities   []core.GrantedAuthority
-	details       interface{}
 	authenticated bool
+	details       interface{}
 }
 
 // GetAuthorities 授予 principal 的权限

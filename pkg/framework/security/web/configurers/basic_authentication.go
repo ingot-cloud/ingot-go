@@ -29,5 +29,5 @@ func (b *BasicFilter) Order() int {
 // DoFilter 执行过滤器
 func (b *BasicFilter) DoFilter(context *ingot.Context, chain filter.Chain) error {
 
-	return nil
+	return chain.DoFilter(context)
 }

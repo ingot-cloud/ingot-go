@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/config"
 )
 
@@ -20,5 +21,9 @@ func (oa *OAuth2SecurityConfigurer) Build() (security.WebSecurityConfigurers, er
 
 // Configure 配置
 func (oa *OAuth2SecurityConfigurer) Configure(http security.HTTPSecurityBuilder) error {
+	http.AddFilter(&authentication.OAuth2ProcessingFilter{
+		TokenExtractor:        &authentication.BearerTokenExtractor{},
+		AuthenticationManager: &authentication.OAuth2AuthenticationManager{},
+	})
 	return nil
 }
