@@ -2,7 +2,7 @@ package filter
 
 import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/filter"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/ingot"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/ingot"
 )
 
 // SecurityFilterChain 和请求匹配后执行的过滤器链

@@ -1,8 +1,8 @@
 package authentication
 
 import (
-	"github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/ingot"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/ingot"
 )
 
 // TokenExtractor token提取器

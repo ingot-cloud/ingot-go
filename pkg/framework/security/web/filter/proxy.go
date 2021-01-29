@@ -2,8 +2,8 @@ package filter
 
 import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/filter"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/ingot"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/ingot"
 )
 
 // ChainProxy 过滤器链代理

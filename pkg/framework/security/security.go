@@ -3,8 +3,8 @@ package security
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/filter"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/ingot"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/response"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/ingot"
 )
 
 // Handler 安全处理器

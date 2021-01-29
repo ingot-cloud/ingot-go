@@ -2,9 +2,9 @@ package configurers
 
 import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/filter"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/ingot"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/constants"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/ingot"
 )
 
 // BasicAuthentication basic 验证
