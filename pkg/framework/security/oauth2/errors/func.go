@@ -10,3 +10,13 @@ import (
 func InvalidToken(message string) error {
 	return errors.New(http.StatusUnauthorized, TokenInvalid, message)
 }
+
+// Forbidden error
+func Forbidden(message string) error {
+	return errors.Forbidden(message)
+}
+
+// Unauthorized error
+func Unauthorized(message string) error {
+	return errors.Unauthorized(message)
+}

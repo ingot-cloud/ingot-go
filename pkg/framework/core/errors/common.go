@@ -18,13 +18,13 @@ func IllegalOperation(message string) error {
 }
 
 // Forbidden error
-func Forbidden(e error) error {
-	return New(http.StatusForbidden, code.Forbidden, e.Error())
+func Forbidden(message string) error {
+	return New(http.StatusForbidden, code.Forbidden, message)
 }
 
 // Unauthorized error
-func Unauthorized(e error) error {
-	return New(http.StatusUnauthorized, code.Unauthorized, e.Error())
+func Unauthorized(message string) error {
+	return New(http.StatusUnauthorized, code.Unauthorized, message)
 }
 
 // NoRoute for http resource not found 404

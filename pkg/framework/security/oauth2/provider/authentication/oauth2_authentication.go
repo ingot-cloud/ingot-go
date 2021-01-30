@@ -8,7 +8,7 @@ import (
 
 // OAuth2Authentication oauth2 身份验证信息
 type OAuth2Authentication struct {
-	StoredRequest      request.OAuth2Request
+	StoredRequest      *request.OAuth2Request
 	UserAuthentication core.Authentication
 	*authentication.AbstractAuthenticationToken
 }
@@ -32,7 +32,7 @@ func (auth *OAuth2Authentication) IsClientOnly() bool {
 }
 
 // GetOAuth2Request 获取OAuth2请求
-func (auth *OAuth2Authentication) GetOAuth2Request() request.OAuth2Request {
+func (auth *OAuth2Authentication) GetOAuth2Request() *request.OAuth2Request {
 	return auth.StoredRequest
 }
 

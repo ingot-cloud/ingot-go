@@ -23,7 +23,9 @@ func (oa *OAuth2SecurityConfigurer) Build() (security.WebSecurityConfigurers, er
 func (oa *OAuth2SecurityConfigurer) Configure(http security.HTTPSecurityBuilder) error {
 	http.AddFilter(&authentication.OAuth2ProcessingFilter{
 		TokenExtractor:        &authentication.BearerTokenExtractor{},
-		AuthenticationManager: &authentication.OAuth2AuthenticationManager{},
+		AuthenticationManager: &authentication.OAuth2AuthenticationManager{
+			// todo 需要传递参数
+		},
 	})
 	return nil
 }

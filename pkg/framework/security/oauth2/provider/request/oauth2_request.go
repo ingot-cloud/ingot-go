@@ -10,7 +10,7 @@ import (
 // OAuth2Request 保存OAuth2请求的相关信息
 type OAuth2Request struct {
 	*BaseRequestField
-	ResourceIds   []string
+	ResourceIDs   []string
 	Authorities   []core.GrantedAuthority
 	Approved      bool
 	Refresh       *TokenRequest
@@ -39,9 +39,9 @@ func (r *OAuth2Request) IsApproved() bool {
 	return r.Approved
 }
 
-// GetResourceIds 获取资源ID列表
-func (r *OAuth2Request) GetResourceIds() []string {
-	return r.ResourceIds
+// GetResourceIDs 获取资源ID列表
+func (r *OAuth2Request) GetResourceIDs() []string {
+	return r.ResourceIDs
 }
 
 // GetExtensions 扩展信息

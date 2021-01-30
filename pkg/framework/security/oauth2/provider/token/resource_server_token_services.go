@@ -5,7 +5,7 @@ import "github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/a
 // ResourceServerTokenServices 资源服务器 token 服务
 type ResourceServerTokenServices interface {
 	// 通过token加载身份验证信息
-	LoadAuthentication(string) (authentication.OAuth2Authentication, error)
+	LoadAuthentication(string) (*authentication.OAuth2Authentication, error)
 	// 读取指定token详细信息
 	ReadAccessToken(string) OAuth2AccessToken
 }
