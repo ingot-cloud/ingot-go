@@ -4,7 +4,7 @@ import "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 
 // AuthenticationToken 预身份验证令牌
 type AuthenticationToken struct {
-	authentication.AbstractAuthenticationToken
+	*authentication.AbstractAuthenticationToken
 	Principal   interface{}
 	Credentials string
 }
