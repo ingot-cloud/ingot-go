@@ -22,6 +22,7 @@ const (
 	TokenScope       TokenPayloadKey = "scope"
 	TokenAuthorities TokenPayloadKey = "authorities"
 	TokenClientID    TokenPayloadKey = "client_id"
+	TokenUsername    TokenPayloadKey = "username"
 	TokenUser        TokenPayloadKey = "user"
 	TokenJti         TokenPayloadKey = "jti"
 )

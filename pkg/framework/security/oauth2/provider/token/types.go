@@ -43,6 +43,8 @@ type ResourceServerTokenServices interface {
 
 // UserAuthenticationConverter 用户map信息和身份验证信息互相转换接口
 type UserAuthenticationConverter interface {
+	// 在身份验证信息中提取访问令牌使用的信息
 	ConvertUserAuthentication(core.Authentication) (map[string]interface{}, error)
+	// 从map中提取身份验证信息
 	ExtractAuthentication(map[string]interface{}) (core.Authentication, error)
 }
