@@ -4,6 +4,8 @@ import (
 	"time"
 
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/model/enums"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/authentication"
 )
 
 // OAuth2AccessToken OAuth2 访问令牌
@@ -29,4 +31,18 @@ type OAuth2AccessToken interface {
 // OAuth2RefreshToken OAuth2 刷新令牌
 type OAuth2RefreshToken interface {
 	GetRefreshTokenValue() string
+}
+
+// ResourceServerTokenServices 资源服务器 token 服务
+type ResourceServerTokenServices interface {
+	// 通过token加载身份验证信息
+	LoadAuthentication(string) (*authentication.OAuth2Authentication, error)
+	// 读取指定token详细信息
+	ReadAccessToken(string) OAuth2AccessToken
+}
+
+// UserAuthenticationConverter 用户map信息和身份验证信息互相转换接口
+type UserAuthenticationConverter interface {
+	ConvertUserAuthentication(core.Authentication) (map[string]interface{}, error)
+	ExtractAuthentication(map[string]interface{}) (core.Authentication, error)
 }

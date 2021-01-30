@@ -38,6 +38,6 @@ func (r *TokenRequest) CreateOAuth2Request(clientDetails clientdetails.ClientDet
 		},
 		Authorities: clientDetails.GetAuthorities(),
 		Approved:    true,
-		ResourceIds: clientDetails.GetResourceIDs(),
+		ResourceIDs: clientDetails.GetResourceIDs(),
 	}
 }
