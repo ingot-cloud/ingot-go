@@ -26,7 +26,7 @@ func UserAuthMiddleware(auth security.Authentication, permits ...PermitFunc) gin
 				ctx.Abort()
 				return
 			}
-			response.FailureWithError(ctx, errors.Forbidden(err))
+			response.FailureWithError(ctx, errors.Forbidden(err.Error()))
 			ctx.Abort()
 			return
 		}
