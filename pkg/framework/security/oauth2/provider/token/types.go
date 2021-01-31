@@ -35,9 +35,9 @@ type OAuth2RefreshToken interface {
 
 // ResourceServerTokenServices 资源服务器 token 服务
 type ResourceServerTokenServices interface {
-	// 通过token加载身份验证信息
+	// 通过access token加载身份验证信息
 	LoadAuthentication(string) (*authentication.OAuth2Authentication, error)
-	// 读取指定token详细信息
+	// 读取指定access token详细信息
 	ReadAccessToken(string) OAuth2AccessToken
 }
 
@@ -47,4 +47,14 @@ type UserAuthenticationConverter interface {
 	ConvertUserAuthentication(core.Authentication) (map[string]interface{}, error)
 	// 从map中提取身份验证信息
 	ExtractAuthentication(map[string]interface{}) (core.Authentication, error)
+}
+
+// AccessTokenConverter 访问令牌转换器
+type AccessTokenConverter interface {
+	// 返回访问令牌映射内容
+	ConvertAccessToken(OAuth2AccessToken, *authentication.OAuth2Authentication) (map[string]interface{}, error)
+	// 根据token value和映射内容提取访问令牌
+	ExtractAccessToken(string, map[string]interface{}) (OAuth2AccessToken, error)
+	// 根据token映射信息提取身份验证信息
+	ExtractAuthentication(map[string]interface{}) (*authentication.OAuth2Authentication, error)
 }
