@@ -19,10 +19,14 @@ type TokenPayloadKey string
 
 // Token载体key
 const (
-	TokenScope       TokenPayloadKey = "scope"
-	TokenAuthorities TokenPayloadKey = "authorities"
-	TokenClientID    TokenPayloadKey = "client_id"
 	TokenUsername    TokenPayloadKey = "username"
 	TokenUser        TokenPayloadKey = "user"
+	TokenAud         TokenPayloadKey = "aud"
+	TokenClientID    TokenPayloadKey = "client_id"
+	TokenExp         TokenPayloadKey = "exp"
 	TokenJti         TokenPayloadKey = "jti"
+	TokenGrantType   TokenPayloadKey = "grant_type"
+	TokenAti         TokenPayloadKey = "ati"
+	TokenScope       TokenPayloadKey = "scope"
+	TokenAuthorities TokenPayloadKey = "authorities"
 )
