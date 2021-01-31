@@ -14,8 +14,21 @@ type DefaultUserAuthenticationConverter struct {
 	UserDetailsService userdetails.Service
 }
 
+// SetUserDetailsService 设置 UserDetailsService
+func (converter *DefaultUserAuthenticationConverter) SetUserDetailsService(service userdetails.Service) {
+	converter.UserDetailsService = service
+}
+
+// SetDefaultAuthorities 设置默认权限
+func (converter *DefaultUserAuthenticationConverter) SetDefaultAuthorities(defaultAuthorities []string) {
+	converter.DefaultAuthorities = authority.CreateAuthorityList(defaultAuthorities)
+}
+
 // ConvertUserAuthentication 在身份验证信息中提取访问令牌使用的信息
 func (converter *DefaultUserAuthenticationConverter) ConvertUserAuthentication(auth core.Authentication) (map[string]interface{}, error) {
+	if auth == nil {
+		return nil, nil
+	}
 	response := make(map[string]interface{})
 	response[string(constants.TokenUsername)] = auth.GetName(auth)
 	authorities := auth.GetAuthorities()
@@ -51,16 +64,5 @@ func (converter *DefaultUserAuthenticationConverter) getAuthorities(mapInfo map[
 	if !ok {
 		return converter.DefaultAuthorities
 	}
-	switch value := authorities.(type) {
-	case string:
-		return []core.GrantedAuthority{&authority.SimpleGrantedAuthority{Role: value}}
-	case []string:
-		result := make([]core.GrantedAuthority, 0, len(value))
-		for _, role := range value {
-			result = append(result, &authority.SimpleGrantedAuthority{Role: role})
-		}
-		return result
-	default:
-		return nil
-	}
+	return authority.CreateAuthorityList(authorities)
 }
