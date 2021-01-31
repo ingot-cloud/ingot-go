@@ -4,6 +4,14 @@ import (
 	"time"
 )
 
+// TimeNil 空时间
+var TimeNil = time.Time{}
+
+// TimeIsNil 判断时间是否为零值
+func TimeIsNil(time time.Time) bool {
+	return time.Equal(TimeNil)
+}
+
 // TimeToStr return string
 func TimeToStr(time time.Time) string {
 	return time.Format("2006-01-02 15:04:05")
