@@ -20,3 +20,8 @@ func Forbidden(message string) error {
 func Unauthorized(message string) error {
 	return errors.Unauthorized(message)
 }
+
+// InvalidGrant 无效的授权
+func InvalidGrant(message string) error {
+	return errors.BadRequest(message)
+}

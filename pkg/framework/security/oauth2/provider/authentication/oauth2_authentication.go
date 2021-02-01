@@ -13,6 +13,25 @@ type OAuth2Authentication struct {
 	*authentication.AbstractAuthenticationToken
 }
 
+// NewOAuth2Authentication 创建OAuth2身份验证信息
+// storedRequest 不能为空
+func NewOAuth2Authentication(storedRequest *request.OAuth2Request, userAuthentication core.Authentication) *OAuth2Authentication {
+	auth := &OAuth2Authentication{
+		StoredRequest:      storedRequest,
+		UserAuthentication: userAuthentication,
+	}
+
+	var authorities []core.GrantedAuthority
+	if userAuthentication == nil {
+		authorities = storedRequest.GetAuthorities()
+	} else {
+		authorities = userAuthentication.GetAuthorities()
+	}
+	auth.AbstractAuthenticationToken = authentication.NewAbstractAuthenticationToken(authorities)
+
+	return auth
+}
+
 // GetCredentials 获取凭证
 func (auth *OAuth2Authentication) GetCredentials() string {
 	return ""

@@ -6,6 +6,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/model/enums"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/authentication"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/request"
 )
 
 // OAuth2AccessToken OAuth2 访问令牌
@@ -33,12 +34,34 @@ type OAuth2RefreshToken interface {
 	GetRefreshTokenValue() string
 }
 
+// ExpiringOAuth2RefreshToken 若实现该接口，代表 RefreshToken 是有过期时间的
+type ExpiringOAuth2RefreshToken interface {
+	// 获取过期时间
+	GetExpiration() time.Time
+}
+
+// AuthorizationServerTokenServices 授权服务器
+type AuthorizationServerTokenServices interface {
+	// 通过身份验证信息创建访问令牌
+	CreateAccessToken(*authentication.OAuth2Authentication) (OAuth2AccessToken, error)
+	// 通过refresh token和请求信息刷新token
+	RefreshAccessToken(string, *request.TokenRequest) (OAuth2AccessToken, error)
+	// 根据身份验证信息获取访问令牌
+	GetAccessToken(*authentication.OAuth2Authentication) (OAuth2AccessToken, error)
+}
+
 // ResourceServerTokenServices 资源服务器 token 服务
 type ResourceServerTokenServices interface {
 	// 通过access token加载身份验证信息
 	LoadAuthentication(string) (*authentication.OAuth2Authentication, error)
 	// 读取指定access token详细信息
 	ReadAccessToken(string) OAuth2AccessToken
+}
+
+// ConsumerTokenServices token 消费者服务
+type ConsumerTokenServices interface {
+	// 撤销令牌
+	RevokeToken(string) bool
 }
 
 // UserAuthenticationConverter 用户map信息和身份验证信息互相转换接口
@@ -57,4 +80,10 @@ type AccessTokenConverter interface {
 	ExtractAccessToken(string, map[string]interface{}) (OAuth2AccessToken, error)
 	// 根据token映射信息提取身份验证信息
 	ExtractAuthentication(map[string]interface{}) (*authentication.OAuth2Authentication, error)
+}
+
+// Enhancer token 增强接口
+type Enhancer interface {
+	// token 增强
+	Enhance(OAuth2AccessToken, *authentication.OAuth2Authentication) OAuth2AccessToken
 }

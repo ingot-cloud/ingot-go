@@ -16,10 +16,7 @@ func (e *BearerTokenExtractor) Extract(ctx *ingot.Context) core.Authentication {
 	token := ginwrapper.GetBearerToken(ctx.Context)
 	if token != "" {
 		// 返回 preauth token
-		return &preauth.AuthenticationToken{
-			Principal:   token,
-			Credentials: "",
-		}
+		return preauth.NewAuthenticationToken(token, "", nil)
 	}
 	return nil
 }
