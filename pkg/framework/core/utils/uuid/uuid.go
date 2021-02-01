@@ -7,14 +7,14 @@ import (
 // UUID Define alias
 type UUID = uuid.UUID
 
-// NewUUID Create uuid
-func NewUUID() (UUID, error) {
+// Random Create uuid
+func Random() (UUID, error) {
 	return uuid.NewRandom()
 }
 
 // MustUUID Create uuid(Throw panic if something goes wrong)
 func MustUUID() UUID {
-	v, err := NewUUID()
+	v, err := Random()
 	if err != nil {
 		panic(err)
 	}
