@@ -12,6 +12,13 @@ type AbstractAuthenticationToken struct {
 	details       interface{}
 }
 
+// NewAbstractAuthenticationToken 创建基本实现
+func NewAbstractAuthenticationToken(authorities []core.GrantedAuthority) *AbstractAuthenticationToken {
+	return &AbstractAuthenticationToken{
+		Authorities: authorities,
+	}
+}
+
 // GetAuthorities 授予 principal 的权限
 func (token *AbstractAuthenticationToken) GetAuthorities() []core.GrantedAuthority {
 	return token.Authorities
