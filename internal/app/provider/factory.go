@@ -12,4 +12,5 @@ var AllFactory = wire.NewSet(
 	factory.NewCasbin,
 	factory.NewGorm,
 	factory.NewPasswordEncoder,
+	factory.NewIDGenerator,
 )
