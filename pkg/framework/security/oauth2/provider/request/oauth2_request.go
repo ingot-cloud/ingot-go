@@ -27,6 +27,7 @@ func NewOAuth2Request(params map[string]string, clientID string, scope []string)
 			Scope:             scope,
 			RequestParameters: params,
 		},
+		Extensions: make(map[string]interface{}),
 	}
 }
 

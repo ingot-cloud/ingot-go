@@ -24,7 +24,7 @@ func (adapter *WebSecurityConfigurerAdapter) Configure(web security.WebSecurityB
 
 func (adapter *WebSecurityConfigurerAdapter) getHTTP() (security.HTTPSecurityBuilder, error) {
 
-	http := &builders.HTTPSecurity{}
+	http := builders.NewHTTPSecurity()
 
 	err := adapter.applyDefaultConfiguration(http)
 	if err != nil {

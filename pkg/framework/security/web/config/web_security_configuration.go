@@ -8,7 +8,7 @@ import (
 
 // BuildWebSecurityFilter 构建 Filter
 func BuildWebSecurityFilter(configurers security.WebSecurityConfigurers) (filter.Filter, error) {
-	webSecurity := &builders.WebSecurity{}
+	webSecurity := builders.NewWebSecurity()
 
 	for _, configurer := range configurers {
 		webSecurity.Apply(configurer)

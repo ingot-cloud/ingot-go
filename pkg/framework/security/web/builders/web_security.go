@@ -15,6 +15,13 @@ type WebSecurity struct {
 	webSecurityConfigurers      map[string]security.WebSecurityConfigurer
 }
 
+// NewWebSecurity 创建 WebSecurity
+func NewWebSecurity() *WebSecurity {
+	return &WebSecurity{
+		webSecurityConfigurers: make(map[string]security.WebSecurityConfigurer),
+	}
+}
+
 // Build 构建Web过滤器
 func (w *WebSecurity) Build() (filter.Filter, error) {
 	err := w.configure()

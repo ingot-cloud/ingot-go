@@ -18,6 +18,14 @@ type HTTPSecurity struct {
 	configurers    map[string]security.HTTPSecurityConfigurer
 }
 
+// NewHTTPSecurity 创建 HTTPSecurity
+func NewHTTPSecurity() *HTTPSecurity {
+	return &HTTPSecurity{
+		filters:     make(map[string]filter.Filter),
+		configurers: make(map[string]security.HTTPSecurityConfigurer),
+	}
+}
+
 // Build 构建 SecurityFilterChain
 func (security *HTTPSecurity) Build() (securityFilter.SecurityFilterChain, error) {
 	err := security.configure()
