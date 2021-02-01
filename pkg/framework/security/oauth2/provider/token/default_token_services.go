@@ -1,9 +1,9 @@
 package token
 
 import (
+	"strings"
 	"time"
 
-	"github.com/ingot-cloud/ingot-go/pkg/framework/core/utils"
 	securityAuthentication "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication/preauth"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core"
@@ -66,13 +66,9 @@ func (service *DefaultTokenServices) CreateAccessToken(auth *authentication.OAut
 	// 1. 如果过期的 AccessToken 存在相应的 RefreshToken，
 	// 	  那么客户端可能持有该 RefreshToken，所以我们需要重用该 RefreshToken
 	// 2. 如果不存在 RefreshToken，直接实例新的 RefreshToken
-	if refreshToken == nil {
+	// 非nil，如果 RefreshToken 已经过期，那么重新创建
+	if refreshToken == nil || service.isExpired(refreshToken) {
 		refreshToken = service.createRefreshToken(auth)
-	} else if expiring, ok := refreshToken.(ExpiringOAuth2RefreshToken); ok {
-		// 如果 RefreshToken 已经过期，那么重新创建
-		if expiring.GetExpiration().Before(time.Now()) {
-			refreshToken = service.createRefreshToken(auth)
-		}
 	}
 
 	accessToken := service.createAccessToken(auth, refreshToken)
@@ -89,8 +85,7 @@ func (service *DefaultTokenServices) CreateAccessToken(auth *authentication.OAut
 // RefreshAccessToken 通过refresh token和请求信息刷新token
 func (service *DefaultTokenServices) RefreshAccessToken(refreshTokenValue string, tokenRequest *request.TokenRequest) (OAuth2AccessToken, error) {
 	if !service.SupportRefreshToken {
-		msg := utils.StringCombine("Invalid refresh token: ", refreshTokenValue)
-		return nil, errors.InvalidGrant(msg)
+		return nil, errors.InvalidGrant("Invalid refresh token: ", refreshTokenValue)
 	}
 
 	refreshToken, err := service.TokenStore.ReadRefreshToken(refreshTokenValue)
@@ -98,8 +93,7 @@ func (service *DefaultTokenServices) RefreshAccessToken(refreshTokenValue string
 		return nil, err
 	}
 	if refreshToken == nil {
-		msg := utils.StringCombine("Invalid refresh token: ", refreshTokenValue)
-		return nil, errors.InvalidGrant(msg)
+		return nil, errors.InvalidGrant("Invalid refresh token: ", refreshTokenValue)
 	}
 
 	auth, err := service.TokenStore.ReadAuthenticationForRefreshToken(refreshToken)
@@ -119,40 +113,135 @@ func (service *DefaultTokenServices) RefreshAccessToken(refreshTokenValue string
 	}
 	clientID := auth.GetOAuth2Request().GetClientID()
 	if clientID == "" || clientID != tokenRequest.GetClientID() {
-		// todo
+		return nil, errors.InvalidGrant("Wrong client for this refresh token: ", refreshTokenValue)
 	}
 
-	return nil, nil
+	// 清楚当前存储的访问令牌
+	service.TokenStore.RemoveAccessTokenUsingRefreshToken(refreshToken)
+
+	if service.isExpired(refreshToken) {
+		service.TokenStore.RemoveRefreshToken(refreshToken)
+		return nil, errors.InvalidGrant("Invalid refresh token (expired): ", refreshTokenValue)
+	}
+
+	auth, err = service.createRefreshedAuthentication(auth, tokenRequest)
+
+	// 判断是否再次使用当前 RefreshToken，如果不再使用当前RefreshToken，那么创建一个新的
+	if !service.ReuseRefreshToken {
+		service.TokenStore.RemoveRefreshToken(refreshToken)
+		refreshToken = service.createRefreshToken(auth)
+	}
+
+	accessToken := service.createAccessToken(auth, refreshToken)
+	service.TokenStore.StoreAccessToken(accessToken, auth)
+	// 如果不在使用当前RefreshToken，那么保存新的
+	if !service.ReuseRefreshToken {
+		service.TokenStore.StoreRefreshToken(accessToken.GetRefreshToken(), auth)
+	}
+
+	return accessToken, nil
 }
 
 // GetAccessToken 根据身份验证信息获取访问令牌
 func (service *DefaultTokenServices) GetAccessToken(auth *authentication.OAuth2Authentication) (OAuth2AccessToken, error) {
-	return nil, nil
+	return service.TokenStore.GetAccessToken(auth)
 }
 
 // ResourceServerTokenServices
 
 // LoadAuthentication 通过access token加载身份验证信息
 func (service *DefaultTokenServices) LoadAuthentication(accessTokenValue string) (*authentication.OAuth2Authentication, error) {
-	return nil, nil
+	accessToken, err := service.TokenStore.ReadAccessToken(accessTokenValue)
+	if err != nil {
+		return nil, err
+	}
+	if accessToken == nil {
+		return nil, errors.InvalidToken("Invalid access token: ", accessTokenValue)
+	} else if accessToken.IsExpired() {
+		service.TokenStore.RemoveAccessToken(accessToken)
+		return nil, errors.InvalidToken("Access token expired: ", accessTokenValue)
+	}
+
+	result, err := service.TokenStore.ReadAuthentication(accessToken)
+	if err != nil {
+		return nil, err
+	}
+	if result == nil {
+		return nil, errors.InvalidToken("Invalid access token: ", accessTokenValue)
+	}
+
+	if service.ClientDetailsService != nil {
+		clientID := result.GetOAuth2Request().GetClientID()
+
+		_, err := service.ClientDetailsService.LoadClientByClientId(clientID)
+		if err != nil {
+			return nil, errors.InvalidToken("Client not valid: ", clientID, ", original error = ", err.Error())
+		}
+	}
+
+	return result, nil
 }
 
 // ReadAccessToken 读取指定access token详细信息
-func (service *DefaultTokenServices) ReadAccessToken(accessToken string) OAuth2AccessToken {
-	return nil
+func (service *DefaultTokenServices) ReadAccessToken(accessToken string) (OAuth2AccessToken, error) {
+	return service.TokenStore.ReadAccessToken(accessToken)
 }
 
 // ConsumerTokenServices
 
 // RevokeToken 撤销令牌
 func (service *DefaultTokenServices) RevokeToken(tokenValue string) bool {
-	return false
+	accessToken, err := service.TokenStore.ReadAccessToken(tokenValue)
+	if err != nil || accessToken == nil {
+		return false
+	}
+
+	if accessToken.GetRefreshToken() != nil {
+		service.TokenStore.RemoveRefreshToken(accessToken.GetRefreshToken())
+	}
+	service.TokenStore.RemoveAccessToken(accessToken)
+	return true
 }
 
 func (service *DefaultTokenServices) createRefreshToken(auth *authentication.OAuth2Authentication) OAuth2RefreshToken {
+	// todo
 	return nil
 }
 
 func (service *DefaultTokenServices) createAccessToken(auth *authentication.OAuth2Authentication, refreshToken OAuth2RefreshToken) OAuth2AccessToken {
+	// todo
 	return nil
+}
+
+func (service *DefaultTokenServices) createRefreshedAuthentication(auth *authentication.OAuth2Authentication, tokenRequest *request.TokenRequest) (*authentication.OAuth2Authentication, error) {
+	narrowed := auth
+	scope := tokenRequest.GetScope()
+	clientAuth := auth.GetOAuth2Request().UpdateRefresh(tokenRequest)
+	if len(scope) != 0 {
+		originalScope := clientAuth.GetScope()
+		originalScopeMap := make(map[string]string)
+		// 判断原始scope中是否包含新的scope
+		for _, item := range originalScope {
+			originalScopeMap[item] = item
+		}
+		for _, item := range scope {
+			if _, ok := originalScopeMap[item]; !ok {
+				return nil, errors.InvalidToken("Unable to narrow the scope of the client authentication to ", strings.Join(scope, ","), ".", strings.Join(originalScope, ","))
+			}
+		}
+
+		clientAuth = clientAuth.NarrowScope(scope)
+	}
+
+	narrowed = authentication.NewOAuth2Authentication(clientAuth, auth.UserAuthentication)
+	return narrowed, nil
+}
+
+func (service *DefaultTokenServices) isExpired(refreshToken OAuth2RefreshToken) bool {
+	if expiring, ok := refreshToken.(ExpiringOAuth2RefreshToken); ok {
+		if expiring.GetExpiration().Before(time.Now()) {
+			return true
+		}
+	}
+	return false
 }

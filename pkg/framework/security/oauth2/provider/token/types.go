@@ -55,7 +55,7 @@ type ResourceServerTokenServices interface {
 	// 通过access token加载身份验证信息
 	LoadAuthentication(string) (*authentication.OAuth2Authentication, error)
 	// 读取指定access token详细信息
-	ReadAccessToken(string) OAuth2AccessToken
+	ReadAccessToken(string) (OAuth2AccessToken, error)
 }
 
 // ConsumerTokenServices token 消费者服务

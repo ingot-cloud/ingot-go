@@ -82,3 +82,43 @@ func (r *OAuth2Request) GetGrantType() string {
 	}
 	return ""
 }
+
+// CreateOAuth2Request 创建OAuth2Request并且更新RequestParameters
+func (r *OAuth2Request) CreateOAuth2Request(params map[string]string) *OAuth2Request {
+	request := NewOAuth2Request(params, r.GetClientID(), r.GetScope())
+	request.Authorities = r.Authorities
+	request.Approved = r.Approved
+	request.ResourceIDs = r.ResourceIDs
+	request.RedirectURI = r.RedirectURI
+	request.ResponseTypes = r.ResponseTypes
+	request.Extensions = r.Extensions
+	return request
+}
+
+// NarrowScope 创建OAuth2Request并且更新Scope
+func (r *OAuth2Request) NarrowScope(scope []string) *OAuth2Request {
+	request := NewOAuth2Request(r.GetRequestParameters(), r.GetClientID(), scope)
+	request.Authorities = r.Authorities
+	request.Approved = r.Approved
+	request.ResourceIDs = r.ResourceIDs
+	request.RedirectURI = r.RedirectURI
+	request.ResponseTypes = r.ResponseTypes
+	request.Extensions = r.Extensions
+
+	request.Refresh = r.Refresh
+	return request
+}
+
+// UpdateRefresh 创建OAuth2Request并且更新Refresh
+func (r *OAuth2Request) UpdateRefresh(tokenRequest *TokenRequest) *OAuth2Request {
+	request := NewOAuth2Request(r.GetRequestParameters(), r.GetClientID(), r.GetScope())
+	request.Authorities = r.Authorities
+	request.Approved = r.Approved
+	request.ResourceIDs = r.ResourceIDs
+	request.RedirectURI = r.RedirectURI
+	request.ResponseTypes = r.ResponseTypes
+	request.Extensions = r.Extensions
+
+	request.Refresh = tokenRequest
+	return request
+}
