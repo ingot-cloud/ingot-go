@@ -22,12 +22,14 @@ type DefaultTokenServices struct {
 	RefreshTokenValiditySeconds int
 	// 默认AccessToken有效时间，单位秒
 	AccessTokenValiditySeconds int
-	SupportRefreshToken        bool
-	ReuseRefreshToken          bool
-	TokenStore                 Store
-	ClientDetailsService       clientdetails.Service
-	TokenEnhancer              Enhancer
-	AuthenticationManager      securityAuthentication.Manager
+	// 是否支持RefreshToken
+	SupportRefreshToken bool
+	// 是否重复使用RefreshToken
+	ReuseRefreshToken     bool
+	TokenStore            Store
+	ClientDetailsService  clientdetails.Service
+	TokenEnhancer         Enhancer
+	AuthenticationManager securityAuthentication.Manager
 }
 
 // NewDefaultTokenServices 实例化默认 TokenServices
