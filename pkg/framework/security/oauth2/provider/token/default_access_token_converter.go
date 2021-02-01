@@ -73,9 +73,7 @@ func (converter *DefaultAccessTokenConverter) ConvertAccessToken(token OAuth2Acc
 
 // ExtractAccessToken 根据token value和映射内容提取访问令牌
 func (converter *DefaultAccessTokenConverter) ExtractAccessToken(token string, mapInfo map[string]interface{}) (OAuth2AccessToken, error) {
-	accessToken := &DefaultOAuth2AccessToken{
-		Value: token,
-	}
+	accessToken := NewDefaultOAuth2AccessToken(token)
 	info := make(map[string]interface{})
 	for k, v := range mapInfo {
 		info[k] = v

@@ -17,6 +17,13 @@ type DefaultOAuth2AccessToken struct {
 	AdditionalInformation map[string]interface{}
 }
 
+// NewDefaultOAuth2AccessToken 创建默认 OAuth2AccessToken
+func NewDefaultOAuth2AccessToken(value string) *DefaultOAuth2AccessToken {
+	return &DefaultOAuth2AccessToken{
+		Value: value,
+	}
+}
+
 // GetAdditionalInformation 获取额外信息
 func (token *DefaultOAuth2AccessToken) GetAdditionalInformation() map[string]interface{} {
 	return token.AdditionalInformation

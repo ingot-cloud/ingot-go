@@ -4,9 +4,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/utils/uuid"
 	securityAuthentication "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication/preauth"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/constants"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/errors"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
@@ -16,18 +18,20 @@ import (
 // DefaultTokenServices 默认token服务
 // 实现 AuthorizationServerTokenServices, ResourceServerTokenServices 和 ConsumerTokenServices
 type DefaultTokenServices struct {
+	// 默认RefreshToken有效时间，单位秒
 	RefreshTokenValiditySeconds int
-	AccessTokenValiditySeconds  int
-	SupportRefreshToken         bool
-	ReuseRefreshToken           bool
-	TokenStore                  Store
-	ClientDetailsService        clientdetails.Service
-	TokenEnhancer               Enhancer
-	AuthenticationManager       securityAuthentication.Manager
+	// 默认AccessToken有效时间，单位秒
+	AccessTokenValiditySeconds int
+	SupportRefreshToken        bool
+	ReuseRefreshToken          bool
+	TokenStore                 Store
+	ClientDetailsService       clientdetails.Service
+	TokenEnhancer              Enhancer
+	AuthenticationManager      securityAuthentication.Manager
 }
 
-// NewTokenServices 实例化默认 TokenServices
-func NewTokenServices(tokenStore Store) *DefaultTokenServices {
+// NewDefaultTokenServices 实例化默认 TokenServices
+func NewDefaultTokenServices(tokenStore Store) *DefaultTokenServices {
 	return &DefaultTokenServices{
 		RefreshTokenValiditySeconds: 60 * 60 * 24 * 30, // default 30 days.
 		AccessTokenValiditySeconds:  60 * 60 * 12,      // default 12 hours.
@@ -68,10 +72,16 @@ func (service *DefaultTokenServices) CreateAccessToken(auth *authentication.OAut
 	// 2. 如果不存在 RefreshToken，直接实例新的 RefreshToken
 	// 非nil，如果 RefreshToken 已经过期，那么重新创建
 	if refreshToken == nil || service.isExpired(refreshToken) {
-		refreshToken = service.createRefreshToken(auth)
+		refreshToken, err = service.createRefreshToken(auth)
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	accessToken := service.createAccessToken(auth, refreshToken)
+	accessToken, err := service.createAccessToken(auth, refreshToken)
+	if err != nil {
+		return nil, err
+	}
 	service.TokenStore.StoreAccessToken(accessToken, auth)
 
 	refreshToken = accessToken.GetRefreshToken()
@@ -129,10 +139,16 @@ func (service *DefaultTokenServices) RefreshAccessToken(refreshTokenValue string
 	// 判断是否再次使用当前 RefreshToken，如果不再使用当前RefreshToken，那么创建一个新的
 	if !service.ReuseRefreshToken {
 		service.TokenStore.RemoveRefreshToken(refreshToken)
-		refreshToken = service.createRefreshToken(auth)
+		refreshToken, err = service.createRefreshToken(auth)
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	accessToken := service.createAccessToken(auth, refreshToken)
+	accessToken, err := service.createAccessToken(auth, refreshToken)
+	if err != nil {
+		return nil, err
+	}
 	service.TokenStore.StoreAccessToken(accessToken, auth)
 	// 如果不在使用当前RefreshToken，那么保存新的
 	if !service.ReuseRefreshToken {
@@ -203,14 +219,42 @@ func (service *DefaultTokenServices) RevokeToken(tokenValue string) bool {
 	return true
 }
 
-func (service *DefaultTokenServices) createRefreshToken(auth *authentication.OAuth2Authentication) OAuth2RefreshToken {
-	// todo
-	return nil
+func (service *DefaultTokenServices) createRefreshToken(auth *authentication.OAuth2Authentication) (OAuth2RefreshToken, error) {
+	support, err := service.isSupportRefreshToken(auth.GetOAuth2Request())
+	if err != nil {
+		return nil, err
+	}
+	if !support {
+		return nil, nil
+	}
+	validitySeconds, err := service.getRefreshTokenValiditySeconds(auth.GetOAuth2Request())
+	if err != nil {
+		return nil, err
+	}
+	value := uuid.MustString()
+	if validitySeconds > 0 {
+		return NewDefaultExpiringOAuth2RefreshToken(value, time.Now().Add(time.Duration(validitySeconds)*time.Second)), nil
+	}
+
+	return NewDefaultOAuth2RefreshToken(value), nil
 }
 
-func (service *DefaultTokenServices) createAccessToken(auth *authentication.OAuth2Authentication, refreshToken OAuth2RefreshToken) OAuth2AccessToken {
-	// todo
-	return nil
+func (service *DefaultTokenServices) createAccessToken(auth *authentication.OAuth2Authentication, refreshToken OAuth2RefreshToken) (OAuth2AccessToken, error) {
+	token := NewDefaultOAuth2AccessToken(uuid.MustString())
+	validitySeconds, err := service.getAccessTokenValiditySeconds(auth.GetOAuth2Request())
+	if err != nil {
+		return nil, err
+	}
+	if validitySeconds > 0 {
+		token.Expiration = time.Now().Add(time.Duration(validitySeconds) * time.Second)
+	}
+	token.RefreshToken = refreshToken
+	token.Scope = auth.GetOAuth2Request().GetScope()
+	if service.TokenEnhancer != nil {
+		return service.TokenEnhancer.Enhance(token, auth), nil
+	}
+
+	return token, nil
 }
 
 func (service *DefaultTokenServices) createRefreshedAuthentication(auth *authentication.OAuth2Authentication, tokenRequest *request.TokenRequest) (*authentication.OAuth2Authentication, error) {
@@ -237,6 +281,7 @@ func (service *DefaultTokenServices) createRefreshedAuthentication(auth *authent
 	return narrowed, nil
 }
 
+// 判断 OAuth2RefreshToken 是否过期
 func (service *DefaultTokenServices) isExpired(refreshToken OAuth2RefreshToken) bool {
 	if expiring, ok := refreshToken.(ExpiringOAuth2RefreshToken); ok {
 		if expiring.GetExpiration().Before(time.Now()) {
@@ -244,4 +289,57 @@ func (service *DefaultTokenServices) isExpired(refreshToken OAuth2RefreshToken) 
 		}
 	}
 	return false
+}
+
+func (service *DefaultTokenServices) getAccessTokenValiditySeconds(clientAuth *request.OAuth2Request) (int, error) {
+	client, err := service.getClientDetails(clientAuth.ClientID)
+	if err != nil {
+		return 0, err
+	}
+	if client != nil {
+		validity := client.GetAccessTokenValiditySeconds()
+		if validity != 0 {
+			return validity, nil
+		}
+	}
+
+	return service.AccessTokenValiditySeconds, nil
+}
+
+func (service *DefaultTokenServices) getRefreshTokenValiditySeconds(clientAuth *request.OAuth2Request) (int, error) {
+	client, err := service.getClientDetails(clientAuth.ClientID)
+	if err != nil {
+		return 0, err
+	}
+	if client != nil {
+		validity := client.GetRefreshTokenValiditySeconds()
+		if validity != 0 {
+			return validity, nil
+		}
+	}
+
+	return service.RefreshTokenValiditySeconds, nil
+}
+
+func (service *DefaultTokenServices) isSupportRefreshToken(clientAuth *request.OAuth2Request) (bool, error) {
+	client, err := service.getClientDetails(clientAuth.ClientID)
+	if err != nil {
+		return false, err
+	}
+	if client != nil {
+		grantTypes := client.GetAuthorizedGrantTypes()
+		for _, grant := range grantTypes {
+			if grant == constants.GrantTypeRefresh {
+				return true, nil
+			}
+		}
+	}
+	return service.SupportRefreshToken, nil
+}
+
+func (service *DefaultTokenServices) getClientDetails(clientID string) (clientdetails.ClientDetails, error) {
+	if service.ClientDetailsService != nil {
+		return service.ClientDetailsService.LoadClientByClientId(clientID)
+	}
+	return nil, nil
 }
