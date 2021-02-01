@@ -17,6 +17,11 @@ func IllegalOperation(message string) error {
 	return New(http.StatusBadRequest, code.IllegalOperation, message)
 }
 
+// BadRequest error
+func BadRequest(message string) error {
+	return New(http.StatusBadRequest, code.BadRequest, message)
+}
+
 // Forbidden error
 func Forbidden(message string) error {
 	return New(http.StatusForbidden, code.Forbidden, message)
