@@ -2,13 +2,14 @@ package provider
 
 import (
 	"github.com/google/wire"
-	"github.com/ingot-cloud/ingot-go/internal/app/security"
+	innerSecurity "github.com/ingot-cloud/ingot-go/internal/app/security"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/config"
 )
 
 // NewWebSecurityConfigurers 注入 web 安全配置
-func NewWebSecurityConfigurers() (config.WebSecurityConfigurers, error) {
-	config := &security.Configurer{}
+func NewWebSecurityConfigurers() (security.WebSecurityConfigurers, error) {
+	config := &innerSecurity.CustomHTTPConfigurer{}
 	return config.Build()
 }
 
