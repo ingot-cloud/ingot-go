@@ -19,6 +19,17 @@ type OAuth2Request struct {
 	Extensions    map[string]interface{}
 }
 
+// NewOAuth2Request 创建OAuth2Request
+func NewOAuth2Request(params map[string]string, clientID string, scope []string) *OAuth2Request {
+	return &OAuth2Request{
+		BaseRequestField: &BaseRequestField{
+			ClientID:          clientID,
+			Scope:             scope,
+			RequestParameters: params,
+		},
+	}
+}
+
 // GetRedirectURI 获取重定向uri
 func (r *OAuth2Request) GetRedirectURI() string {
 	return r.RedirectURI

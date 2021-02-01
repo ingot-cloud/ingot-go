@@ -118,16 +118,10 @@ func (converter *DefaultAccessTokenConverter) ExtractAuthentication(mapInfo map[
 	resourceIDs := converter.getAudience(mapInfo)
 	authorities := authority.CreateAuthorityList(mapInfo[string(constants.TokenAuthorities)])
 
-	request := &request.OAuth2Request{
-		BaseRequestField: &request.BaseRequestField{
-			ClientID:          clientID,
-			Scope:             scope,
-			RequestParameters: parameters,
-		},
-		ResourceIDs: resourceIDs,
-		Authorities: authorities,
-		Approved:    true,
-	}
+	request := request.NewOAuth2Request(parameters, clientID, scope)
+	request.ResourceIDs = resourceIDs
+	request.Authorities = authorities
+	request.Approved = true
 
 	return &authentication.OAuth2Authentication{
 		StoredRequest:      request,

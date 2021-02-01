@@ -12,6 +12,18 @@ type TokenRequest struct {
 	GrantType string
 }
 
+// NewTokenRequest 创建TokenRequest
+func NewTokenRequest(params map[string]string, clientID string, scope []string, grantType string) *TokenRequest {
+	return &TokenRequest{
+		BaseRequestField: &BaseRequestField{
+			ClientID:          clientID,
+			Scope:             scope,
+			RequestParameters: params,
+		},
+		GrantType: grantType,
+	}
+}
+
 // GetGrantType 获取授权类型
 func (r *TokenRequest) GetGrantType() string {
 	return r.GrantType
@@ -30,14 +42,9 @@ func (r *TokenRequest) CreateOAuth2Request(clientDetails clientdetails.ClientDet
 	// Add grant type so it can be retrieved from OAuth2Request
 	modifiable[constants.GrantType] = r.GetGrantType()
 
-	return &OAuth2Request{
-		BaseRequestField: &BaseRequestField{
-			RequestParameters: modifiable,
-			ClientID:          clientDetails.GetClientID(),
-			Scope:             r.GetScope(),
-		},
-		Authorities: clientDetails.GetAuthorities(),
-		Approved:    true,
-		ResourceIDs: clientDetails.GetResourceIDs(),
-	}
+	result := NewOAuth2Request(modifiable, clientDetails.GetClientID(), r.GetScope())
+	result.Authorities = clientDetails.GetAuthorities()
+	result.Approved = true
+	result.ResourceIDs = clientDetails.GetResourceIDs()
+	return result
 }
