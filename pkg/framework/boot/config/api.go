@@ -1,17 +1,15 @@
 package config
 
-import (
-	"github.com/gin-gonic/gin"
-)
+import "github.com/ingot-cloud/ingot-go/pkg/framework/core/web/ingot"
 
 // HTTPConfigurer http 配置
 type HTTPConfigurer interface {
-	Configure(gin.IRouter)
+	Configure(*ingot.Router)
 }
 
 // APIConfigurer api 接口配置
 type APIConfigurer interface {
-	Apply(gin.IRouter)
+	Apply(*ingot.Router)
 }
 
 // APIConfigurers api 接口配置列表

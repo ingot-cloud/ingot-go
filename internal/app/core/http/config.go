@@ -2,11 +2,11 @@ package http
 
 import (
 	"github.com/casbin/casbin/v2"
-	"github.com/gin-gonic/gin"
 	"github.com/ingot-cloud/ingot-go/internal/app/api"
 	"github.com/ingot-cloud/ingot-go/internal/app/config"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/middleware"
 	bootConfig "github.com/ingot-cloud/ingot-go/pkg/framework/boot/config"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/ingot"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 )
 
@@ -21,16 +21,14 @@ type APIConfig struct {
 }
 
 // Configure 应用配置
-func (c *APIConfig) Configure(app gin.IRouter) {
-	routerGroup := app.Group(c.HTTPConfig.Prefix)
-
+func (c *APIConfig) Configure(app *ingot.Router) {
 	// authentication
 	permitUrls := c.AuthConfig.PermitUrls
-	routerGroup.Use(middleware.UserAuthMiddleware(c.Auth, middleware.NewPermitWithPrefix(permitUrls...)))
-	routerGroup.Use(middleware.CasbinMiddleware(c.CasbinEnforcer, middleware.NewPermitWithPrefix(permitUrls...)))
+	app.Use(middleware.UserAuthMiddleware(c.Auth, middleware.NewPermitWithPrefix(permitUrls...)))
+	app.Use(middleware.CasbinMiddleware(c.CasbinEnforcer, middleware.NewPermitWithPrefix(permitUrls...)))
 
 	for _, api := range c.getAPI() {
-		api.Apply(routerGroup)
+		api.Apply(app)
 	}
 }
 

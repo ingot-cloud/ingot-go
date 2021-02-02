@@ -9,6 +9,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/server/middleware"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/ingot"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 )
@@ -49,7 +50,8 @@ func (server *HTTPServer) buildHTTPHandler() *gin.Engine {
 	engine.Use(middleware.RecoveryMiddleware())
 	engine.Use(server.SecurityHandler.Middleware())
 
-	server.HTTPConfigurer.Configure(engine)
+	routerGroup := engine.Group(server.Config.Prefix)
+	server.HTTPConfigurer.Configure(ingot.NewRouter(routerGroup))
 
 	return engine
 }
