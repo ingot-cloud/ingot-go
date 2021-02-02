@@ -4,15 +4,15 @@ import (
 	"context"
 
 	"github.com/google/wire"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/server"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/filter"
 )
 
 // Container for app
 type Container struct {
-	Router     server.Router
-	HTTPConfig server.Config
-	Filter     filter.Filter
+	HTTPConfig     config.HTTPConfig
+	HTTPConfigurer config.HTTPConfigurer
+	Filter         filter.Filter
 }
 
 // Factory 容器工厂

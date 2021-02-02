@@ -8,7 +8,6 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/server"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 )
 
 // IngotApplication 应用入口
@@ -26,15 +25,7 @@ func (app *IngotApplication) Run() error {
 		return nil
 	}
 
-	httpServer := &server.HTTPServer{
-		Context: app.Context,
-		Router:  container.Router,
-		Config:  container.HTTPConfig,
-		SecurityHandler: &security.Handler{
-			Filter: container.Filter,
-		},
-	}
-	clean := httpServer.Run()
+	clean := server.NewHTTPServer(app.Context, container).Run()
 
 	app.listeningSignal(clean)
 	cleanFunc()
