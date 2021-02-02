@@ -6,7 +6,7 @@ package injector
 import (
 	"github.com/google/wire"
 	"github.com/ingot-cloud/ingot-go/internal/app/config"
-	"github.com/ingot-cloud/ingot-go/internal/app/provider"
+	"github.com/ingot-cloud/ingot-go/internal/app/core/provider"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
 )
 

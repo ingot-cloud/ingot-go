@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/ingot-cloud/ingot-go/internal/app/config"
-	"github.com/ingot-cloud/ingot-go/internal/app/injector"
+	"github.com/ingot-cloud/ingot-go/internal/app/core/injector"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
