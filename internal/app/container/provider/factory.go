@@ -2,7 +2,7 @@ package provider
 
 import (
 	"github.com/google/wire"
-	"github.com/ingot-cloud/ingot-go/internal/app/core/provider/factory"
+	"github.com/ingot-cloud/ingot-go/internal/app/container/provider/factory"
 )
 
 // AllFactory 所有的
