@@ -8,10 +8,10 @@ package injector
 import (
 	"github.com/ingot-cloud/ingot-go/internal/app/api"
 	"github.com/ingot-cloud/ingot-go/internal/app/config"
+	"github.com/ingot-cloud/ingot-go/internal/app/core/http"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"
 	"github.com/ingot-cloud/ingot-go/internal/app/provider"
 	"github.com/ingot-cloud/ingot-go/internal/app/provider/factory"
-	"github.com/ingot-cloud/ingot-go/internal/app/router"
 	"github.com/ingot-cloud/ingot-go/internal/app/service"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
 	config2 "github.com/ingot-cloud/ingot-go/pkg/framework/security/web/config"
@@ -28,6 +28,10 @@ func BuildConfiguration(options *config.Options) (*config.Config, error) {
 }
 
 func BuildContainer(config3 *config.Config, options *config.Options) (*container.Container, func(), error) {
+	httpConfig, err := factory.HTTPConfigSet(config3)
+	if err != nil {
+		return nil, nil, err
+	}
 	authentication, cleanup, err := factory.NewAuthentication(config3)
 	if err != nil {
 		return nil, nil, err
@@ -68,6 +72,13 @@ func BuildContainer(config3 *config.Config, options *config.Options) (*container
 		cleanup()
 		return nil, nil, err
 	}
+	auth, err := factory.AuthConfigSet(config3)
+	if err != nil {
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
 	encoder, cleanup4, err := factory.NewPasswordEncoder()
 	if err != nil {
 		cleanup3()
@@ -75,7 +86,7 @@ func BuildContainer(config3 *config.Config, options *config.Options) (*container
 		cleanup()
 		return nil, nil, err
 	}
-	auth := &service.Auth{
+	serviceAuth := &service.Auth{
 		UserDao:         user,
 		RoleUserDao:     roleUser,
 		RoleDao:         role,
@@ -83,30 +94,14 @@ func BuildContainer(config3 *config.Config, options *config.Options) (*container
 		PasswordEncoder: encoder,
 	}
 	apiAuth := &api.Auth{
-		AuthService: auth,
+		AuthService: serviceAuth,
 	}
-	serverConfig, err := factory.HTTPConfigSet(config3)
-	if err != nil {
-		cleanup4()
-		cleanup3()
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	configAuth, err := factory.AuthConfigSet(config3)
-	if err != nil {
-		cleanup4()
-		cleanup3()
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	routerRouter := &router.Router{
+	apiConfig := &http.APIConfig{
 		Auth:           authentication,
 		CasbinEnforcer: syncedEnforcer,
+		HTTPConfig:     httpConfig,
+		AuthConfig:     auth,
 		AuthAPI:        apiAuth,
-		HTTPConfig:     serverConfig,
-		AuthConfig:     configAuth,
 	}
 	webSecurityConfigurers, err := provider.NewWebSecurityConfigurers()
 	if err != nil {
@@ -125,9 +120,9 @@ func BuildContainer(config3 *config.Config, options *config.Options) (*container
 		return nil, nil, err
 	}
 	containerContainer := &container.Container{
-		Router:     routerRouter,
-		HTTPConfig: serverConfig,
-		Filter:     filter,
+		HTTPConfig:     httpConfig,
+		HTTPConfigurer: apiConfig,
+		Filter:         filter,
 	}
 	return containerContainer, func() {
 		cleanup4()

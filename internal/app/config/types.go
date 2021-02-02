@@ -1,19 +1,19 @@
 package config
 
 import (
-	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/server"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 )
 
 // Config struct
 type Config struct {
-	App    App           `yaml:"app"`
-	Server server.Config `yaml:"server"`
-	Log    log.Config    `yaml:"log"`
-	Gorm   Gorm          `yaml:"gorm"`
-	MySQL  MySQL         `yaml:"mysql"`
-	Redis  Redis         `yaml:"redis"`
-	Auth   Auth          `yaml:"auth"`
+	App    App               `yaml:"app"`
+	Server config.HTTPConfig `yaml:"server"`
+	Log    log.Config        `yaml:"log"`
+	Gorm   Gorm              `yaml:"gorm"`
+	MySQL  MySQL             `yaml:"mysql"`
+	Redis  Redis             `yaml:"redis"`
+	Auth   Auth              `yaml:"auth"`
 }
 
 // App struct

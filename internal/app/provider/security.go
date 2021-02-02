@@ -2,7 +2,7 @@ package provider
 
 import (
 	"github.com/google/wire"
-	innerSecurity "github.com/ingot-cloud/ingot-go/internal/app/security"
+	innerSecurity "github.com/ingot-cloud/ingot-go/internal/app/core/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/config"
 )

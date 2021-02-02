@@ -3,11 +3,11 @@ package factory
 import (
 	"github.com/google/wire"
 	"github.com/ingot-cloud/ingot-go/internal/app/config"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/server"
+	httpConfig "github.com/ingot-cloud/ingot-go/pkg/framework/boot/config"
 )
 
 // HTTPConfigSet 单独注入 http config
-func HTTPConfigSet(config *config.Config) (server.Config, error) {
+func HTTPConfigSet(config *config.Config) (httpConfig.HTTPConfig, error) {
 	return config.Server, nil
 }
 

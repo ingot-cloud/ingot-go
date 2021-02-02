@@ -17,6 +17,13 @@ type Auth struct {
 	AuthService *service.Auth
 }
 
+// Apply api配置
+func (a *Auth) Apply(app gin.IRouter) {
+	router := app.Group("auth")
+	router.POST("/login", a.Login)
+	router.POST("/logout", a.Logout)
+}
+
 // Login 登录
 // path: /api/auth/login method: post
 func (a *Auth) Login(ctx *gin.Context) {

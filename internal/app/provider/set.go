@@ -9,6 +9,5 @@ import (
 var AllSet = wire.NewSet(
 	set.APISet,
 	set.DaoSet,
-	set.RouterSet,
 	set.ServiceSet,
 )
