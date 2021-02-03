@@ -50,8 +50,13 @@ func (server *HTTPServer) buildHTTPHandler() *gin.Engine {
 	engine.Use(middleware.RecoveryMiddleware())
 	engine.Use(server.SecurityHandler.Middleware())
 
+	// 设置 prefix
 	routerGroup := engine.Group(server.Config.Prefix)
-	server.HTTPConfigurer.Configure(ingot.NewRouter(routerGroup))
+	ingotRouter := ingot.NewRouter(routerGroup)
+	server.HTTPConfigurer.Configure(ingotRouter)
+	for _, api := range server.HTTPConfigurer.GetAPI() {
+		api.Apply(ingotRouter)
+	}
 
 	return engine
 }

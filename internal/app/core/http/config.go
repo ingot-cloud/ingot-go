@@ -26,13 +26,9 @@ func (c *APIConfig) Configure(app *ingot.Router) {
 	permitUrls := c.AuthConfig.PermitUrls
 	app.Use(middleware.UserAuthMiddleware(c.Auth, middleware.NewPermitWithPrefix(permitUrls...)))
 	app.Use(middleware.CasbinMiddleware(c.CasbinEnforcer, middleware.NewPermitWithPrefix(permitUrls...)))
-
-	for _, api := range c.getAPI() {
-		api.Apply(app)
-	}
 }
 
-// 获取API
-func (c *APIConfig) getAPI() bootConfig.APIConfigurers {
+// GetAPI 获取API
+func (c *APIConfig) GetAPI() bootConfig.APIConfigurers {
 	return bootConfig.APIConfigurers{c.AuthAPI}
 }
