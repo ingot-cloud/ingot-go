@@ -12,9 +12,16 @@ type JwtTokenStore struct {
 	JwtAccessTokenConverter *JwtAccessTokenConverter
 }
 
+// NewJwtTokenStore 创建 JwtTokenStore
+func NewJwtTokenStore(converter *JwtAccessTokenConverter) *JwtTokenStore {
+	return &JwtTokenStore{
+		JwtAccessTokenConverter: converter,
+	}
+}
+
 // ReadAuthentication 根据token读取身份验证信息
 func (store *JwtTokenStore) ReadAuthentication(accessToken token.OAuth2AccessToken) (*authentication.OAuth2Authentication, error) {
-	return nil, nil
+	return store.ReadAuthenticationWith(accessToken.GetValue())
 }
 
 // ReadAuthenticationWith 根据token读取身份验证信息
