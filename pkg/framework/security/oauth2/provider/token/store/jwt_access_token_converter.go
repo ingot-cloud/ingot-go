@@ -43,3 +43,13 @@ func (c *JwtAccessTokenConverter) GetAccessTokenConverter() token.AccessTokenCon
 	}
 	return c.tokenConverter
 }
+
+// Encode 编码
+func (c *JwtAccessTokenConverter) Encode(accessTokn token.OAuth2AccessToken, auth *authentication.OAuth2Authentication) (string, error) {
+	return "", nil
+}
+
+// Decode 解码
+func (c *JwtAccessTokenConverter) Decode(token string) {
+
+}
