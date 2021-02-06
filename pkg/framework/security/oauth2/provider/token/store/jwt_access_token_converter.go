@@ -45,7 +45,12 @@ func (c *JwtAccessTokenConverter) GetAccessTokenConverter() token.AccessTokenCon
 }
 
 // Encode 编码
-func (c *JwtAccessTokenConverter) Encode(accessTokn token.OAuth2AccessToken, auth *authentication.OAuth2Authentication) (string, error) {
+func (c *JwtAccessTokenConverter) Encode(accessToken token.OAuth2AccessToken, auth *authentication.OAuth2Authentication) (string, error) {
+	token, err := c.tokenConverter.ConvertAccessToken(accessToken, auth)
+	if err != nil {
+		return "", nil
+	}
+	// todo jwt 转换 token
 	return "", nil
 }
 
