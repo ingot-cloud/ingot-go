@@ -16,6 +16,14 @@ type DefaultAccessTokenConverter struct {
 	IncludeGrantType            bool
 }
 
+// NewDefaultAccessTokenConverter 实例化
+func NewDefaultAccessTokenConverter() *DefaultAccessTokenConverter {
+	return &DefaultAccessTokenConverter{
+		UserAuthenticationConverter: NewDefaultUserAuthenticationConverter(),
+		IncludeGrantType:            false,
+	}
+}
+
 // ConvertAccessToken 返回访问令牌映射内容
 func (converter *DefaultAccessTokenConverter) ConvertAccessToken(token OAuth2AccessToken, authentication *authentication.OAuth2Authentication) (map[string]interface{}, error) {
 	response := make(map[string]interface{})
@@ -129,7 +137,7 @@ func (converter *DefaultAccessTokenConverter) ExtractAuthentication(mapInfo map[
 
 func (converter *DefaultAccessTokenConverter) getUserAuthenticationConverter() *DefaultUserAuthenticationConverter {
 	if converter.UserAuthenticationConverter == nil {
-		converter.UserAuthenticationConverter = &DefaultUserAuthenticationConverter{}
+		converter.UserAuthenticationConverter = NewDefaultUserAuthenticationConverter()
 	}
 	return converter.UserAuthenticationConverter
 }

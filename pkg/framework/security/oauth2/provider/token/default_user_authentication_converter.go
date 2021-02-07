@@ -14,6 +14,11 @@ type DefaultUserAuthenticationConverter struct {
 	UserDetailsService userdetails.Service
 }
 
+// NewDefaultUserAuthenticationConverter 实例DefaultUserAuthenticationConverter
+func NewDefaultUserAuthenticationConverter() *DefaultUserAuthenticationConverter {
+	return &DefaultUserAuthenticationConverter{}
+}
+
 // SetUserDetailsService 设置 UserDetailsService
 func (converter *DefaultUserAuthenticationConverter) SetUserDetailsService(service userdetails.Service) {
 	converter.UserDetailsService = service

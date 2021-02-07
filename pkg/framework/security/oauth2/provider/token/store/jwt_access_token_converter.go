@@ -1,6 +1,7 @@
 package store
 
 import (
+	"github.com/dgrijalva/jwt-go"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 )
@@ -8,6 +9,15 @@ import (
 // JwtAccessTokenConverter jwt和oauth2身份验证信息转换器
 type JwtAccessTokenConverter struct {
 	tokenConverter token.AccessTokenConverter
+	signingMethod  jwt.SigningMethod
+}
+
+// NewJwtAccessTokenConverter 实例化
+func NewJwtAccessTokenConverter(method jwt.SigningMethod) *JwtAccessTokenConverter {
+	return &JwtAccessTokenConverter{
+		tokenConverter: token.NewDefaultAccessTokenConverter(),
+		signingMethod:  method,
+	}
 }
 
 // ConvertAccessToken 返回访问令牌映射内容
@@ -46,7 +56,7 @@ func (c *JwtAccessTokenConverter) GetAccessTokenConverter() token.AccessTokenCon
 
 // Encode 编码
 func (c *JwtAccessTokenConverter) Encode(accessToken token.OAuth2AccessToken, auth *authentication.OAuth2Authentication) (string, error) {
-	token, err := c.tokenConverter.ConvertAccessToken(accessToken, auth)
+	token, err := c.GetAccessTokenConverter().ConvertAccessToken(accessToken, auth)
 	if err != nil {
 		return "", nil
 	}
