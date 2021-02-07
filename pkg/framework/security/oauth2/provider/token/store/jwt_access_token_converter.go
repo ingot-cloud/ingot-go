@@ -9,14 +9,16 @@ import (
 // JwtAccessTokenConverter jwt和oauth2身份验证信息转换器
 type JwtAccessTokenConverter struct {
 	tokenConverter token.AccessTokenConverter
-	signingMethod  jwt.SigningMethod
+	SigningMethod  jwt.SigningMethod
+	SigningKey     interface{}
 }
 
 // NewJwtAccessTokenConverter 实例化
-func NewJwtAccessTokenConverter(method jwt.SigningMethod) *JwtAccessTokenConverter {
+func NewJwtAccessTokenConverter(method jwt.SigningMethod, signingKey interface{}) *JwtAccessTokenConverter {
 	return &JwtAccessTokenConverter{
 		tokenConverter: token.NewDefaultAccessTokenConverter(),
-		signingMethod:  method,
+		SigningMethod:  method,
+		SigningKey:     signingKey,
 	}
 }
 
@@ -56,12 +58,23 @@ func (c *JwtAccessTokenConverter) GetAccessTokenConverter() token.AccessTokenCon
 
 // Encode 编码
 func (c *JwtAccessTokenConverter) Encode(accessToken token.OAuth2AccessToken, auth *authentication.OAuth2Authentication) (string, error) {
-	token, err := c.GetAccessTokenConverter().ConvertAccessToken(accessToken, auth)
+	tokenInfo, err := c.GetAccessTokenConverter().ConvertAccessToken(accessToken, auth)
+	if err != nil {
+		return "", err
+	}
+
+	token := jwt.New(c.SigningMethod)
+
+	for k, v := range tokenInfo {
+		// todo 设置 claims
+	}
+
+	tokenValue, err := token.SignedString(c.SigningKey)
 	if err != nil {
 		return "", nil
 	}
-	// todo jwt 转换 token
-	return "", nil
+
+	return tokenValue, nil
 }
 
 // Decode 解码
