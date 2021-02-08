@@ -11,6 +11,7 @@ type JwtAccessTokenConverter struct {
 	tokenConverter token.AccessTokenConverter
 	SigningMethod  jwt.SigningMethod
 	SigningKey     interface{}
+	Keyfunc        jwt.Keyfunc
 }
 
 // NewJwtAccessTokenConverter 实例化
@@ -78,6 +79,7 @@ func (c *JwtAccessTokenConverter) Encode(accessToken token.OAuth2AccessToken, au
 }
 
 // Decode 解码
-func (c *JwtAccessTokenConverter) Decode(token string) {
+func (c *JwtAccessTokenConverter) Decode(tokenString string) {
+	token, err := jwt.Parse(tokenString, c.Keyfunc)
 
 }
