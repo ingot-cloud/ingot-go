@@ -64,13 +64,15 @@ func (c *JwtAccessTokenConverter) Encode(accessToken token.OAuth2AccessToken, au
 		return "", err
 	}
 
-	token := jwt.New(c.SigningMethod)
-
+	// 设置自定义 Claims
+	mapClaims := jwt.MapClaims{}
 	for k, v := range tokenInfo {
-		// todo 设置 claims
+		mapClaims[k] = v
 	}
 
-	tokenValue, err := token.SignedString(c.SigningKey)
+	jwtToken := jwt.NewWithClaims(c.SigningMethod, mapClaims)
+
+	tokenValue, err := jwtToken.SignedString(c.SigningKey)
 	if err != nil {
 		return "", nil
 	}
