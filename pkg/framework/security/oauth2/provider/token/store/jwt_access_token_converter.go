@@ -81,7 +81,7 @@ func (c *JwtAccessTokenConverter) Encode(accessToken token.OAuth2AccessToken, au
 }
 
 // Decode 解码
-func (c *JwtAccessTokenConverter) Decode(tokenString string) {
+func (c *JwtAccessTokenConverter) Decode(tokenString string) (map[string]interface{}, error) {
 	token, err := jwt.Parse(tokenString, c.Keyfunc)
 
 }
