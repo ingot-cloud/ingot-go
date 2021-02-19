@@ -2,6 +2,7 @@ package store
 
 import (
 	"github.com/dgrijalva/jwt-go"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/errors"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 )
@@ -82,6 +83,12 @@ func (c *JwtAccessTokenConverter) Encode(accessToken token.OAuth2AccessToken, au
 
 // Decode 解码
 func (c *JwtAccessTokenConverter) Decode(tokenString string) (map[string]interface{}, error) {
-	token, err := jwt.Parse(tokenString, c.Keyfunc)
+	token, err := jwt.ParseWithClaims(tokenString, jwt.MapClaims{}, c.Keyfunc)
+	if err != nil {
+		return nil, errors.InvalidToken(err.Error())
+	} else if !token.Valid {
+		return nil, errors.ErrInvalidToken
+	}
 
+	return token.Claims.(jwt.MapClaims), nil
 }
