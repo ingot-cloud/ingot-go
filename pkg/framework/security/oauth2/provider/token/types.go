@@ -85,5 +85,5 @@ type AccessTokenConverter interface {
 // Enhancer token 增强接口
 type Enhancer interface {
 	// token 增强
-	Enhance(OAuth2AccessToken, *authentication.OAuth2Authentication) OAuth2AccessToken
+	Enhance(OAuth2AccessToken, *authentication.OAuth2Authentication) (OAuth2AccessToken, error)
 }

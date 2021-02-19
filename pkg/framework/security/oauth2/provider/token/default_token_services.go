@@ -253,7 +253,7 @@ func (service *DefaultTokenServices) createAccessToken(auth *authentication.OAut
 	token.RefreshToken = refreshToken
 	token.Scope = auth.GetOAuth2Request().GetScope()
 	if service.TokenEnhancer != nil {
-		return service.TokenEnhancer.Enhance(token, auth), nil
+		return service.TokenEnhancer.Enhance(token, auth)
 	}
 
 	return token, nil

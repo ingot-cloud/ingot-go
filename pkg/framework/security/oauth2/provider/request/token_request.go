@@ -1,6 +1,7 @@
 package request
 
 import (
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/utils/maputil"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/constants"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
 )
@@ -32,10 +33,8 @@ func (r *TokenRequest) GetGrantType() string {
 // CreateOAuth2Request 创建OAuth2Request
 func (r *TokenRequest) CreateOAuth2Request(clientDetails clientdetails.ClientDetails) *OAuth2Request {
 	requestParameters := r.GetRequestParameters()
-	modifiable := make(map[string]string)
-	for k, v := range requestParameters {
-		modifiable[k] = v
-	}
+	modifiable := maputil.CopyStringStringMap(requestParameters)
+
 	// Remove password if present to prevent leaks
 	delete(modifiable, constants.Password)
 	delete(modifiable, constants.ClientSecret)

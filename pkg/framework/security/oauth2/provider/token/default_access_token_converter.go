@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/utils"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/utils/maputil"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/authority"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/constants"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/authentication"
@@ -82,10 +83,8 @@ func (converter *DefaultAccessTokenConverter) ConvertAccessToken(token OAuth2Acc
 // ExtractAccessToken 根据token value和映射内容提取访问令牌
 func (converter *DefaultAccessTokenConverter) ExtractAccessToken(token string, mapInfo map[string]interface{}) (OAuth2AccessToken, error) {
 	accessToken := NewDefaultOAuth2AccessToken(token)
-	info := make(map[string]interface{})
-	for k, v := range mapInfo {
-		info[k] = v
-	}
+	info := maputil.CopyStringInterfaceMap(mapInfo)
+
 	delete(info, string(constants.TokenExp))
 	delete(info, string(constants.TokenAud))
 	delete(info, string(constants.TokenClientID))

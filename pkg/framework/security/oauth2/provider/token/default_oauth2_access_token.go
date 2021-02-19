@@ -24,6 +24,18 @@ func NewDefaultOAuth2AccessToken(value string) *DefaultOAuth2AccessToken {
 	}
 }
 
+// NewDefaultOAuth2AccessTokenWith 创建默认 OAuth2AccessToken
+func NewDefaultOAuth2AccessTokenWith(token OAuth2AccessToken) *DefaultOAuth2AccessToken {
+	return &DefaultOAuth2AccessToken{
+		Value:                 token.GetValue(),
+		Expiration:            token.GetExpiration(),
+		TokenType:             token.GetTokenType(),
+		RefreshToken:          token.GetRefreshToken(),
+		Scope:                 token.GetScope(),
+		AdditionalInformation: token.GetAdditionalInformation(),
+	}
+}
+
 // GetAdditionalInformation 获取额外信息
 func (token *DefaultOAuth2AccessToken) GetAdditionalInformation() map[string]interface{} {
 	return token.AdditionalInformation
