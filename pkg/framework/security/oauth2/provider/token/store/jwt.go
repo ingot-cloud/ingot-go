@@ -6,8 +6,6 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 )
 
-// todo
-
 // JwtTokenStore TokenStore jwt 实现
 type JwtTokenStore struct {
 	JwtTokenEnhancer *JwtAccessTokenConverter
