@@ -15,7 +15,7 @@ type OAuth2ProcessingFilter struct {
 
 // Order 过滤器排序
 func (filter *OAuth2ProcessingFilter) Order() int {
-	return constants.OrderFilterBasic
+	return constants.OrderFilterOAuth2
 }
 
 // DoFilter 执行过滤器
