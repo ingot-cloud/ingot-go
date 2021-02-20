@@ -1,6 +1,7 @@
 package store
 
 import (
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/errors"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 )
@@ -9,13 +10,13 @@ import (
 
 // JwtTokenStore TokenStore jwt 实现
 type JwtTokenStore struct {
-	JwtAccessTokenConverter *JwtAccessTokenConverter
+	JwtTokenEnhancer *JwtAccessTokenConverter
 }
 
 // NewJwtTokenStore 创建 JwtTokenStore
 func NewJwtTokenStore(converter *JwtAccessTokenConverter) *JwtTokenStore {
 	return &JwtTokenStore{
-		JwtAccessTokenConverter: converter,
+		JwtTokenEnhancer: converter,
 	}
 }
 
@@ -26,7 +27,11 @@ func (store *JwtTokenStore) ReadAuthentication(accessToken token.OAuth2AccessTok
 
 // ReadAuthenticationWith 根据token读取身份验证信息
 func (store *JwtTokenStore) ReadAuthenticationWith(tokenValue string) (*authentication.OAuth2Authentication, error) {
-	return nil, nil
+	info, err := store.JwtTokenEnhancer.Decode(tokenValue)
+	if err != nil {
+		return nil, err
+	}
+	return store.JwtTokenEnhancer.ExtractAuthentication(info)
 }
 
 // StoreAccessToken 存储访问令牌
@@ -36,7 +41,15 @@ func (store *JwtTokenStore) StoreAccessToken(accessToken token.OAuth2AccessToken
 
 // ReadAccessToken 读取访问令牌
 func (store *JwtTokenStore) ReadAccessToken(tokenValue string) (token.OAuth2AccessToken, error) {
-	return nil, nil
+	accessToken, err := store.convertAccessToken(tokenValue)
+	if err != nil {
+		return nil, err
+	}
+	if store.JwtTokenEnhancer.IsRefreshToken(accessToken) {
+		return nil, errors.InvalidToken("Encoded token is a refresh token")
+	}
+
+	return accessToken, nil
 }
 
 // RemoveAccessToken 移除访问令牌
@@ -51,12 +64,17 @@ func (store *JwtTokenStore) StoreRefreshToken(accessToken token.OAuth2RefreshTok
 
 // ReadRefreshToken 读取刷新令牌
 func (store *JwtTokenStore) ReadRefreshToken(tokenValue string) (token.OAuth2RefreshToken, error) {
-	return nil, nil
+	encodedRefreshToken, err := store.convertAccessToken(tokenValue)
+	if err != nil {
+		return nil, err
+	}
+
+	return store.createRefreshToken(encodedRefreshToken)
 }
 
 // ReadAuthenticationForRefreshToken 通过刷新令牌读取身份验证信息
 func (store *JwtTokenStore) ReadAuthenticationForRefreshToken(refreshToken token.OAuth2RefreshToken) (*authentication.OAuth2Authentication, error) {
-	return nil, nil
+	return store.ReadAuthenticationWith(refreshToken.GetRefreshTokenValue())
 }
 
 // RemoveRefreshToken 移除刷新令牌
@@ -82,4 +100,24 @@ func (store *JwtTokenStore) FindTokensByClientIDAndUserName(clientID string, use
 // FindTokensByClientID 通过clientID获取所有访问令牌
 func (store *JwtTokenStore) FindTokensByClientID(clientID string) ([]token.OAuth2AccessToken, error) {
 	return nil, nil
+}
+
+func (store *JwtTokenStore) convertAccessToken(tokenValue string) (token.OAuth2AccessToken, error) {
+	info, err := store.JwtTokenEnhancer.Decode(tokenValue)
+	if err != nil {
+		return nil, err
+	}
+	return store.JwtTokenEnhancer.ExtractAccessToken(tokenValue, info)
+}
+
+func (store *JwtTokenStore) createRefreshToken(encodedRefreshToken token.OAuth2AccessToken) (token.OAuth2RefreshToken, error) {
+	if !store.JwtTokenEnhancer.IsRefreshToken(encodedRefreshToken) {
+		return nil, errors.InvalidToken("Encoded token is not a refresh token")
+	}
+	if !encodedRefreshToken.GetExpiration().IsZero() {
+		refreshToken := token.NewDefaultExpiringOAuth2RefreshToken(encodedRefreshToken.GetValue(), encodedRefreshToken.GetExpiration())
+		return refreshToken, nil
+	}
+
+	return token.NewDefaultOAuth2RefreshToken(encodedRefreshToken.GetValue()), nil
 }

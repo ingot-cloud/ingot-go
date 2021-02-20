@@ -144,6 +144,13 @@ func (c *JwtAccessTokenConverter) Decode(tokenString string) (map[string]interfa
 	return token.Claims.(jwt.MapClaims), nil
 }
 
+// IsRefreshToken 判断是否为 RefreshToken，如果包含 ati 那么为 RefreshToken
+func (c *JwtAccessTokenConverter) IsRefreshToken(token token.OAuth2AccessToken) bool {
+	info := token.GetAdditionalInformation()
+	_, ok := info[string(constants.TokenAti)]
+	return ok
+}
+
 func (c *JwtAccessTokenConverter) getTokenID(tokenString string) (string, bool) {
 	token, err := jwt.ParseWithClaims(tokenString, jwt.MapClaims{}, c.Keyfunc)
 	if err != nil || !token.Valid {
