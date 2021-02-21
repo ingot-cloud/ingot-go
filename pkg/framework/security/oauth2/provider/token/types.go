@@ -87,3 +87,9 @@ type Enhancer interface {
 	// token 增强
 	Enhance(OAuth2AccessToken, *authentication.OAuth2Authentication) (OAuth2AccessToken, error)
 }
+
+// Granter 授予Token接口，根据不同的 grantType 实现不同的处理方式
+type Granter interface {
+	// Grant
+	Grant(grantType string, tokenRequest request.TokenRequest) (OAuth2AccessToken, error)
+}
