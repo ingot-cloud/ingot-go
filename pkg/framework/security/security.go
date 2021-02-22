@@ -15,9 +15,7 @@ type Handler struct {
 // Middleware 中间件
 func (h *Handler) Middleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		context := &ingot.Context{
-			Context: ctx,
-		}
+		context := ingot.NewContext(ctx)
 		err := h.Filter.DoFilter(context, internalChain)
 		if err != nil {
 			response.FailureWithError(ctx, err)

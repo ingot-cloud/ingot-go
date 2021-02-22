@@ -14,6 +14,6 @@ type Authentication interface {
 	IsAuthenticated() bool
 	// 主动设置是否通过身份验证
 	SetAuthenticated(bool)
-	// 获取当前主题的名称
+	// 获取当前主体的名称
 	GetName(Authentication) string
 }
