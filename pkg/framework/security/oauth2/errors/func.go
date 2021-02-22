@@ -36,3 +36,9 @@ func InvalidScope(args ...string) error {
 	message := utils.StringCombine(args...)
 	return errors.BadRequest(message)
 }
+
+// InvalidClient 无效的Client
+func InvalidClient(args ...string) error {
+	message := utils.StringCombine(args...)
+	return errors.New(http.StatusUnauthorized, InvalidClientCode, message)
+}
