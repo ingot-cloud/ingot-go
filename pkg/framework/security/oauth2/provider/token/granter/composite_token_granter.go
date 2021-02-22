@@ -10,6 +10,11 @@ type CompositeTokenGranter struct {
 	tokenGranters []token.Granter
 }
 
+// NewCompositeTokenGranter 创建组合 granter
+func NewCompositeTokenGranter() *CompositeTokenGranter {
+	return &CompositeTokenGranter{}
+}
+
 // Grant 授权token
 func (g *CompositeTokenGranter) Grant(grantType string, tokenRequest request.TokenRequest) (token.OAuth2AccessToken, error) {
 	for _, granter := range g.tokenGranters {
