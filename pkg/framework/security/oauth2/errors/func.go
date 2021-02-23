@@ -28,7 +28,7 @@ func Unauthorized(args ...string) error {
 // InvalidGrant 无效的授权
 func InvalidGrant(args ...string) error {
 	message := utils.StringCombine(args...)
-	return errors.BadRequest(message)
+	return errors.New(http.StatusBadRequest, InvalidGrantCode, message)
 }
 
 // InvalidScope 无效的Scope
@@ -41,4 +41,16 @@ func InvalidScope(args ...string) error {
 func InvalidClient(args ...string) error {
 	message := utils.StringCombine(args...)
 	return errors.New(http.StatusUnauthorized, InvalidClientCode, message)
+}
+
+// InvalidRequest 无效的情况
+func InvalidRequest(args ...string) error {
+	message := utils.StringCombine(args...)
+	return errors.New(http.StatusBadRequest, InvalidRequestCode, message)
+}
+
+// InsufficientAuthentication 不充足的认证
+func InsufficientAuthentication(args ...string) error {
+	message := utils.StringCombine(args...)
+	return errors.Unauthorized(message)
 }

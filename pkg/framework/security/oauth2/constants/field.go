@@ -12,6 +12,8 @@ const (
 	GrantType         = "grant_type"
 	Password          = "password"
 	ClientSecret      = "client_secret"
+	Code              = "code"
+	RefreshToken      = "refresh_token"
 )
 
 // TokenPayloadKey Token载体key
