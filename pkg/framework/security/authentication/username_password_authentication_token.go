@@ -2,8 +2,8 @@ package authentication
 
 import "github.com/ingot-cloud/ingot-go/pkg/framework/security/core"
 
-// UnauthenticatedUsernamePasswordAuthToken 获取未验证的token
-func UnauthenticatedUsernamePasswordAuthToken(principal interface{}, credentials string) *UsernamePasswordAuthenticationToken {
+// NewUnauthenticatedUsernamePasswordAuthToken 获取未验证的token
+func NewUnauthenticatedUsernamePasswordAuthToken(principal interface{}, credentials string) *UsernamePasswordAuthenticationToken {
 	token := &UsernamePasswordAuthenticationToken{
 		Principal:   principal,
 		Credentials: credentials,
@@ -12,8 +12,8 @@ func UnauthenticatedUsernamePasswordAuthToken(principal interface{}, credentials
 	return token
 }
 
-// AuthenticatedUsernamePasswordAuthToken 获取验证的token
-func AuthenticatedUsernamePasswordAuthToken(principal interface{}, credentials string, authorities []core.GrantedAuthority) *UsernamePasswordAuthenticationToken {
+// NewAuthenticatedUsernamePasswordAuthToken 获取验证的token
+func NewAuthenticatedUsernamePasswordAuthToken(principal interface{}, credentials string, authorities []core.GrantedAuthority) *UsernamePasswordAuthenticationToken {
 	token := &UsernamePasswordAuthenticationToken{
 		Principal:   principal,
 		Credentials: credentials,

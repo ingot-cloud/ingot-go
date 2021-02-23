@@ -59,7 +59,7 @@ func (converter *DefaultUserAuthenticationConverter) ExtractAuthentication(mapIn
 				principal = user
 			}
 		}
-		return authentication.AuthenticatedUsernamePasswordAuthToken(principal, "N/A", authorities), nil
+		return authentication.NewAuthenticatedUsernamePasswordAuthToken(principal, "N/A", authorities), nil
 	}
 	return nil, nil
 }

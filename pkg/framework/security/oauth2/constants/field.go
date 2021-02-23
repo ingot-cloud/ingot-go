@@ -2,18 +2,19 @@ package constants
 
 // OAuth2 请求映射参数常量
 const (
-	ClientID          = "client_id"
-	State             = "state"
+	GrantType         = "grant_type"
 	Scope             = "scope"
+	ClientID          = "client_id"
+	ClientSecret      = "client_secret"
+	State             = "state"
 	RedirectURI       = "redirect_uri"
 	ResponseType      = "response_type"
+	Code              = "code"
+	Username          = "username"
+	Password          = "password"
+	RefreshToken      = "refresh_token"
 	UserOAuthApproval = "user_oauth_approval"
 	ScopePrefix       = "scope."
-	GrantType         = "grant_type"
-	Password          = "password"
-	ClientSecret      = "client_secret"
-	Code              = "code"
-	RefreshToken      = "refresh_token"
 )
 
 // TokenPayloadKey Token载体key
