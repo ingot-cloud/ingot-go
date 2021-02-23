@@ -16,7 +16,7 @@ func NewCompositeTokenGranter() *CompositeTokenGranter {
 }
 
 // Grant 授权token
-func (g *CompositeTokenGranter) Grant(grantType string, tokenRequest request.TokenRequest) (token.OAuth2AccessToken, error) {
+func (g *CompositeTokenGranter) Grant(grantType string, tokenRequest *request.TokenRequest) (token.OAuth2AccessToken, error) {
 	for _, granter := range g.tokenGranters {
 		token, err := granter.Grant(grantType, tokenRequest)
 		if err != nil {
