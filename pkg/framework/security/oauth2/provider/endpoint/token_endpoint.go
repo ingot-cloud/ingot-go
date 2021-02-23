@@ -31,7 +31,7 @@ func NewTokenEndpoint(granter token.Granter, clientDetailsService clientdetails.
 }
 
 // AccessToken /oauth/token
-func (t *TokenEndpoint) AccessToken(ctx *gin.Context) (interface{}, error) {
+func (t *TokenEndpoint) AccessToken(ctx *gin.Context) (token.OAuth2AccessToken, error) {
 	auth := ingot.GetAuthentication(ctx)
 	if auth == nil {
 		return nil, errors.InsufficientAuthentication("There is no client authentication. Try adding an appropriate authentication filter.")
@@ -85,12 +85,7 @@ func (t *TokenEndpoint) AccessToken(ctx *gin.Context) (interface{}, error) {
 		tokenRequest.Scope = parameters.Scopes()
 	}
 
-	accessToken, err := t.TokenGranter.Grant(tokenRequest.GetGrantType(), tokenRequest)
-	if err != nil {
-		return nil, err
-	}
-
-	return accessToken, nil
+	return t.TokenGranter.Grant(tokenRequest.GetGrantType(), tokenRequest)
 }
 
 func (t *TokenEndpoint) getClientID(auth core.Authentication) (string, error) {
