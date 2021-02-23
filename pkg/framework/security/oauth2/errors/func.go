@@ -54,3 +54,9 @@ func InsufficientAuthentication(args ...string) error {
 	message := utils.StringCombine(args...)
 	return errors.Unauthorized(message)
 }
+
+// UnsupportedGrantType 不支持的 grant type
+func UnsupportedGrantType(args ...string) error {
+	message := utils.StringCombine(args...)
+	return errors.New(http.StatusBadRequest, UnsupportedGrantTypeCode, message)
+}

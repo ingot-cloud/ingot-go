@@ -85,7 +85,16 @@ func (t *TokenEndpoint) AccessToken(ctx *gin.Context) (token.OAuth2AccessToken, 
 		tokenRequest.Scope = parameters.Scopes()
 	}
 
-	return t.TokenGranter.Grant(tokenRequest.GetGrantType(), tokenRequest)
+	accessToken, err := t.TokenGranter.Grant(tokenRequest.GetGrantType(), tokenRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	if accessToken == nil {
+		return nil, errors.UnsupportedGrantType("Unsupported grant type: ", tokenRequest.GetGrantType())
+	}
+
+	return accessToken, nil
 }
 
 func (t *TokenEndpoint) getClientID(auth core.Authentication) (string, error) {
