@@ -1,6 +1,7 @@
 package granter
 
 import (
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/request"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 )
@@ -16,9 +17,9 @@ func NewCompositeTokenGranter() *CompositeTokenGranter {
 }
 
 // Grant 授权token
-func (g *CompositeTokenGranter) Grant(grantType string, tokenRequest *request.TokenRequest) (token.OAuth2AccessToken, error) {
+func (g *CompositeTokenGranter) Grant(grantType string, client clientdetails.ClientDetails, tokenRequest *request.TokenRequest) (token.OAuth2AccessToken, error) {
 	for _, granter := range g.tokenGranters {
-		token, err := granter.Grant(grantType, tokenRequest)
+		token, err := granter.Grant(grantType, client, tokenRequest)
 		if err != nil {
 			return nil, err
 		}

@@ -85,7 +85,7 @@ func (t *TokenEndpoint) AccessToken(ctx *gin.Context) (token.OAuth2AccessToken, 
 		tokenRequest.Scope = parameters.Scopes()
 	}
 
-	accessToken, err := t.TokenGranter.Grant(tokenRequest.GetGrantType(), tokenRequest)
+	accessToken, err := t.TokenGranter.Grant(tokenRequest.GetGrantType(), authenticatedClient, tokenRequest)
 	if err != nil {
 		return nil, err
 	}

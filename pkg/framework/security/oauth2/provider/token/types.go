@@ -6,6 +6,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/model/enums"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/authentication"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/request"
 )
 
@@ -91,5 +92,5 @@ type Enhancer interface {
 // Granter 授予Token接口，根据不同的 grantType 实现不同的处理方式
 type Granter interface {
 	// Grant
-	Grant(grantType string, tokenRequest *request.TokenRequest) (OAuth2AccessToken, error)
+	Grant(grantType string, client clientdetails.ClientDetails, tokenRequest *request.TokenRequest) (OAuth2AccessToken, error)
 }
