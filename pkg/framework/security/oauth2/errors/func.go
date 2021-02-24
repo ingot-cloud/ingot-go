@@ -13,16 +13,10 @@ func InvalidToken(args ...string) error {
 	return errors.New(http.StatusUnauthorized, InvalidTokenCode, message)
 }
 
-// Forbidden error
-func Forbidden(args ...string) error {
+// OAuth2AccessDenied error
+func OAuth2AccessDenied(args ...string) error {
 	message := utils.StringCombine(args...)
-	return errors.Forbidden(message)
-}
-
-// Unauthorized error
-func Unauthorized(args ...string) error {
-	message := utils.StringCombine(args...)
-	return errors.Unauthorized(message)
+	return errors.New(http.StatusForbidden, AccessDeniedCode, message)
 }
 
 // InvalidGrant 无效的授权
@@ -34,7 +28,7 @@ func InvalidGrant(args ...string) error {
 // InvalidScope 无效的Scope
 func InvalidScope(args ...string) error {
 	message := utils.StringCombine(args...)
-	return errors.BadRequest(message)
+	return errors.New(http.StatusBadRequest, InvalidScopeCode, message)
 }
 
 // InvalidClient 无效的Client

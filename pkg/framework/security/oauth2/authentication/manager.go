@@ -1,7 +1,6 @@
 package authentication
 
 import (
-	"github.com/ingot-cloud/ingot-go/pkg/framework/core/utils"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/errors"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/authentication"
@@ -14,6 +13,14 @@ type OAuth2AuthenticationManager struct {
 	ResourceServerTokenServices token.ResourceServerTokenServices
 	ClientDetailsService        clientdetails.Service
 	ResourceID                  string
+}
+
+// NewOAuth2AuthenticationManager 实例化
+func NewOAuth2AuthenticationManager(tokenService token.ResourceServerTokenServices, clientDetailsService clientdetails.Service) *OAuth2AuthenticationManager {
+	return &OAuth2AuthenticationManager{
+		ResourceServerTokenServices: tokenService,
+		ClientDetailsService:        clientDetailsService,
+	}
 }
 
 // Authenticate 对 Authentication 进行身份验证，验证成功后返回完全填充的Authentication
@@ -42,8 +49,7 @@ func (manager *OAuth2AuthenticationManager) Authenticate(auth core.Authenticatio
 			}
 		}
 		if !contains {
-			msg := utils.StringCombine("Invalid token does not contain resource id (", manager.ResourceID, ")")
-			return nil, errors.Forbidden(msg)
+			return nil, errors.OAuth2AccessDenied("Invalid token does not contain resource id (", manager.ResourceID, ")")
 		}
 	}
 
@@ -67,8 +73,7 @@ func (manager *OAuth2AuthenticationManager) checkClientDetails(auth *authenticat
 		for _, scope := range requestScope {
 			for _, allow := range allowed {
 				if allow != scope {
-					msg := utils.StringCombine("Invalid token contains disallowed scope (", scope, ") for this client")
-					return errors.Forbidden(msg)
+					return errors.OAuth2AccessDenied("Invalid token contains disallowed scope (", scope, ") for this client")
 				}
 			}
 		}

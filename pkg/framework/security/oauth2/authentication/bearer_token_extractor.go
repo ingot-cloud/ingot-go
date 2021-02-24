@@ -11,6 +11,11 @@ import (
 type BearerTokenExtractor struct {
 }
 
+// NewBearerTokenExtractor 实例化
+func NewBearerTokenExtractor() *BearerTokenExtractor {
+	return &BearerTokenExtractor{}
+}
+
 // Extract 提取token
 func (e *BearerTokenExtractor) Extract(ctx *ingot.Context) core.Authentication {
 	token := ginwrapper.GetBearerToken(ctx.Context)

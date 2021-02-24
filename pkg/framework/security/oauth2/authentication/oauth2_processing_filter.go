@@ -13,6 +13,14 @@ type OAuth2ProcessingFilter struct {
 	AuthenticationManager authentication.Manager
 }
 
+// NewOAuth2ProcessingFilter 实例化
+func NewOAuth2ProcessingFilter(extractor TokenExtractor, manager authentication.Manager) *OAuth2ProcessingFilter {
+	return &OAuth2ProcessingFilter{
+		TokenExtractor:        extractor,
+		AuthenticationManager: manager,
+	}
+}
+
 // Order 过滤器排序
 func (filter *OAuth2ProcessingFilter) Order() int {
 	return constants.OrderFilterOAuth2
