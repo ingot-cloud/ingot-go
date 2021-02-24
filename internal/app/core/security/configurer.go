@@ -5,17 +5,17 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/config"
 )
 
-// CustomHTTPConfigurer 安全配置
-type CustomHTTPConfigurer struct {
-}
-
 // Build 构建安全配置
-func (c *CustomHTTPConfigurer) Build() (security.WebSecurityConfigurers, error) {
+func Build() (security.WebSecurityConfigurers, error) {
 	var configurers security.WebSecurityConfigurers
 	configurers = append(configurers, &config.WebSecurityConfigurerAdapter{
-		AdditionalConfigurer: c,
+		AdditionalConfigurer: &CustomHTTPConfigurer{},
 	})
 	return configurers, nil
+}
+
+// CustomHTTPConfigurer 安全配置
+type CustomHTTPConfigurer struct {
 }
 
 // Configure 配置

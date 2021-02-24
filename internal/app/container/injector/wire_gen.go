@@ -14,7 +14,6 @@ import (
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"
 	"github.com/ingot-cloud/ingot-go/internal/app/service"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
-	config2 "github.com/ingot-cloud/ingot-go/pkg/framework/security/web/config"
 )
 
 // Injectors from wire.go:
@@ -27,16 +26,16 @@ func BuildConfiguration(options *config.Options) (*config.Config, error) {
 	return configConfig, nil
 }
 
-func BuildContainer(config3 *config.Config, options *config.Options) (*container.Container, func(), error) {
-	httpConfig, err := factory.HTTPConfigSet(config3)
+func BuildContainer(config2 *config.Config, options *config.Options) (*container.Container, func(), error) {
+	httpConfig, err := factory.HTTPConfigSet(config2)
 	if err != nil {
 		return nil, nil, err
 	}
-	authentication, cleanup, err := factory.NewAuthentication(config3)
+	authentication, cleanup, err := factory.NewAuthentication(config2)
 	if err != nil {
 		return nil, nil, err
 	}
-	db, cleanup2, err := factory.NewGorm(config3)
+	db, cleanup2, err := factory.NewGorm(config2)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -72,7 +71,7 @@ func BuildContainer(config3 *config.Config, options *config.Options) (*container
 		cleanup()
 		return nil, nil, err
 	}
-	auth, err := factory.AuthConfigSet(config3)
+	auth, err := factory.AuthConfigSet(config2)
 	if err != nil {
 		cleanup3()
 		cleanup2()
@@ -111,18 +110,10 @@ func BuildContainer(config3 *config.Config, options *config.Options) (*container
 		cleanup()
 		return nil, nil, err
 	}
-	filter, err := config2.BuildWebSecurityFilter(webSecurityConfigurers)
-	if err != nil {
-		cleanup4()
-		cleanup3()
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
 	containerContainer := &container.Container{
-		HTTPConfig:     httpConfig,
-		HTTPConfigurer: apiConfig,
-		Filter:         filter,
+		HTTPConfig:             httpConfig,
+		HTTPConfigurer:         apiConfig,
+		WebSecurityConfigurers: webSecurityConfigurers,
 	}
 	return containerContainer, func() {
 		cleanup4()
