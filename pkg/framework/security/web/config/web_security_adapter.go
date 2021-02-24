@@ -7,11 +7,24 @@ import (
 
 // WebSecurityConfigurerAdapter 安全配置适配器
 type WebSecurityConfigurerAdapter struct {
-	AdditionalConfigurer security.HTTPSecurityConfigurer
+	AdditionalWebSecurityConfigurer  security.WebSecurityConfigurer
+	AdditionalHTTPSecurityConfigurer security.HTTPSecurityConfigurer
+}
+
+// NewWebSecurityConfigurerAdapter 实例化
+func NewWebSecurityConfigurerAdapter(webSecurity security.WebSecurityConfigurer, httpSecurity security.HTTPSecurityConfigurer) *WebSecurityConfigurerAdapter {
+	return &WebSecurityConfigurerAdapter{
+		AdditionalWebSecurityConfigurer:  webSecurity,
+		AdditionalHTTPSecurityConfigurer: httpSecurity,
+	}
 }
 
 // Configure Web安全配置
 func (adapter *WebSecurityConfigurerAdapter) Configure(web security.WebSecurityBuilder) error {
+	if adapter.AdditionalWebSecurityConfigurer != nil {
+		adapter.AdditionalWebSecurityConfigurer.Configure(web)
+	}
+
 	http, err := adapter.getHTTP()
 	if err != nil {
 		return err
@@ -31,7 +44,9 @@ func (adapter *WebSecurityConfigurerAdapter) getHTTP() (security.HTTPSecurityBui
 		return nil, err
 	}
 
-	err = adapter.AdditionalConfigurer.Configure(http)
+	if adapter.AdditionalHTTPSecurityConfigurer != nil {
+		err = adapter.AdditionalHTTPSecurityConfigurer.Configure(http)
+	}
 
 	return http, err
 }
