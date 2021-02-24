@@ -10,7 +10,7 @@ import (
 // InvalidToken 无效的Token，自定义提示信息
 func InvalidToken(args ...string) error {
 	message := utils.StringCombine(args...)
-	return errors.New(http.StatusUnauthorized, TokenInvalid, message)
+	return errors.New(http.StatusUnauthorized, InvalidTokenCode, message)
 }
 
 // Forbidden error
