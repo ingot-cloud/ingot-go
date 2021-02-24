@@ -12,8 +12,3 @@ func DefaultTokenServices(config config.OAuth2, tokenStore token.Store) *token.D
 	service.SupportRefreshToken = config.AuthorizationServer.SupportRefreshToken
 	return service
 }
-
-// ResourceServerTokenServices 资源服务器 token 服务
-func ResourceServerTokenServices(tokenServices *token.DefaultTokenServices) token.ResourceServerTokenServices {
-	return tokenServices
-}
