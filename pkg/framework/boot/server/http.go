@@ -8,7 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/server/middleware"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/ingot"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
@@ -16,21 +15,19 @@ import (
 
 // HTTPServer http web server
 type HTTPServer struct {
-	Context         context.Context
-	Config          config.HTTPConfig
-	HTTPConfigurer  config.HTTPConfigurer
-	SecurityHandler *security.Handler
+	Context                context.Context
+	Config                 config.HTTPConfig
+	HTTPConfigurer         config.HTTPConfigurer
+	WebSecurityConfigurers security.WebSecurityConfigurers
 }
 
 // NewHTTPServer 创建 http 服务
 func NewHTTPServer(context context.Context, c *container.Container) *HTTPServer {
 	return &HTTPServer{
-		Context:        context,
-		Config:         c.HTTPConfig,
-		HTTPConfigurer: c.HTTPConfigurer,
-		SecurityHandler: &security.Handler{
-			Filter: c.Filter,
-		},
+		Context:                context,
+		Config:                 c.HTTPConfig,
+		HTTPConfigurer:         c.HTTPConfigurer,
+		WebSecurityConfigurers: c.WebSecurityConfigurers,
 	}
 }
 
@@ -45,10 +42,8 @@ func (server *HTTPServer) buildHTTPHandler() *gin.Engine {
 	gin.SetMode(server.Config.Mode)
 
 	engine := gin.New()
-	engine.NoMethod(middleware.NoMethodHandler())
-	engine.NoRoute(middleware.NoRouteHandler())
-	engine.Use(middleware.RecoveryMiddleware())
-	engine.Use(server.SecurityHandler.Middleware())
+	enableDefaultMiddleware(engine)
+	enableSecurityMiddleware(engine, server.WebSecurityConfigurers)
 
 	// 设置 prefix
 	routerGroup := engine.Group(server.Config.Prefix)
