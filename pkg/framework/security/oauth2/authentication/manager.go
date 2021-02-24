@@ -64,7 +64,7 @@ func (manager *OAuth2AuthenticationManager) Authenticate(auth core.Authenticatio
 
 func (manager *OAuth2AuthenticationManager) checkClientDetails(auth *authentication.OAuth2Authentication) error {
 	if manager.ClientDetailsService != nil {
-		client, err := manager.ClientDetailsService.LoadClientByClientId(auth.GetOAuth2Request().ClientID)
+		client, err := manager.ClientDetailsService.LoadClientByClientID(auth.GetOAuth2Request().ClientID)
 		if err != nil {
 			return err
 		}

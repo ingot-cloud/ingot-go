@@ -46,7 +46,7 @@ func (t *TokenEndpoint) AccessToken(ctx *gin.Context) (token.OAuth2AccessToken, 
 		return nil, err
 	}
 
-	authenticatedClient, err := t.ClientDetailsService.LoadClientByClientId(clientID)
+	authenticatedClient, err := t.ClientDetailsService.LoadClientByClientID(clientID)
 	if err != nil {
 		return nil, err
 	}

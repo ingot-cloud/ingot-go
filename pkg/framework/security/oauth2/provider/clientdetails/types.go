@@ -35,5 +35,5 @@ type ClientDetails interface {
 // Service 获取客户端详细信息
 type Service interface {
 	// 根据 clientID 获取客户端详细信息
-	LoadClientByClientId(string) (ClientDetails, error)
+	LoadClientByClientID(string) (ClientDetails, error)
 }

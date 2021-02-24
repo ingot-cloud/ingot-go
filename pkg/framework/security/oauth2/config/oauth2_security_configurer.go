@@ -12,7 +12,7 @@ type OAuth2SecurityConfigurer struct {
 	authenticationManager coreAuth.Manager
 }
 
-// NewOAuth2SecurityConfigurer 实例化 OAuth2 安全配置
+// NewOAuth2SecurityConfigurer 实例化
 func NewOAuth2SecurityConfigurer(tokenExtractor authentication.TokenExtractor, authenticationManager coreAuth.Manager) *OAuth2SecurityConfigurer {
 	return &OAuth2SecurityConfigurer{
 		tokenExtractor:        tokenExtractor,

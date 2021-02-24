@@ -8,7 +8,7 @@ import (
 
 var (
 	// ErrInvalidToken for auth
-	ErrInvalidToken = coreErrors.New(http.StatusUnauthorized, TokenInvalid, "Token invalid")
+	ErrInvalidToken = coreErrors.New(http.StatusUnauthorized, InvalidTokenCode, "Token invalid")
 	// ErrExpiredToken for auth
 	ErrExpiredToken = coreErrors.New(http.StatusUnauthorized, TokenExpired, "Token expired")
 )

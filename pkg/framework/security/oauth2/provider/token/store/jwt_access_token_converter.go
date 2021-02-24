@@ -20,11 +20,12 @@ type JwtAccessTokenConverter struct {
 }
 
 // NewJwtAccessTokenConverter 实例化
-func NewJwtAccessTokenConverter(method jwt.SigningMethod, signingKey interface{}) *JwtAccessTokenConverter {
+func NewJwtAccessTokenConverter(converter token.AccessTokenConverter, method jwt.SigningMethod, signingKey interface{}, keyfunc jwt.Keyfunc) *JwtAccessTokenConverter {
 	return &JwtAccessTokenConverter{
-		tokenConverter: token.NewDefaultAccessTokenConverter(),
+		tokenConverter: converter,
 		SigningMethod:  method,
 		SigningKey:     signingKey,
+		Keyfunc:        keyfunc,
 	}
 }
 

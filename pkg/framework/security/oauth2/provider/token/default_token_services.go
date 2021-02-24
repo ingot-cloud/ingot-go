@@ -36,7 +36,7 @@ type DefaultTokenServices struct {
 func NewDefaultTokenServices(tokenStore Store) *DefaultTokenServices {
 	return &DefaultTokenServices{
 		RefreshTokenValiditySeconds: 60 * 60 * 24 * 30, // default 30 days.
-		AccessTokenValiditySeconds:  60 * 60 * 12,      // default 12 hours.
+		AccessTokenValiditySeconds:  60 * 60 * 2,       // default 2 hours.
 		SupportRefreshToken:         false,
 		ReuseRefreshToken:           true,
 		TokenStore:                  tokenStore,
@@ -191,7 +191,7 @@ func (service *DefaultTokenServices) LoadAuthentication(accessTokenValue string)
 	if service.ClientDetailsService != nil {
 		clientID := result.GetOAuth2Request().GetClientID()
 
-		_, err := service.ClientDetailsService.LoadClientByClientId(clientID)
+		_, err := service.ClientDetailsService.LoadClientByClientID(clientID)
 		if err != nil {
 			return nil, errors.InvalidToken("Client not valid: ", clientID, ", original error = ", err.Error())
 		}
@@ -341,7 +341,7 @@ func (service *DefaultTokenServices) isSupportRefreshToken(clientAuth *request.O
 
 func (service *DefaultTokenServices) getClientDetails(clientID string) (clientdetails.ClientDetails, error) {
 	if service.ClientDetailsService != nil {
-		return service.ClientDetailsService.LoadClientByClientId(clientID)
+		return service.ClientDetailsService.LoadClientByClientID(clientID)
 	}
 	return nil, nil
 }

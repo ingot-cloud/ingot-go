@@ -13,7 +13,7 @@ import (
 
 // DefaultAccessTokenConverter 默认实现
 type DefaultAccessTokenConverter struct {
-	UserAuthenticationConverter *DefaultUserAuthenticationConverter
+	UserAuthenticationConverter UserAuthenticationConverter
 	IncludeGrantType            bool
 }
 
@@ -134,7 +134,7 @@ func (converter *DefaultAccessTokenConverter) ExtractAuthentication(mapInfo map[
 	}, nil
 }
 
-func (converter *DefaultAccessTokenConverter) getUserAuthenticationConverter() *DefaultUserAuthenticationConverter {
+func (converter *DefaultAccessTokenConverter) getUserAuthenticationConverter() UserAuthenticationConverter {
 	if converter.UserAuthenticationConverter == nil {
 		converter.UserAuthenticationConverter = NewDefaultUserAuthenticationConverter()
 	}
