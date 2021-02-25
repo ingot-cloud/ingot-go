@@ -2,6 +2,7 @@ package container
 
 import (
 	coreAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/crypto/password"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
@@ -9,7 +10,13 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/store"
 )
 
-// OAuth2Container 公共容器
+// SecurityContainer 安全容器
+type SecurityContainer struct {
+	Providers       coreAuth.Providers
+	PasswordEncoder password.Encoder
+}
+
+// OAuth2Container OAuth2 容器
 type OAuth2Container struct {
 	Config                  config.OAuth2
 	TokenStore              token.Store
