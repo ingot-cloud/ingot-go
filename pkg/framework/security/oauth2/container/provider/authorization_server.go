@@ -30,3 +30,10 @@ func AuthorizationServerTokenServices(tokenServices *token.DefaultTokenServices,
 func ConsumerTokenServices(tokenServices *token.DefaultTokenServices) token.ConsumerTokenServices {
 	return tokenServices
 }
+
+// AuthorizationAuthenticationManager 授权服务器中的认证管理器
+func AuthorizationAuthenticationManager(providers authentication.Providers) authentication.Manager {
+	return authentication.NewProviderManager(providers)
+}
+
+// todo 提供 Providers

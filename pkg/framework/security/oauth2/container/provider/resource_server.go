@@ -4,7 +4,6 @@ import (
 	coreAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 )
 
@@ -18,9 +17,9 @@ func TokenExtractor() authentication.TokenExtractor {
 	return authentication.NewBearerTokenExtractor()
 }
 
-// ResourceAuthenticationManager OAuth2 实现
-func ResourceAuthenticationManager(config config.OAuth2, tokenService token.ResourceServerTokenServices, clientDetailsService clientdetails.Service) coreAuth.Manager {
-	manager := authentication.NewOAuth2AuthenticationManager(tokenService, clientDetailsService)
+// ResourceAuthenticationManager 资源服务器中使用的认证管理器
+func ResourceAuthenticationManager(config config.OAuth2, tokenService token.ResourceServerTokenServices) coreAuth.Manager {
+	manager := authentication.NewOAuth2AuthenticationManager(tokenService)
 	manager.ResourceID = config.ResourceServer.ResourceID
 	return manager
 }

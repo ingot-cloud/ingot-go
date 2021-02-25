@@ -16,10 +16,9 @@ type OAuth2AuthenticationManager struct {
 }
 
 // NewOAuth2AuthenticationManager 实例化
-func NewOAuth2AuthenticationManager(tokenService token.ResourceServerTokenServices, clientDetailsService clientdetails.Service) *OAuth2AuthenticationManager {
+func NewOAuth2AuthenticationManager(tokenService token.ResourceServerTokenServices) *OAuth2AuthenticationManager {
 	return &OAuth2AuthenticationManager{
 		ResourceServerTokenServices: tokenService,
-		ClientDetailsService:        clientDetailsService,
 	}
 }
 

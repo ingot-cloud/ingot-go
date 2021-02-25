@@ -7,3 +7,14 @@ type Manager interface {
 	// 对 Authentication 进行身份验证，验证成功后返回完全填充的Authentication
 	Authenticate(core.Authentication) (core.Authentication, error)
 }
+
+// Provider 身份验证提供者
+type Provider interface {
+	// 身份验证
+	Authenticate(core.Authentication) (core.Authentication, error)
+	// 该身份验证提供者是否支持指定的认证信息
+	Supports(interface{}) bool
+}
+
+// Providers 提供者列表
+type Providers []Provider
