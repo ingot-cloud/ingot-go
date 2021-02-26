@@ -10,21 +10,21 @@ import (
 
 // AuthenticationProvider Dao 提供者
 type AuthenticationProvider struct {
-	passwordEncoder          password.Encoder
-	userDetailsService       userdetails.Service
-	userCache                userdetails.UserCache
-	preAuthenticationChecks  userdetails.Checker
-	postAuthenticationChecks userdetails.Checker
+	PasswordEncoder          password.Encoder
+	UserDetailsService       userdetails.Service
+	UserCache                userdetails.UserCache
+	PreAuthenticationChecks  userdetails.Checker
+	PostAuthenticationChecks userdetails.Checker
 }
 
 // NewProvider 实例化
 func NewProvider(encoder password.Encoder, service userdetails.Service, cache userdetails.UserCache, preChecker userdetails.Checker, postChecker userdetails.Checker) *AuthenticationProvider {
 	return &AuthenticationProvider{
-		passwordEncoder:          encoder,
-		userDetailsService:       service,
-		userCache:                cache,
-		preAuthenticationChecks:  preChecker,
-		postAuthenticationChecks: postChecker,
+		PasswordEncoder:          encoder,
+		UserDetailsService:       service,
+		UserCache:                cache,
+		PreAuthenticationChecks:  preChecker,
+		PostAuthenticationChecks: postChecker,
 	}
 }
 
@@ -34,7 +34,7 @@ func (p *AuthenticationProvider) Authenticate(auth core.Authentication) (core.Au
 	cacheWasUsed := true
 	// Supports 方法已经确定了该 auth 为 UsernamePasswordAuthenticationToken
 	userAuth, _ := auth.(*authentication.UsernamePasswordAuthenticationToken)
-	user, err := p.userCache.GetUserFromCache(username)
+	user, err := p.UserCache.GetUserFromCache(username)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (p *AuthenticationProvider) Authenticate(auth core.Authentication) (core.Au
 		}
 	}
 	// 前置检测
-	err = p.preAuthenticationChecks.Check(user)
+	err = p.PreAuthenticationChecks.Check(user)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func (p *AuthenticationProvider) Authenticate(auth core.Authentication) (core.Au
 		if err != nil {
 			return nil, err
 		}
-		err = p.preAuthenticationChecks.Check(user)
+		err = p.PreAuthenticationChecks.Check(user)
 		if err != nil {
 			return nil, err
 		}
@@ -71,12 +71,12 @@ func (p *AuthenticationProvider) Authenticate(auth core.Authentication) (core.Au
 		}
 	}
 	// 后置检测
-	err = p.postAuthenticationChecks.Check(user)
+	err = p.PostAuthenticationChecks.Check(user)
 	if err != nil {
 		return nil, err
 	}
 	if !cacheWasUsed {
-		p.userCache.PutUserInCache(user)
+		p.UserCache.PutUserInCache(user)
 	}
 
 	return p.createSuccessAuthentication(user, auth, user)
@@ -97,7 +97,7 @@ func (p *AuthenticationProvider) determineUsername(auth core.Authentication) str
 }
 
 func (p *AuthenticationProvider) retrieveUser(username string, auth *authentication.UsernamePasswordAuthenticationToken) (userdetails.UserDetails, error) {
-	loadedUser, err := p.userDetailsService.LoadUserByUsername(username)
+	loadedUser, err := p.UserDetailsService.LoadUserByUsername(username)
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +112,7 @@ func (p *AuthenticationProvider) additionalAuthenticationChecks(userDetails user
 		return errors.BadCredentials("Bad credentials")
 	}
 	presentedPassword := auth.GetCredentials()
-	ok, err := p.passwordEncoder.Matches(presentedPassword, userDetails.GetPassword())
+	ok, err := p.PasswordEncoder.Matches(presentedPassword, userDetails.GetPassword())
 	if err != nil {
 		return err
 	}

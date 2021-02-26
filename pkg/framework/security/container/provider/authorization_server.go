@@ -35,5 +35,3 @@ func ConsumerTokenServices(tokenServices *token.DefaultTokenServices) token.Cons
 func AuthorizationAuthenticationManager(providers authentication.Providers) authentication.Manager {
 	return authentication.NewProviderManager(providers)
 }
-
-// todo 提供 Providers
