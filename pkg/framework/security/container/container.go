@@ -2,6 +2,7 @@ package container
 
 import (
 	coreAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/crypto/password"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
@@ -14,6 +15,9 @@ import (
 type SecurityContainer struct {
 	Providers       coreAuth.Providers
 	PasswordEncoder password.Encoder
+	UserCache       userdetails.UserCache
+	PreChecker      userdetails.PreChecker
+	PostChecker     userdetails.PostChecker
 }
 
 // OAuth2Container OAuth2 容器
@@ -38,7 +42,8 @@ type AuthorizationServerContainer struct {
 	AuthorizationServerTokenServices token.AuthorizationServerTokenServices
 	ConsumerTokenServices            token.ConsumerTokenServices
 	TokenEnhancer                    token.Enhancer
-	ClientDetailsService             clientdetails.Service
 	AuthenticationManager            coreAuth.Manager
+	ClientDetailsService             clientdetails.Service
+	UserDetailsService               userdetails.Service
 	UserAuthenticationConverter      token.UserAuthenticationConverter
 }
