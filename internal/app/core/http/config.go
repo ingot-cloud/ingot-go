@@ -15,7 +15,7 @@ type APIConfig struct {
 	Auth           security.Authentication
 	CasbinEnforcer *casbin.SyncedEnforcer
 	HTTPConfig     bootConfig.HTTPConfig
-	AuthConfig     config.Auth
+	SecurityConfig config.Security
 
 	AuthAPI *api.Auth
 }
@@ -23,7 +23,7 @@ type APIConfig struct {
 // Configure 应用配置
 func (c *APIConfig) Configure(app *ingot.Router) {
 	// authentication
-	permitUrls := c.AuthConfig.PermitUrls
+	permitUrls := c.SecurityConfig.PermitURLs
 	app.Use(middleware.UserAuthMiddleware(c.Auth, middleware.NewPermitWithPrefix(permitUrls...)))
 	app.Use(middleware.CasbinMiddleware(c.CasbinEnforcer, middleware.NewPermitWithPrefix(permitUrls...)))
 }

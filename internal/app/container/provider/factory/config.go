@@ -11,13 +11,13 @@ func HTTPConfigSet(config *config.Config) (httpConfig.HTTPConfig, error) {
 	return config.Server, nil
 }
 
-// AuthConfigSet 单独注入 auth config
-func AuthConfigSet(config *config.Config) (config.Auth, error) {
-	return config.Auth, nil
+// SecurityConfigSet 单独注入 Security config
+func SecurityConfigSet(config *config.Config) (config.Security, error) {
+	return config.Security, nil
 }
 
 // Config 需要单独注入的配置
 var Config = wire.NewSet(
 	HTTPConfigSet,
-	AuthConfigSet,
+	SecurityConfigSet,
 )

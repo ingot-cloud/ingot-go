@@ -3,17 +3,18 @@ package config
 import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
+	oauth2Config "github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
 )
 
 // Config struct
 type Config struct {
-	App    App               `yaml:"app"`
-	Server config.HTTPConfig `yaml:"server"`
-	Log    log.Config        `yaml:"log"`
-	Gorm   Gorm              `yaml:"gorm"`
-	MySQL  MySQL             `yaml:"mysql"`
-	Redis  Redis             `yaml:"redis"`
-	Auth   Auth              `yaml:"auth"`
+	App      App               `yaml:"app"`
+	Server   config.HTTPConfig `yaml:"server"`
+	Log      log.Config        `yaml:"log"`
+	Gorm     Gorm              `yaml:"gorm"`
+	MySQL    MySQL             `yaml:"mysql"`
+	Redis    Redis             `yaml:"redis"`
+	Security Security          `yaml:"security"`
 }
 
 // App struct
@@ -55,15 +56,8 @@ type Redis struct {
 	SSL       bool   `yaml:"ssl"`
 }
 
-// Auth config
-type Auth struct {
-	PermitUrls []string `yaml:"permitUrls"`
-	Jwt        Jwt      `yaml:"jwt"`
-}
-
-// Jwt config
-type Jwt struct {
-	SigningMethod string `yaml:"signingMethod"`
-	SigningKey    string `yaml:"signingKey"`
-	Expired       int    `yaml:"expired"`
+// Security config
+type Security struct {
+	PermitURLs []string            `yaml:"permitUrls"`
+	OAuth2     oauth2Config.OAuth2 `yaml:"oauth2"`
 }
