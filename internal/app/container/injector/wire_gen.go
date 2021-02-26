@@ -71,7 +71,7 @@ func BuildContainer(config2 *config.Config, options *config.Options) (*container
 		cleanup()
 		return nil, nil, err
 	}
-	auth, err := factory.AuthConfigSet(config2)
+	security, err := factory.SecurityConfigSet(config2)
 	if err != nil {
 		cleanup3()
 		cleanup2()
@@ -85,7 +85,7 @@ func BuildContainer(config2 *config.Config, options *config.Options) (*container
 		cleanup()
 		return nil, nil, err
 	}
-	serviceAuth := &service.Auth{
+	auth := &service.Auth{
 		UserDao:         user,
 		RoleUserDao:     roleUser,
 		RoleDao:         role,
@@ -93,13 +93,13 @@ func BuildContainer(config2 *config.Config, options *config.Options) (*container
 		PasswordEncoder: encoder,
 	}
 	apiAuth := &api.Auth{
-		AuthService: serviceAuth,
+		AuthService: auth,
 	}
 	apiConfig := &http.APIConfig{
 		Auth:           authentication,
 		CasbinEnforcer: syncedEnforcer,
 		HTTPConfig:     httpConfig,
-		AuthConfig:     auth,
+		SecurityConfig: security,
 		AuthAPI:        apiAuth,
 	}
 	webSecurityConfigurers, err := provider.NewWebSecurityConfigurers()
