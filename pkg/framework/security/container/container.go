@@ -13,19 +13,23 @@ import (
 
 // SecurityContainer 安全容器
 type SecurityContainer struct {
-	Providers       coreAuth.Providers
-	PasswordEncoder password.Encoder
-	UserCache       userdetails.UserCache
-	PreChecker      userdetails.PreChecker
-	PostChecker     userdetails.PostChecker
+	Providers            coreAuth.Providers
+	PasswordEncoder      password.Encoder
+	UserCache            userdetails.UserCache
+	PreChecker           userdetails.PreChecker
+	PostChecker          userdetails.PostChecker
+	UserDetailsService   userdetails.Service
+	ClientDetailsService clientdetails.Service
 }
 
 // OAuth2Container OAuth2 容器
 type OAuth2Container struct {
-	Config                  config.OAuth2
-	TokenStore              token.Store
-	JwtAccessTokenConverter *store.JwtAccessTokenConverter
-	AccessTokenConverter    token.AccessTokenConverter
+	Config                      config.OAuth2
+	DefaultTokenServices        *token.DefaultTokenServices
+	TokenStore                  token.Store
+	JwtAccessTokenConverter     *store.JwtAccessTokenConverter
+	AccessTokenConverter        token.AccessTokenConverter
+	UserAuthenticationConverter token.UserAuthenticationConverter
 }
 
 // ResourceServerContainer 资源服务器容器
@@ -34,7 +38,6 @@ type ResourceServerContainer struct {
 	OAuth2SecurityConfigurer    *config.OAuth2SecurityConfigurer
 	TokenExtractor              authentication.TokenExtractor
 	AuthenticationManager       coreAuth.Manager
-	UserAuthenticationConverter token.UserAuthenticationConverter
 }
 
 // AuthorizationServerContainer 授权服务器容器
@@ -43,7 +46,4 @@ type AuthorizationServerContainer struct {
 	ConsumerTokenServices            token.ConsumerTokenServices
 	TokenEnhancer                    token.Enhancer
 	AuthenticationManager            coreAuth.Manager
-	ClientDetailsService             clientdetails.Service
-	UserDetailsService               userdetails.Service
-	UserAuthenticationConverter      token.UserAuthenticationConverter
 }
