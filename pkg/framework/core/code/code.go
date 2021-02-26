@@ -18,10 +18,3 @@ const (
 
 	IDClockBack = "1000"
 )
-
-// User Code
-const (
-	UserInvalid      = "U0001"
-	UserDisabled     = "U0002"
-	UserAppForbidden = "U0003"
-)
