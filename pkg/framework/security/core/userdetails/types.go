@@ -32,6 +32,16 @@ type Checker interface {
 	Check(user UserDetails) error
 }
 
+// PreChecker 前置检查器
+type PreChecker interface {
+	Checker
+}
+
+// PostChecker 后置检查器
+type PostChecker interface {
+	Checker
+}
+
 // UserCache 用户缓存接口
 type UserCache interface {
 	// 从缓存中获取用户信息
