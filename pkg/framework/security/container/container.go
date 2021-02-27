@@ -1,6 +1,7 @@
 package container
 
 import (
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	coreAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/crypto/password"
@@ -13,13 +14,14 @@ import (
 
 // SecurityContainer 安全容器
 type SecurityContainer struct {
-	Providers            coreAuth.Providers
-	PasswordEncoder      password.Encoder
-	UserCache            userdetails.UserCache
-	PreChecker           userdetails.PreChecker
-	PostChecker          userdetails.PostChecker
-	UserDetailsService   userdetails.Service
-	ClientDetailsService clientdetails.Service
+	WebSecurityConfigurers security.WebSecurityConfigurers
+	Providers              coreAuth.Providers
+	PasswordEncoder        password.Encoder
+	UserCache              userdetails.UserCache
+	PreChecker             userdetails.PreChecker
+	PostChecker            userdetails.PostChecker
+	UserDetailsService     userdetails.Service
+	ClientDetailsService   clientdetails.Service
 }
 
 // OAuth2Container OAuth2 容器

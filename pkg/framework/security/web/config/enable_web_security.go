@@ -7,6 +7,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/filter"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/response"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/ingot"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/builders"
 )
@@ -15,9 +16,9 @@ var webSecurity *webSecurityConfiguration
 var once sync.Once
 
 // EnableWebSecurity 启用 WebSecurity
-func EnableWebSecurity(engine *gin.Engine, configurers security.WebSecurityConfigurers) {
+func EnableWebSecurity(engine *gin.Engine, securityContainer *container.SecurityContainer) {
 	once.Do(func() {
-		filter, err := buildWebSecurityFilter(configurers)
+		filter, err := buildWebSecurityFilter(securityContainer.WebSecurityConfigurers)
 		if err != nil {
 			panic(err)
 		}
