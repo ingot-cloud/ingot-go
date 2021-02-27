@@ -10,24 +10,23 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/ingot"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 )
 
 // HTTPServer http web server
 type HTTPServer struct {
-	Context                context.Context
-	Config                 config.HTTPConfig
-	HTTPConfigurer         config.HTTPConfigurer
-	WebSecurityConfigurers security.WebSecurityConfigurers
+	Context        context.Context
+	Config         config.HTTPConfig
+	HTTPConfigurer config.HTTPConfigurer
+	Container      *container.Container
 }
 
 // NewHTTPServer 创建 http 服务
 func NewHTTPServer(context context.Context, c *container.Container) *HTTPServer {
 	return &HTTPServer{
-		Context:                context,
-		Config:                 c.HTTPConfig,
-		HTTPConfigurer:         c.HTTPConfigurer,
-		WebSecurityConfigurers: c.WebSecurityConfigurers,
+		Context:        context,
+		Config:         c.HTTPConfig,
+		HTTPConfigurer: c.HTTPConfigurer,
+		Container:      c,
 	}
 }
 
@@ -43,7 +42,7 @@ func (server *HTTPServer) buildHTTPHandler() *gin.Engine {
 
 	engine := gin.New()
 	enableDefaultMiddleware(engine)
-	enableSecurityMiddleware(engine, server.WebSecurityConfigurers)
+	enableSecurityMiddleware(engine, server.Container.SecurityContainer)
 
 	// 设置 prefix
 	routerGroup := engine.Group(server.Config.Prefix)
