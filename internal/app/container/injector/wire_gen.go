@@ -14,9 +14,16 @@ import (
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"
 	"github.com/ingot-cloud/ingot-go/internal/app/service"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
+	dao2 "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication/provider/dao"
+	container2 "github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
+	provider2 "github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
+	config2 "github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 )
 
-// Injectors from wire.go:
+// Injectors from app.go:
 
 func BuildConfiguration(options *config.Options) (*config.Config, error) {
 	configConfig, err := provider.NewConfig(options)
@@ -121,4 +128,76 @@ func BuildContainer(config2 *config.Config, options *config.Options) (*container
 		cleanup2()
 		cleanup()
 	}, nil
+}
+
+// Injectors from security.go:
+
+func BuildSecurityContainer(userDetailsService userdetails.Service, clientDetailsService clientdetails.Service) (*container2.SecurityContainer, error) {
+	encoder := provider2.PasswordEncoder()
+	userCache := provider2.UserCache()
+	preChecker := provider2.PreChecker()
+	postChecker := provider2.PostChecker()
+	authenticationProvider := &dao2.AuthenticationProvider{
+		PasswordEncoder:          encoder,
+		UserDetailsService:       userDetailsService,
+		UserCache:                userCache,
+		PreAuthenticationChecks:  preChecker,
+		PostAuthenticationChecks: postChecker,
+	}
+	providers := provider2.Providers(authenticationProvider)
+	securityContainer := &container2.SecurityContainer{
+		Providers:            providers,
+		PasswordEncoder:      encoder,
+		UserCache:            userCache,
+		PreChecker:           preChecker,
+		PostChecker:          postChecker,
+		UserDetailsService:   userDetailsService,
+		ClientDetailsService: clientDetailsService,
+	}
+	return securityContainer, nil
+}
+
+func BuildOAuth2Container(oauth2Config config2.OAuth2) (*container2.OAuth2Container, error) {
+	userAuthenticationConverter := provider2.UserAuthenticationConverter()
+	accessTokenConverter := provider2.AccessTokenConverter(oauth2Config, userAuthenticationConverter)
+	jwtAccessTokenConverter := provider2.JwtAccessTokenConverter(oauth2Config, accessTokenConverter)
+	store := provider2.TokenStore(jwtAccessTokenConverter)
+	defaultTokenServices := provider2.DefaultTokenServices(oauth2Config, store)
+	oAuth2Container := &container2.OAuth2Container{
+		Config:                      oauth2Config,
+		DefaultTokenServices:        defaultTokenServices,
+		TokenStore:                  store,
+		JwtAccessTokenConverter:     jwtAccessTokenConverter,
+		AccessTokenConverter:        accessTokenConverter,
+		UserAuthenticationConverter: userAuthenticationConverter,
+	}
+	return oAuth2Container, nil
+}
+
+func BuildResourceServerContainer(oauth2Container *container2.OAuth2Container) (*container2.ResourceServerContainer, error) {
+	resourceServerTokenServices := provider2.ResourceServerTokenServices(oauth2Container)
+	tokenExtractor := provider2.TokenExtractor()
+	manager := provider2.ResourceAuthenticationManager(oauth2Container, resourceServerTokenServices)
+	oAuth2SecurityConfigurer := provider2.OAuth2SecurityConfigurer(tokenExtractor, manager)
+	resourceServerContainer := &container2.ResourceServerContainer{
+		ResourceServerTokenServices: resourceServerTokenServices,
+		OAuth2SecurityConfigurer:    oAuth2SecurityConfigurer,
+		TokenExtractor:              tokenExtractor,
+		AuthenticationManager:       manager,
+	}
+	return resourceServerContainer, nil
+}
+
+func BuildAuthorizationServerContainer(oauth2Container *container2.OAuth2Container, securityContainer *container2.SecurityContainer, enhancers token.Enhancers) (*container2.AuthorizationServerContainer, error) {
+	enhancer := provider2.TokenEnhancer(enhancers, oauth2Container)
+	manager := provider2.AuthorizationAuthenticationManager(securityContainer)
+	authorizationServerTokenServices := provider2.AuthorizationServerTokenServices(oauth2Container, securityContainer, enhancer, manager)
+	consumerTokenServices := provider2.ConsumerTokenServices(oauth2Container)
+	authorizationServerContainer := &container2.AuthorizationServerContainer{
+		AuthorizationServerTokenServices: authorizationServerTokenServices,
+		ConsumerTokenServices:            consumerTokenServices,
+		TokenEnhancer:                    enhancer,
+		AuthenticationManager:            manager,
+	}
+	return authorizationServerContainer, nil
 }
