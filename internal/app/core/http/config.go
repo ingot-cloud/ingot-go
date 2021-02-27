@@ -7,12 +7,11 @@ import (
 	"github.com/ingot-cloud/ingot-go/internal/app/core/middleware"
 	bootConfig "github.com/ingot-cloud/ingot-go/pkg/framework/boot/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/ingot"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 )
 
 // APIConfig http 配置
 type APIConfig struct {
-	Auth           security.Authentication
+	// Auth           security.Authentication
 	CasbinEnforcer *casbin.SyncedEnforcer
 	HTTPConfig     bootConfig.HTTPConfig
 	SecurityConfig config.Security
@@ -24,7 +23,7 @@ type APIConfig struct {
 func (c *APIConfig) Configure(app *ingot.Router) {
 	// authentication
 	permitUrls := c.SecurityConfig.PermitURLs
-	app.Use(middleware.UserAuthMiddleware(c.Auth, middleware.NewPermitWithPrefix(permitUrls...)))
+	app.Use(middleware.UserAuthMiddleware(middleware.NewPermitWithPrefix(permitUrls...)))
 	app.Use(middleware.CasbinMiddleware(c.CasbinEnforcer, middleware.NewPermitWithPrefix(permitUrls...)))
 }
 

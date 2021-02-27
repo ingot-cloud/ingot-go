@@ -7,14 +7,15 @@ import (
 	"github.com/google/wire"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 )
 
-func BuildSecurityContainer(userDetailsService userdetails.Service, clientDetailsService clientdetails.Service) (*container.SecurityContainer, error) {
+func BuildSecurityContainer(injector container.SecurityInjector) (*container.SecurityContainer, error) {
 	wire.Build(
+		provider.WebSecurityConfigurers,
+		provider.UserDetailsService,
+		provider.ClientDetailsService,
 		provider.Providers,
 		provider.PasswordEncoder,
 		provider.UserCache,

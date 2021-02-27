@@ -3,25 +3,21 @@ package service
 import (
 	"context"
 	"strings"
-	"time"
 
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/domain"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dto"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/errors"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/model/enums"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/crypto/password"
 )
 
 // Auth service
 type Auth struct {
-	UserDao         *dao.User
-	RoleUserDao     *dao.RoleUser
-	RoleDao         *dao.Role
-	Auth            security.Authentication
-	PasswordEncoder password.Encoder
+	UserDao     *dao.User
+	RoleUserDao *dao.RoleUser
+	RoleDao     *dao.Role
+	// Auth        security.Authentication
 }
 
 // VerifyUserInfo 验证用户信息
@@ -31,10 +27,10 @@ func (a *Auth) VerifyUserInfo(ctx context.Context, params dto.LoginParams) (*dom
 		return nil, nil, errors.ErrUserInvalid
 	}
 
-	if result, err := a.PasswordEncoder.Matches(params.Password, user.Password); !result || err != nil {
-		log.Error(err)
-		return nil, nil, errors.ErrUserInvalid
-	}
+	// if result, err := a.PasswordEncoder.Matches(params.Password, user.Password); !result || err != nil {
+	// 	log.Error(err)
+	// 	return nil, nil, errors.ErrUserInvalid
+	// }
 
 	if strings.Compare(user.Status, string(enums.StatusDisabled)) == 0 {
 		return nil, nil, errors.ErrUserDisabled
@@ -71,26 +67,27 @@ func (a *Auth) VerifyUserInfo(ctx context.Context, params dto.LoginParams) (*dom
 
 // GenerateToken 生成Token
 func (a *Auth) GenerateToken(ctx context.Context, user security.User) (*dto.LoginResult, error) {
-	accessToken, err := a.Auth.GenerateToken(ctx, user)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
+	// accessToken, err := a.Auth.GenerateToken(ctx, user)
+	// if err != nil {
+	// 	return nil, errors.WithStack(err)
+	// }
 
-	expire := time.Unix(accessToken.GetExpiration(), 0).Sub(time.Now())
+	// expire := time.Unix(accessToken.GetExpiration(), 0).Sub(time.Now())
 
-	// store token
-	a.Auth.GetStore().Store(ctx, accessToken.GetValue(), expire)
+	// // store token
+	// a.Auth.GetStore().Store(ctx, accessToken.GetValue(), expire)
 
 	return &dto.LoginResult{
-		Username:    user.Username,
-		Roles:       user.Roles,
-		AccessToken: accessToken.GetValue(),
-		TokenType:   accessToken.GetTokenType(),
-		Expiration:  accessToken.GetExpiration(),
+		Username: user.Username,
+		Roles:    user.Roles,
+		// AccessToken: accessToken.GetValue(),
+		// TokenType:   accessToken.GetTokenType(),
+		// Expiration:  accessToken.GetExpiration(),
 	}, nil
 }
 
 // RevokeToken 撤销Token
 func (a *Auth) RevokeToken(ctx context.Context, user *security.User, token string) error {
-	return a.Auth.RevokeToken(ctx, token)
+	// return a.Auth.RevokeToken(ctx, token)
+	return nil
 }
