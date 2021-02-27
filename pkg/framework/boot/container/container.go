@@ -3,10 +3,12 @@ package container
 import (
 	"context"
 
-	"github.com/google/wire"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 )
+
+// Instance 容器实例
+var Instance *Container
 
 // Container for app
 type Container struct {
@@ -21,5 +23,20 @@ type Container struct {
 // Factory 容器工厂
 type Factory func(context.Context) (*Container, func(), error)
 
-// ContainerSet 容器
-var ContainerSet = wire.NewSet(wire.Struct(new(Container), "*"))
+// HTTPInjector 注入参数
+type HTTPInjector interface {
+	GetHTTPConfig() config.HTTPConfig
+	GetHTTPConfigurer() config.HTTPConfigurer
+}
+
+// BuildContainer 构建 Container
+func BuildContainer(httpInjector HTTPInjector, securityContainer container.SecurityAllContainer) *Container {
+	return &Container{
+		HTTPConfig:                   httpInjector.GetHTTPConfig(),
+		HTTPConfigurer:               httpInjector.GetHTTPConfigurer(),
+		SecurityContainer:            securityContainer.GetSecurityContainer(),
+		OAuth2Container:              securityContainer.GetOAuth2Container(),
+		ResourceServerContainer:      securityContainer.GetResourceServerContainer(),
+		AuthorizationServerContainer: securityContainer.GetAuthorizationServerContainer(),
+	}
+}

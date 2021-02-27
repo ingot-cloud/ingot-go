@@ -32,8 +32,14 @@ func NewHTTPServer(context context.Context, c *container.Container) *HTTPServer 
 
 // Run 运行Http Web服务
 func (server *HTTPServer) Run() func() {
+	server.initContainer()
 	engine := server.buildHTTPHandler()
 	return server.runHTTPServer(engine)
+}
+
+// 初始化容器实例
+func (server *HTTPServer) initContainer() {
+	container.Instance = server.Container
 }
 
 // BuildHTTPHandler to get gin.Engine

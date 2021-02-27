@@ -25,9 +25,9 @@ func Providers(dao *dao.AuthenticationProvider) coreAuth.Providers {
 }
 
 // PasswordEncoder encoder
-func PasswordEncoder(injectorParams *container.CustomContainer) password.Encoder {
-	if injectorParams.PasswordEncoder != nil {
-		return injectorParams.PasswordEncoder
+func PasswordEncoder(injector container.SecurityInjector) password.Encoder {
+	if injector.GetPasswordEncoder() != nil {
+		return injector.GetPasswordEncoder()
 	}
 	return factory.CreateDelegatingPasswordEncoder()
 }
@@ -48,20 +48,23 @@ func PostChecker() userdetails.PostChecker {
 }
 
 // WebSecurityConfigurers web 安全配置
-func WebSecurityConfigurers(injectorParams *container.CustomContainer) security.WebSecurityConfigurers {
-	configurers := injectorParams.WebSecurityConfigurers
+func WebSecurityConfigurers(injector container.SecurityInjector) security.WebSecurityConfigurers {
+	var configurers security.WebSecurityConfigurers
+	if len(injector.GetWebSecurityConfigurers()) != 0 {
+		configurers = injector.GetWebSecurityConfigurers()
+	}
 	configurers = append(configurers, config.NewWebSecurityConfigurerAdapter(nil, nil))
 	return configurers
 }
 
 // UserDetailsService 用户详情服务
-func UserDetailsService(injectorParams *container.CustomContainer) userdetails.Service {
-	return injectorParams.UserDetailsService
+func UserDetailsService(injector container.SecurityInjector) userdetails.Service {
+	return injector.GetUserDetailsService()
 }
 
 // ClientDetailsService 客户端详情服务
-func ClientDetailsService(injectorParams *container.CustomContainer) clientdetails.Service {
-	return injectorParams.ClientDetailsService
+func ClientDetailsService(injector container.SecurityInjector) clientdetails.Service {
+	return injector.GetClientDetailsService()
 }
 
 // DaoAuthenticationProviderSet UsernamePasswordAuthenticationToken 认证提供者
