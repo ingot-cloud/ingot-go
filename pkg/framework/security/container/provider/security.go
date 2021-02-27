@@ -4,11 +4,15 @@ import (
 	"github.com/google/wire"
 	coreAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication/provider/dao"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails/cache"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/crypto/factory"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/crypto/password"
 )
+
+// SecurityContainerSet 安全容器
+var SecurityContainerSet = wire.NewSet(wire.Struct(new(container.SecurityContainer), "*"))
 
 // Providers 所有认证提供者
 func Providers(dao *dao.AuthenticationProvider) coreAuth.Providers {

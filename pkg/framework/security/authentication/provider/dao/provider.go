@@ -13,8 +13,8 @@ type AuthenticationProvider struct {
 	PasswordEncoder          password.Encoder
 	UserDetailsService       userdetails.Service
 	UserCache                userdetails.UserCache
-	PreAuthenticationChecks  userdetails.Checker
-	PostAuthenticationChecks userdetails.Checker
+	PreAuthenticationChecks  userdetails.PreChecker
+	PostAuthenticationChecks userdetails.PostChecker
 }
 
 // NewProvider 实例化

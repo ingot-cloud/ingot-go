@@ -1,12 +1,15 @@
 package provider
 
 import (
+	"github.com/google/wire"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/store"
 )
+
+// AuthorizationServerContainerSet 授权服务器容器
+var AuthorizationServerContainerSet = wire.NewSet(wire.Struct(new(container.AuthorizationServerContainer), "*"))
 
 // AuthorizationServerTokenServices 授权服务器 token 服务
 func AuthorizationServerTokenServices(oauth2Container *container.OAuth2Container, securityContainer *container.SecurityContainer, enhancer token.Enhancer, manager authentication.Manager) token.AuthorizationServerTokenServices {
@@ -26,10 +29,10 @@ func ConsumerTokenServices(oauth2Container *container.OAuth2Container) token.Con
 }
 
 // TokenEnhancer token增强，默认使用增强链
-func TokenEnhancer(enhancers token.Enhancers, jwtEnhancer *store.JwtAccessTokenConverter) token.Enhancer {
+func TokenEnhancer(enhancers token.Enhancers, oauth2Container *container.OAuth2Container) token.Enhancer {
 	chain := &token.EnhancerChain{}
 	// 默认追加 jwt enhancer
-	enhancers = append(enhancers, jwtEnhancer)
+	enhancers = append(enhancers, oauth2Container.JwtAccessTokenConverter)
 	chain.SetTokenEnhancers(enhancers)
 	return chain
 }

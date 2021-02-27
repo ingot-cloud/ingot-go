@@ -2,11 +2,16 @@ package provider
 
 import (
 	"github.com/dgrijalva/jwt-go"
+	"github.com/google/wire"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/errors"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/store"
 )
+
+// OAuth2ContainerSet OAuth2容器
+var OAuth2ContainerSet = wire.NewSet(wire.Struct(new(container.OAuth2Container), "*"))
 
 // DefaultTokenServices 默认的服务
 func DefaultTokenServices(config config.OAuth2, tokenStore token.Store) *token.DefaultTokenServices {

@@ -1,12 +1,16 @@
 package provider
 
 import (
+	"github.com/google/wire"
 	coreAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 )
+
+// ResourceServerContainerSet 资源服务器容器
+var ResourceServerContainerSet = wire.NewSet(wire.Struct(new(container.ResourceServerContainer), "*"))
 
 // ResourceServerTokenServices 资源服务器 token 服务
 func ResourceServerTokenServices(container *container.OAuth2Container) token.ResourceServerTokenServices {
