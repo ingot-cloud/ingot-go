@@ -27,7 +27,7 @@ func BuildSecurityContainer(injector container.SecurityInjector) (*container.Sec
 	return nil, nil
 }
 
-func BuildOAuth2Container(oauth2Config config.OAuth2) (*container.OAuth2Container, error) {
+func BuildOAuth2Container(oauth2Config config.OAuth2, injector container.SecurityInjector) (*container.OAuth2Container, error) {
 	wire.Build(
 		provider.DefaultTokenServices,
 		provider.TokenStore,
@@ -39,7 +39,7 @@ func BuildOAuth2Container(oauth2Config config.OAuth2) (*container.OAuth2Containe
 	return nil, nil
 }
 
-func BuildResourceServerContainer(oauth2Container *container.OAuth2Container) (*container.ResourceServerContainer, error) {
+func BuildResourceServerContainer(oauth2Container *container.OAuth2Container, injector container.SecurityInjector) (*container.ResourceServerContainer, error) {
 	wire.Build(
 		provider.ResourceServerTokenServices,
 		provider.OAuth2SecurityConfigurer,
@@ -50,7 +50,7 @@ func BuildResourceServerContainer(oauth2Container *container.OAuth2Container) (*
 	return nil, nil
 }
 
-func BuildAuthorizationServerContainer(oauth2Container *container.OAuth2Container, securityContainer *container.SecurityContainer, enhancers token.Enhancers) (*container.AuthorizationServerContainer, error) {
+func BuildAuthorizationServerContainer(oauth2Container *container.OAuth2Container, securityContainer *container.SecurityContainer, enhancers token.Enhancers, injector container.SecurityInjector) (*container.AuthorizationServerContainer, error) {
 	wire.Build(
 		provider.AuthorizationServerTokenServices,
 		provider.ConsumerTokenServices,

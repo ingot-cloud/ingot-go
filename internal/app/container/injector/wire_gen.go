@@ -113,9 +113,9 @@ func BuildSecurityContainer(injector container3.SecurityInjector) (*container3.S
 	webSecurityConfigurers := provider2.WebSecurityConfigurers(injector)
 	encoder := provider2.PasswordEncoder(injector)
 	userdetailsService := provider2.UserDetailsService(injector)
-	userCache := provider2.UserCache()
-	preChecker := provider2.PreChecker()
-	postChecker := provider2.PostChecker()
+	userCache := provider2.UserCache(injector)
+	preChecker := provider2.PreChecker(injector)
+	postChecker := provider2.PostChecker(injector)
 	authenticationProvider := &dao2.AuthenticationProvider{
 		PasswordEncoder:          encoder,
 		UserDetailsService:       userdetailsService,
@@ -123,7 +123,7 @@ func BuildSecurityContainer(injector container3.SecurityInjector) (*container3.S
 		PreAuthenticationChecks:  preChecker,
 		PostAuthenticationChecks: postChecker,
 	}
-	providers := provider2.Providers(authenticationProvider)
+	providers := provider2.Providers(authenticationProvider, injector)
 	clientdetailsService := provider2.ClientDetailsService(injector)
 	securityContainer := &container3.SecurityContainer{
 		WebSecurityConfigurers: webSecurityConfigurers,
@@ -138,11 +138,11 @@ func BuildSecurityContainer(injector container3.SecurityInjector) (*container3.S
 	return securityContainer, nil
 }
 
-func BuildOAuth2Container(oauth2Config config2.OAuth2) (*container3.OAuth2Container, error) {
-	userAuthenticationConverter := provider2.UserAuthenticationConverter()
-	accessTokenConverter := provider2.AccessTokenConverter(oauth2Config, userAuthenticationConverter)
+func BuildOAuth2Container(oauth2Config config2.OAuth2, injector container3.SecurityInjector) (*container3.OAuth2Container, error) {
+	userAuthenticationConverter := provider2.UserAuthenticationConverter(injector)
+	accessTokenConverter := provider2.AccessTokenConverter(oauth2Config, userAuthenticationConverter, injector)
 	jwtAccessTokenConverter := provider2.JwtAccessTokenConverter(oauth2Config, accessTokenConverter)
-	store := provider2.TokenStore(jwtAccessTokenConverter)
+	store := provider2.TokenStore(jwtAccessTokenConverter, injector)
 	defaultTokenServices := provider2.DefaultTokenServices(oauth2Config, store)
 	oAuth2Container := &container3.OAuth2Container{
 		Config:                      oauth2Config,
@@ -155,10 +155,10 @@ func BuildOAuth2Container(oauth2Config config2.OAuth2) (*container3.OAuth2Contai
 	return oAuth2Container, nil
 }
 
-func BuildResourceServerContainer(oauth2Container *container3.OAuth2Container) (*container3.ResourceServerContainer, error) {
-	resourceServerTokenServices := provider2.ResourceServerTokenServices(oauth2Container)
-	tokenExtractor := provider2.TokenExtractor()
-	manager := provider2.ResourceAuthenticationManager(oauth2Container, resourceServerTokenServices)
+func BuildResourceServerContainer(oauth2Container *container3.OAuth2Container, injector container3.SecurityInjector) (*container3.ResourceServerContainer, error) {
+	resourceServerTokenServices := provider2.ResourceServerTokenServices(oauth2Container, injector)
+	tokenExtractor := provider2.TokenExtractor(injector)
+	manager := provider2.ResourceAuthenticationManager(oauth2Container, resourceServerTokenServices, injector)
 	oAuth2SecurityConfigurer := provider2.OAuth2SecurityConfigurer(tokenExtractor, manager)
 	resourceServerContainer := &container3.ResourceServerContainer{
 		ResourceServerTokenServices: resourceServerTokenServices,
@@ -169,11 +169,11 @@ func BuildResourceServerContainer(oauth2Container *container3.OAuth2Container) (
 	return resourceServerContainer, nil
 }
 
-func BuildAuthorizationServerContainer(oauth2Container *container3.OAuth2Container, securityContainer *container3.SecurityContainer, enhancers token.Enhancers) (*container3.AuthorizationServerContainer, error) {
-	enhancer := provider2.TokenEnhancer(enhancers, oauth2Container)
-	manager := provider2.AuthorizationAuthenticationManager(securityContainer)
-	authorizationServerTokenServices := provider2.AuthorizationServerTokenServices(oauth2Container, securityContainer, enhancer, manager)
-	consumerTokenServices := provider2.ConsumerTokenServices(oauth2Container)
+func BuildAuthorizationServerContainer(oauth2Container *container3.OAuth2Container, securityContainer *container3.SecurityContainer, enhancers token.Enhancers, injector container3.SecurityInjector) (*container3.AuthorizationServerContainer, error) {
+	enhancer := provider2.TokenEnhancer(enhancers, oauth2Container, injector)
+	manager := provider2.AuthorizationAuthenticationManager(securityContainer, injector)
+	authorizationServerTokenServices := provider2.AuthorizationServerTokenServices(oauth2Container, securityContainer, enhancer, manager, injector)
+	consumerTokenServices := provider2.ConsumerTokenServices(oauth2Container, injector)
 	authorizationServerContainer := &container3.AuthorizationServerContainer{
 		AuthorizationServerTokenServices: authorizationServerTokenServices,
 		ConsumerTokenServices:            consumerTokenServices,
