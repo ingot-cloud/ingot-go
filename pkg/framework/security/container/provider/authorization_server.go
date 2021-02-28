@@ -8,11 +8,20 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 )
 
-// AuthorizationServerContainerSet 授权服务器容器
-var AuthorizationServerContainerSet = wire.NewSet(wire.Struct(new(container.AuthorizationServerContainer), "*"))
+// AuthorizationServerContainer 授权服务器容器
+var AuthorizationServerContainer = wire.NewSet(wire.Struct(new(container.AuthorizationServerContainer), "*"))
+
+// AuthorizationServerContainerFields 授权服务器容器所有字段
+var AuthorizationServerContainerFields = wire.NewSet(
+	AuthorizationServerTokenServices,
+	ConsumerTokenServices,
+	TokenEnhancer,
+	TokenEnhancers,
+	AuthorizationAuthenticationManager,
+)
 
 // AuthorizationServerTokenServices 授权服务器 token 服务
-func AuthorizationServerTokenServices(oauth2Container *container.OAuth2Container, securityContainer *container.SecurityContainer, enhancer token.Enhancer, manager authentication.Manager, injector container.SecurityInjector) token.AuthorizationServerTokenServices {
+func AuthorizationServerTokenServices(oauth2Container *container.OAuth2Container, securityContainer *container.SecurityContainer, enhancer token.Enhancer, manager authentication.AuthorizationManager, injector container.SecurityInjector) token.AuthorizationServerTokenServices {
 	if injector.GetAuthorizationServerTokenServices() != nil {
 		return injector.GetAuthorizationServerTokenServices()
 	}
@@ -55,7 +64,7 @@ func TokenEnhancers(injector container.SecurityInjector) token.Enhancers {
 }
 
 // AuthorizationAuthenticationManager 授权服务器中的认证管理器
-func AuthorizationAuthenticationManager(securityContainer *container.SecurityContainer, injector container.SecurityInjector) authentication.Manager {
+func AuthorizationAuthenticationManager(securityContainer *container.SecurityContainer, injector container.SecurityInjector) authentication.AuthorizationManager {
 	if injector.GetAuthorizationAuthenticationManager() != nil {
 		return injector.GetAuthorizationAuthenticationManager()
 	}

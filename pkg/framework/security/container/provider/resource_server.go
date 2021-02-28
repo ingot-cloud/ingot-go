@@ -9,8 +9,16 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 )
 
-// ResourceServerContainerSet 资源服务器容器
-var ResourceServerContainerSet = wire.NewSet(wire.Struct(new(container.ResourceServerContainer), "*"))
+// ResourceServerContainer 资源服务器容器
+var ResourceServerContainer = wire.NewSet(wire.Struct(new(container.ResourceServerContainer), "*"))
+
+// ResourceServerContainerFields 资源服务器容器中所有字段
+var ResourceServerContainerFields = wire.NewSet(
+	ResourceServerTokenServices,
+	OAuth2SecurityConfigurer,
+	TokenExtractor,
+	ResourceAuthenticationManager,
+)
 
 // ResourceServerTokenServices 资源服务器 token 服务
 func ResourceServerTokenServices(container *container.OAuth2Container, injector container.SecurityInjector) token.ResourceServerTokenServices {
@@ -21,7 +29,7 @@ func ResourceServerTokenServices(container *container.OAuth2Container, injector 
 }
 
 // OAuth2SecurityConfigurer 实例化 OAuth2 安全配置
-func OAuth2SecurityConfigurer(tokenExtractor authentication.TokenExtractor, authenticationManager coreAuth.Manager) *config.OAuth2SecurityConfigurer {
+func OAuth2SecurityConfigurer(tokenExtractor authentication.TokenExtractor, authenticationManager coreAuth.ResourceManager) *config.OAuth2SecurityConfigurer {
 	return config.NewOAuth2SecurityConfigurer(tokenExtractor, authenticationManager)
 }
 
@@ -34,7 +42,7 @@ func TokenExtractor(injector container.SecurityInjector) authentication.TokenExt
 }
 
 // ResourceAuthenticationManager 资源服务器中使用的认证管理器
-func ResourceAuthenticationManager(container *container.OAuth2Container, tokenService token.ResourceServerTokenServices, injector container.SecurityInjector) coreAuth.Manager {
+func ResourceAuthenticationManager(container *container.OAuth2Container, tokenService token.ResourceServerTokenServices, injector container.SecurityInjector) coreAuth.ResourceManager {
 	if injector.GetResourceAuthenticationManager() != nil {
 		return injector.GetResourceAuthenticationManager()
 	}

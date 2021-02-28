@@ -39,7 +39,7 @@ type ResourceServerContainer struct {
 	ResourceServerTokenServices token.ResourceServerTokenServices
 	OAuth2SecurityConfigurer    *config.OAuth2SecurityConfigurer
 	TokenExtractor              authentication.TokenExtractor
-	AuthenticationManager       coreAuth.Manager
+	AuthenticationManager       coreAuth.ResourceManager
 }
 
 // AuthorizationServerContainer 授权服务器容器
@@ -47,7 +47,7 @@ type AuthorizationServerContainer struct {
 	AuthorizationServerTokenServices token.AuthorizationServerTokenServices
 	ConsumerTokenServices            token.ConsumerTokenServices
 	TokenEnhancer                    token.Enhancer
-	AuthenticationManager            coreAuth.Manager
+	AuthenticationManager            coreAuth.AuthorizationManager
 }
 
 // SecurityAllContainer 接口

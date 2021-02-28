@@ -10,8 +10,17 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/store"
 )
 
-// OAuth2ContainerSet OAuth2容器
-var OAuth2ContainerSet = wire.NewSet(wire.Struct(new(container.OAuth2Container), "*"))
+// OAuth2Container OAuth2容器
+var OAuth2Container = wire.NewSet(wire.Struct(new(container.OAuth2Container), "*"))
+
+// OAuth2ContainerFields OAuth2容器所有字段
+var OAuth2ContainerFields = wire.NewSet(
+	DefaultTokenServices,
+	TokenStore,
+	JwtAccessTokenConverter,
+	AccessTokenConverter,
+	UserAuthenticationConverter,
+)
 
 // DefaultTokenServices 默认的服务
 func DefaultTokenServices(config config.OAuth2, tokenStore token.Store) *token.DefaultTokenServices {

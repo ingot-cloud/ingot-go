@@ -8,6 +8,16 @@ type Manager interface {
 	Authenticate(core.Authentication) (core.Authentication, error)
 }
 
+// ResourceManager 资源认证管理器
+type ResourceManager interface {
+	Manager
+}
+
+// AuthorizationManager 授权认证管理器
+type AuthorizationManager interface {
+	Manager
+}
+
 // Provider 身份验证提供者
 type Provider interface {
 	// 身份验证

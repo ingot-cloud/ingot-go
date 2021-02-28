@@ -14,8 +14,24 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/config"
 )
 
-// SecurityContainerSet 安全容器
-var SecurityContainerSet = wire.NewSet(wire.Struct(new(container.SecurityContainer), "*"))
+// SecurityContainer 安全容器
+var SecurityContainer = wire.NewSet(wire.Struct(new(container.SecurityContainer), "*"))
+
+// SecurityContainerFields 安全容器所有字段
+var SecurityContainerFields = wire.NewSet(
+	Providers,
+	PasswordEncoder,
+	UserCache,
+	PreChecker,
+	PostChecker,
+	WebSecurityConfigurers,
+	UserDetailsService,
+	ClientDetailsService,
+	DaoAuthenticationProvider,
+)
+
+// DaoAuthenticationProvider UsernamePasswordAuthenticationToken 认证提供者
+var DaoAuthenticationProvider = wire.NewSet(wire.Struct(new(dao.AuthenticationProvider), "*"))
 
 // Providers 所有认证提供者
 func Providers(dao *dao.AuthenticationProvider, injector container.SecurityInjector) coreAuth.Providers {
@@ -84,6 +100,3 @@ func ClientDetailsService(injector container.SecurityInjector) clientdetails.Ser
 	}
 	return NilClientDetails()
 }
-
-// DaoAuthenticationProviderSet UsernamePasswordAuthenticationToken 认证提供者
-var DaoAuthenticationProviderSet = wire.NewSet(wire.Struct(new(dao.AuthenticationProvider), "*"))
