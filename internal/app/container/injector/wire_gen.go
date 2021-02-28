@@ -19,7 +19,6 @@ import (
 	container3 "github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	provider2 "github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider"
 	config2 "github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 )
 
 // Injectors from app.go:
@@ -169,7 +168,8 @@ func BuildResourceServerContainer(oauth2Container *container3.OAuth2Container, i
 	return resourceServerContainer, nil
 }
 
-func BuildAuthorizationServerContainer(oauth2Container *container3.OAuth2Container, securityContainer *container3.SecurityContainer, enhancers token.Enhancers, injector container3.SecurityInjector) (*container3.AuthorizationServerContainer, error) {
+func BuildAuthorizationServerContainer(oauth2Container *container3.OAuth2Container, securityContainer *container3.SecurityContainer, injector container3.SecurityInjector) (*container3.AuthorizationServerContainer, error) {
+	enhancers := provider2.TokenEnhancers(injector)
 	enhancer := provider2.TokenEnhancer(enhancers, oauth2Container, injector)
 	manager := provider2.AuthorizationAuthenticationManager(securityContainer, injector)
 	authorizationServerTokenServices := provider2.AuthorizationServerTokenServices(oauth2Container, securityContainer, enhancer, manager, injector)

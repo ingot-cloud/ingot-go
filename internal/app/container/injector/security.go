@@ -8,7 +8,6 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 )
 
 func BuildSecurityContainer(injector container.SecurityInjector) (*container.SecurityContainer, error) {
@@ -50,11 +49,12 @@ func BuildResourceServerContainer(oauth2Container *container.OAuth2Container, in
 	return nil, nil
 }
 
-func BuildAuthorizationServerContainer(oauth2Container *container.OAuth2Container, securityContainer *container.SecurityContainer, enhancers token.Enhancers, injector container.SecurityInjector) (*container.AuthorizationServerContainer, error) {
+func BuildAuthorizationServerContainer(oauth2Container *container.OAuth2Container, securityContainer *container.SecurityContainer, injector container.SecurityInjector) (*container.AuthorizationServerContainer, error) {
 	wire.Build(
 		provider.AuthorizationServerTokenServices,
 		provider.ConsumerTokenServices,
 		provider.TokenEnhancer,
+		provider.TokenEnhancers,
 		provider.AuthorizationAuthenticationManager,
 		provider.AuthorizationServerContainerSet,
 	)
