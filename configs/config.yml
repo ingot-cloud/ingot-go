@@ -72,14 +72,21 @@ redis:
   keyPrefix: "ingot:"
   ssl: false
 
-auth:
+security:
+  enableResourceServer: true
+  enableAuthorizationServer: true
   permitUrls:
     - "/api/auth/login"
-  jwt:
-    # 签名方式(支持：HS512/HS384)
-    signingMethod: '支持：HS512'
-    # 签名key
-    signingKey: 'ingot-auth'
-    # 过期时间（单位秒）
-    expired: 7200 
+  oauth2:
+    includeGrantType: false
+    jwt:
+      # 签名方式(支持：HS512/HS384)
+      signingMethod: '支持：HS512'
+      # 签名key
+      signingKey: 'ingot-security'
+    resourceServer:
+      resourceID: ""
+    authorizationServer:
+      supportRefreshToken: true
+      reuseRefreshToken: true
 

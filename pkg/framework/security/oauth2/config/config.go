@@ -2,6 +2,7 @@ package config
 
 // OAuth2 配置
 type OAuth2 struct {
+	// 是否包含 grantType
 	IncludeGrantType    bool                `yaml:"includeGrantType"`
 	Jwt                 Jwt                 `yaml:"jwt"`
 	ResourceServer      ResourceServer      `yaml:"resourceServer"`
