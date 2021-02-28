@@ -13,7 +13,10 @@ import (
 var ResourceServerContainerSet = wire.NewSet(wire.Struct(new(container.ResourceServerContainer), "*"))
 
 // ResourceServerTokenServices 资源服务器 token 服务
-func ResourceServerTokenServices(container *container.OAuth2Container) token.ResourceServerTokenServices {
+func ResourceServerTokenServices(container *container.OAuth2Container, injector container.SecurityInjector) token.ResourceServerTokenServices {
+	if injector.GetResourceServerTokenServices() != nil {
+		return injector.GetResourceServerTokenServices()
+	}
 	return container.DefaultTokenServices
 }
 
@@ -23,12 +26,18 @@ func OAuth2SecurityConfigurer(tokenExtractor authentication.TokenExtractor, auth
 }
 
 // TokenExtractor TokenExtrator接口默认实现
-func TokenExtractor() authentication.TokenExtractor {
+func TokenExtractor(injector container.SecurityInjector) authentication.TokenExtractor {
+	if injector.GetTokenExtractor() != nil {
+		return injector.GetTokenExtractor()
+	}
 	return authentication.NewBearerTokenExtractor()
 }
 
 // ResourceAuthenticationManager 资源服务器中使用的认证管理器
-func ResourceAuthenticationManager(container *container.OAuth2Container, tokenService token.ResourceServerTokenServices) coreAuth.Manager {
+func ResourceAuthenticationManager(container *container.OAuth2Container, tokenService token.ResourceServerTokenServices, injector container.SecurityInjector) coreAuth.Manager {
+	if injector.GetResourceAuthenticationManager() != nil {
+		return injector.GetResourceAuthenticationManager()
+	}
 	manager := authentication.NewOAuth2AuthenticationManager(tokenService)
 	manager.ResourceID = container.Config.ResourceServer.ResourceID
 	return manager

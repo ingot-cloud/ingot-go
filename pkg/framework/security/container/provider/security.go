@@ -18,8 +18,11 @@ import (
 var SecurityContainerSet = wire.NewSet(wire.Struct(new(container.SecurityContainer), "*"))
 
 // Providers 所有认证提供者
-func Providers(dao *dao.AuthenticationProvider) coreAuth.Providers {
+func Providers(dao *dao.AuthenticationProvider, injector container.SecurityInjector) coreAuth.Providers {
 	var providers coreAuth.Providers
+	if len(injector.GetProviders()) != 0 {
+		providers = injector.GetProviders()
+	}
 	providers = append(providers, dao)
 	return providers
 }
@@ -33,17 +36,26 @@ func PasswordEncoder(injector container.SecurityInjector) password.Encoder {
 }
 
 // UserCache 用户缓存
-func UserCache() userdetails.UserCache {
+func UserCache(injector container.SecurityInjector) userdetails.UserCache {
+	if injector.GetUserCache() != nil {
+		return injector.GetUserCache()
+	}
 	return cache.NewNilUserCache()
 }
 
 // PreChecker 前置检查器
-func PreChecker() userdetails.PreChecker {
+func PreChecker(injector container.SecurityInjector) userdetails.PreChecker {
+	if injector.GetPreChecker() != nil {
+		return injector.GetPreChecker()
+	}
 	return dao.NewPreChecker()
 }
 
 // PostChecker 后置检查器
-func PostChecker() userdetails.PostChecker {
+func PostChecker(injector container.SecurityInjector) userdetails.PostChecker {
+	if injector.GetPostChecker() != nil {
+		return injector.GetPostChecker()
+	}
 	return dao.NewPostChecker()
 }
 
@@ -59,12 +71,18 @@ func WebSecurityConfigurers(injector container.SecurityInjector) security.WebSec
 
 // UserDetailsService 用户详情服务
 func UserDetailsService(injector container.SecurityInjector) userdetails.Service {
-	return injector.GetUserDetailsService()
+	if injector.GetUserDetailsService() != nil {
+		return injector.GetUserDetailsService()
+	}
+	return NilUserDetailsService()
 }
 
 // ClientDetailsService 客户端详情服务
 func ClientDetailsService(injector container.SecurityInjector) clientdetails.Service {
-	return injector.GetClientDetailsService()
+	if injector.GetClientDetailsService() != nil {
+		return injector.GetClientDetailsService()
+	}
+	return NilClientDetails()
 }
 
 // DaoAuthenticationProviderSet UsernamePasswordAuthenticationToken 认证提供者

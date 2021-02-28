@@ -22,7 +22,10 @@ func DefaultTokenServices(config config.OAuth2, tokenStore token.Store) *token.D
 }
 
 // TokenStore 实例
-func TokenStore(converter *store.JwtAccessTokenConverter) token.Store {
+func TokenStore(converter *store.JwtAccessTokenConverter, injector container.SecurityInjector) token.Store {
+	if injector.GetTokenStore() != nil {
+		return injector.GetTokenStore()
+	}
 	return store.NewJwtTokenStore(converter)
 }
 
@@ -49,7 +52,10 @@ func JwtAccessTokenConverter(config config.OAuth2, tokenConverter token.AccessTo
 }
 
 // AccessTokenConverter token转换器
-func AccessTokenConverter(config config.OAuth2, userConverter token.UserAuthenticationConverter) token.AccessTokenConverter {
+func AccessTokenConverter(config config.OAuth2, userConverter token.UserAuthenticationConverter, injector container.SecurityInjector) token.AccessTokenConverter {
+	if injector.GetAccessTokenConverter() != nil {
+		return injector.GetAccessTokenConverter()
+	}
 	converter := token.NewDefaultAccessTokenConverter()
 	converter.IncludeGrantType = config.IncludeGrantType
 	converter.UserAuthenticationConverter = userConverter
@@ -57,6 +63,9 @@ func AccessTokenConverter(config config.OAuth2, userConverter token.UserAuthenti
 }
 
 // UserAuthenticationConverter 默认实现
-func UserAuthenticationConverter() token.UserAuthenticationConverter {
+func UserAuthenticationConverter(injector container.SecurityInjector) token.UserAuthenticationConverter {
+	if injector.GetUserAuthenticationConverter() != nil {
+		return injector.GetUserAuthenticationConverter()
+	}
 	return token.NewDefaultUserAuthenticationConverter()
 }
