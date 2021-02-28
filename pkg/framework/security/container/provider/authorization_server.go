@@ -46,6 +46,14 @@ func TokenEnhancer(enhancers token.Enhancers, oauth2Container *container.OAuth2C
 	return chain
 }
 
+// TokenEnhancers 自定义增强
+func TokenEnhancers(injector container.SecurityInjector) token.Enhancers {
+	if len(injector.GetTokenEnhancers()) != 0 {
+		return injector.GetTokenEnhancers()
+	}
+	return nil
+}
+
 // AuthorizationAuthenticationManager 授权服务器中的认证管理器
 func AuthorizationAuthenticationManager(securityContainer *container.SecurityContainer, injector container.SecurityInjector) authentication.Manager {
 	if injector.GetAuthorizationAuthenticationManager() != nil {

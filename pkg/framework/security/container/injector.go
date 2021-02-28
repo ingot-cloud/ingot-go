@@ -36,6 +36,7 @@ type SecurityInjector interface {
 	GetAuthorizationServerTokenServices() token.AuthorizationServerTokenServices
 	GetConsumerTokenServices() token.ConsumerTokenServices
 	GetTokenEnhancer() token.Enhancer
+	GetTokenEnhancers() token.Enhancers
 	GetAuthorizationAuthenticationManager() coreAuth.Manager
 }
 
@@ -125,6 +126,11 @@ func (*NilSecurityInjector) GetConsumerTokenServices() token.ConsumerTokenServic
 
 // GetTokenEnhancer 获取自定义值
 func (*NilSecurityInjector) GetTokenEnhancer() token.Enhancer {
+	return nil
+}
+
+// GetTokenEnhancers 获取自定义值
+func (*NilSecurityInjector) GetTokenEnhancers() token.Enhancers {
 	return nil
 }
 
