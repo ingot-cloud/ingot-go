@@ -24,6 +24,8 @@ var SecurityContainerFields = wire.NewSet(
 	UserCache,
 	PreChecker,
 	PostChecker,
+	WebSecurityConfigurer,
+	HTTPSecurityConfigurer,
 	WebSecurityConfigurers,
 	UserDetailsService,
 	ClientDetailsService,
@@ -75,13 +77,23 @@ func PostChecker(injector container.SecurityInjector) userdetails.PostChecker {
 	return dao.NewPostChecker()
 }
 
+// WebSecurityConfigurer 默认配置
+func WebSecurityConfigurer(injector container.SecurityInjector) security.WebSecurityConfigurer {
+	return injector.GetWebSecurityConfigurer()
+}
+
+// HTTPSecurityConfigurer 默认配置
+func HTTPSecurityConfigurer(injector container.SecurityInjector) security.HTTPSecurityConfigurer {
+	return injector.GetHTTPSecurityConfigurer()
+}
+
 // WebSecurityConfigurers web 安全配置
-func WebSecurityConfigurers(injector container.SecurityInjector) security.WebSecurityConfigurers {
+func WebSecurityConfigurers(web security.WebSecurityConfigurer, http security.HTTPSecurityConfigurer, injector container.SecurityInjector) security.WebSecurityConfigurers {
 	var configurers security.WebSecurityConfigurers
 	if len(injector.GetWebSecurityConfigurers()) != 0 {
 		configurers = injector.GetWebSecurityConfigurers()
 	}
-	configurers = append(configurers, config.NewWebSecurityConfigurerAdapter(nil, nil))
+	configurers = append(configurers, config.NewWebSecurityConfigurerAdapter(web, http))
 	return configurers
 }
 

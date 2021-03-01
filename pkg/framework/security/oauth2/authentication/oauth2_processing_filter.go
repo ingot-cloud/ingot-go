@@ -21,6 +21,11 @@ func NewOAuth2ProcessingFilter(extractor TokenExtractor, manager authentication.
 	}
 }
 
+// Name 名字
+func (filter *OAuth2ProcessingFilter) Name() string {
+	return "OAuth2ProcessingFilter"
+}
+
 // Order 过滤器排序
 func (filter *OAuth2ProcessingFilter) Order() int {
 	return constants.OrderFilterOAuth2

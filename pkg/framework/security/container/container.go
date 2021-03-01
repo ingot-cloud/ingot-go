@@ -14,6 +14,8 @@ import (
 
 // SecurityContainer 安全容器
 type SecurityContainer struct {
+	WebSecurityConfigurer  security.WebSecurityConfigurer
+	HTTPSecurityConfigurer security.HTTPSecurityConfigurer
 	WebSecurityConfigurers security.WebSecurityConfigurers
 	Providers              coreAuth.Providers
 	PasswordEncoder        password.Encoder

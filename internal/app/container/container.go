@@ -2,6 +2,7 @@ package container
 
 import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/config"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 )
 
@@ -21,4 +22,11 @@ func (a *AppContainer) GetHTTPConfig() config.HTTPConfig {
 // GetHTTPConfigurer 获取配置
 func (a *AppContainer) GetHTTPConfigurer() config.HTTPConfigurer {
 	return a.HTTPConfigurer
+}
+
+// --- 自定义安全配置 ---
+
+// GetHTTPSecurityConfigurer 设置默认 HttpSecurityConfigurer
+func (a *AppContainer) GetHTTPSecurityConfigurer() security.HTTPSecurityConfigurer {
+	return nil
 }

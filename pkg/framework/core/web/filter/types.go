@@ -4,6 +4,8 @@ import "github.com/ingot-cloud/ingot-go/pkg/framework/security/core/ingot"
 
 // Filter Web 过滤器
 type Filter interface {
+	// 过滤器名字
+	Name() string
 	// 过滤器排序
 	Order() int
 	// 执行过滤器

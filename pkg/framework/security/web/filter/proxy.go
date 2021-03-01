@@ -11,6 +11,11 @@ type ChainProxy struct {
 	FilterChains []SecurityFilterChain
 }
 
+// Name 名字
+func (p *ChainProxy) Name() string {
+	return "ChainProxy"
+}
+
 // Order 排序
 func (p *ChainProxy) Order() int {
 	return 0
@@ -19,8 +24,8 @@ func (p *ChainProxy) Order() int {
 // DoFilter 执行过滤器
 func (p *ChainProxy) DoFilter(context *ingot.Context, chain filter.Chain) error {
 	filters := p.GetFilters(context)
-	if filters == nil {
-		log.Infof("No security for %s", context.Request.RequestURI)
+	if len(filters) == 0 {
+		log.Infof("No security filter for %s", context.Request.RequestURI)
 		return chain.DoFilter(context)
 	}
 
@@ -59,6 +64,7 @@ func (c *virtualFilterChain) DoFilter(context *ingot.Context) error {
 	}
 	nextFilter := c.additionalFilters[c.currentPosition]
 	c.currentPosition++
+	log.Infof("Do filter [%s] for url: %s", nextFilter.Name(), context.Request.RequestURI)
 
 	return nextFilter.DoFilter(context, c)
 }

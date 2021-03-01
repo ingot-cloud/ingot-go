@@ -13,6 +13,8 @@ import (
 // SecurityInjector 自定义注入参数，app端实现
 type SecurityInjector interface {
 	// SecurityContainer
+	GetWebSecurityConfigurer() security.WebSecurityConfigurer
+	GetHTTPSecurityConfigurer() security.HTTPSecurityConfigurer
 	GetWebSecurityConfigurers() security.WebSecurityConfigurers
 	GetProviders() coreAuth.Providers
 	GetPasswordEncoder() password.Encoder
@@ -42,6 +44,16 @@ type SecurityInjector interface {
 
 // NilSecurityInjector 空实现
 type NilSecurityInjector struct {
+}
+
+// GetWebSecurityConfigurer 自定义默认配置
+func (*NilSecurityInjector) GetWebSecurityConfigurer() security.WebSecurityConfigurer {
+	return nil
+}
+
+// GetHTTPSecurityConfigurer 自定义默认配置
+func (*NilSecurityInjector) GetHTTPSecurityConfigurer() security.HTTPSecurityConfigurer {
+	return nil
 }
 
 // GetWebSecurityConfigurers 获取自定义值

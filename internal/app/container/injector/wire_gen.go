@@ -93,7 +93,9 @@ func BuildContainer(config2 *config.Config, options *config.Options) (*container
 		HTTPConfig:     httpConfig,
 		HTTPConfigurer: apiConfig,
 	}
-	webSecurityConfigurers := provider2.WebSecurityConfigurers(appContainer)
+	webSecurityConfigurer := provider2.WebSecurityConfigurer(appContainer)
+	httpSecurityConfigurer := provider2.HTTPSecurityConfigurer(appContainer)
+	webSecurityConfigurers := provider2.WebSecurityConfigurers(webSecurityConfigurer, httpSecurityConfigurer, appContainer)
 	encoder := provider2.PasswordEncoder(appContainer)
 	userdetailsService := provider2.UserDetailsService(appContainer)
 	userCache := provider2.UserCache(appContainer)
@@ -109,6 +111,8 @@ func BuildContainer(config2 *config.Config, options *config.Options) (*container
 	providers := provider2.Providers(authenticationProvider, appContainer)
 	clientdetailsService := provider2.ClientDetailsService(appContainer)
 	securityContainer := &container3.SecurityContainer{
+		WebSecurityConfigurer:  webSecurityConfigurer,
+		HTTPSecurityConfigurer: httpSecurityConfigurer,
 		WebSecurityConfigurers: webSecurityConfigurers,
 		Providers:              providers,
 		PasswordEncoder:        encoder,

@@ -21,6 +21,11 @@ func (b *BasicAuthentication) Configure(http security.HTTPSecurityBuilder) error
 type BasicFilter struct {
 }
 
+// Name 名字
+func (b *BasicFilter) Name() string {
+	return "BasicFilter"
+}
+
 // Order 过滤器排序
 func (b *BasicFilter) Order() int {
 	return constants.OrderFilterBasic
