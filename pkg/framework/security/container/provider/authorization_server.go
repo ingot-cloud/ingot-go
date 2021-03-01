@@ -4,7 +4,7 @@ import (
 	"github.com/google/wire"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/preset"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 )
 
@@ -25,14 +25,7 @@ func AuthorizationServerTokenServices(oauth2Container *container.OAuth2Container
 	if injector.GetAuthorizationServerTokenServices() != nil {
 		return injector.GetAuthorizationServerTokenServices()
 	}
-	tokenServices := oauth2Container.DefaultTokenServices
-	client := securityContainer.ClientDetailsService
-	if _, ok := client.(*clientdetails.NilClientdetails); !ok {
-		tokenServices.ClientDetailsService = client
-	}
-	tokenServices.TokenEnhancer = enhancer
-	tokenServices.AuthenticationManager = manager
-	return tokenServices
+	return preset.AuthorizationServerTokenServices(oauth2Container, securityContainer, enhancer, manager)
 }
 
 // ConsumerTokenServices 令牌撤销
@@ -40,7 +33,7 @@ func ConsumerTokenServices(oauth2Container *container.OAuth2Container, injector 
 	if injector.GetConsumerTokenServices() != nil {
 		return injector.GetConsumerTokenServices()
 	}
-	return oauth2Container.DefaultTokenServices
+	return preset.ConsumerTokenServices(oauth2Container)
 }
 
 // TokenEnhancer token增强，默认使用增强链
@@ -48,11 +41,7 @@ func TokenEnhancer(enhancers token.Enhancers, oauth2Container *container.OAuth2C
 	if injector.GetTokenEnhancer() != nil {
 		return injector.GetTokenEnhancer()
 	}
-	chain := &token.EnhancerChain{}
-	// 默认追加 jwt enhancer
-	enhancers = append(enhancers, oauth2Container.JwtAccessTokenConverter)
-	chain.SetTokenEnhancers(enhancers)
-	return chain
+	return preset.TokenEnhancer(enhancers, oauth2Container)
 }
 
 // TokenEnhancers 自定义增强
@@ -60,7 +49,7 @@ func TokenEnhancers(injector container.SecurityInjector) token.Enhancers {
 	if len(injector.GetTokenEnhancers()) != 0 {
 		return injector.GetTokenEnhancers()
 	}
-	return nil
+	return preset.TokenEnhancers()
 }
 
 // AuthorizationAuthenticationManager 授权服务器中的认证管理器
@@ -68,5 +57,5 @@ func AuthorizationAuthenticationManager(securityContainer *container.SecurityCon
 	if injector.GetAuthorizationAuthenticationManager() != nil {
 		return injector.GetAuthorizationAuthenticationManager()
 	}
-	return authentication.NewProviderManager(securityContainer.Providers)
+	return preset.AuthorizationAuthenticationManager(securityContainer)
 }

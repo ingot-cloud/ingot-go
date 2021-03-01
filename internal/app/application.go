@@ -13,14 +13,14 @@ import (
 // Run start app
 func Run(ctx context.Context, options *config.Options) error {
 	// 初始化模块
-	factory := func(ctx context.Context) (*bootContainer.Container, func(), error) {
+	factory := func(ctx context.Context) (bootContainer.Container, func(), error) {
 		return initContainer(ctx, options)
 	}
 
 	return boot.Run(ctx, factory)
 }
 
-func initContainer(ctx context.Context, options *config.Options) (*bootContainer.Container, func(), error) {
+func initContainer(ctx context.Context, options *config.Options) (bootContainer.Container, func(), error) {
 
 	// 初始化 config
 	config, err := injector.BuildConfiguration(options)
@@ -34,14 +34,17 @@ func initContainer(ctx context.Context, options *config.Options) (*bootContainer
 		return nil, nil, err
 	}
 
+	containerInjector, appCleanup, err := injector.BuildContainerInjector(config, options)
+
 	// boot 容器
-	container, containerCleanupFunc, err := injector.BuildContainer(config, options)
+	container, containerCleanupFunc, err := injector.BuildContainer(config, options, containerInjector)
 	if err != nil {
 		return nil, nil, err
 	}
 
 	return container, func() {
 		containerCleanupFunc()
+		appCleanup()
 		loggerCleanFunc()
 	}, nil
 }

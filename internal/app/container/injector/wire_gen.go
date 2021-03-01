@@ -8,16 +8,17 @@ package injector
 import (
 	"github.com/ingot-cloud/ingot-go/internal/app/api"
 	"github.com/ingot-cloud/ingot-go/internal/app/config"
-	container2 "github.com/ingot-cloud/ingot-go/internal/app/container"
+	container3 "github.com/ingot-cloud/ingot-go/internal/app/container"
 	"github.com/ingot-cloud/ingot-go/internal/app/container/provider"
 	"github.com/ingot-cloud/ingot-go/internal/app/container/provider/factory"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/http"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"
 	"github.com/ingot-cloud/ingot-go/internal/app/service"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
+	container2 "github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
 	dao2 "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication/provider/dao"
-	container3 "github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	provider2 "github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/preset"
 )
 
 // Injectors from app.go:
@@ -30,7 +31,8 @@ func BuildConfiguration(options *config.Options) (*config.Config, error) {
 	return configConfig, nil
 }
 
-func BuildContainer(config2 *config.Config, options *config.Options) (*container.Container, func(), error) {
+func BuildContainerInjector(config2 *config.Config, options *config.Options) (container.SecurityInjector, func(), error) {
+	nilSecurityInjector := &container.NilSecurityInjector{}
 	httpConfig, err := factory.HTTPConfig(config2)
 	if err != nil {
 		return nil, nil, err
@@ -89,18 +91,14 @@ func BuildContainer(config2 *config.Config, options *config.Options) (*container
 		SecurityConfig: security,
 		AuthAPI:        apiAuth,
 	}
-	appContainer := &container2.AppContainer{
-		HTTPConfig:     httpConfig,
-		HTTPConfigurer: apiConfig,
-	}
-	webSecurityConfigurer := provider2.WebSecurityConfigurer(appContainer)
-	httpSecurityConfigurer := provider2.HTTPSecurityConfigurer(appContainer)
-	webSecurityConfigurers := provider2.WebSecurityConfigurers(webSecurityConfigurer, httpSecurityConfigurer, appContainer)
-	encoder := provider2.PasswordEncoder(appContainer)
-	userdetailsService := provider2.UserDetailsService(appContainer)
-	userCache := provider2.UserCache(appContainer)
-	preChecker := provider2.PreChecker(appContainer)
-	postChecker := provider2.PostChecker(appContainer)
+	webSecurityConfigurer := preset.WebSecurityConfigurer()
+	httpSecurityConfigurer := preset.HTTPSecurityConfigurer()
+	webSecurityConfigurers := preset.WebSecurityConfigurers(webSecurityConfigurer, httpSecurityConfigurer)
+	encoder := preset.PasswordEncoder()
+	userdetailsService := preset.UserDetailsService()
+	userCache := preset.UserCache()
+	preChecker := preset.PreChecker()
+	postChecker := preset.PostChecker()
 	authenticationProvider := &dao2.AuthenticationProvider{
 		PasswordEncoder:          encoder,
 		UserDetailsService:       userdetailsService,
@@ -108,9 +106,9 @@ func BuildContainer(config2 *config.Config, options *config.Options) (*container
 		PreAuthenticationChecks:  preChecker,
 		PostAuthenticationChecks: postChecker,
 	}
-	providers := provider2.Providers(authenticationProvider, appContainer)
-	clientdetailsService := provider2.ClientDetailsService(appContainer)
-	securityContainer := &container3.SecurityContainer{
+	providers := preset.Providers(authenticationProvider)
+	clientdetailsService := preset.ClientDetailsService()
+	securityContainer := &container.SecurityContainer{
 		WebSecurityConfigurer:  webSecurityConfigurer,
 		HTTPSecurityConfigurer: httpSecurityConfigurer,
 		WebSecurityConfigurers: webSecurityConfigurers,
@@ -128,12 +126,12 @@ func BuildContainer(config2 *config.Config, options *config.Options) (*container
 		cleanup()
 		return nil, nil, err
 	}
-	userAuthenticationConverter := provider2.UserAuthenticationConverter(appContainer)
-	accessTokenConverter := provider2.AccessTokenConverter(oAuth2, userAuthenticationConverter, appContainer)
-	jwtAccessTokenConverter := provider2.JwtAccessTokenConverter(oAuth2, accessTokenConverter)
-	store := provider2.TokenStore(jwtAccessTokenConverter, appContainer)
-	defaultTokenServices := provider2.DefaultTokenServices(oAuth2, store)
-	oAuth2Container := &container3.OAuth2Container{
+	userAuthenticationConverter := preset.UserAuthenticationConverter()
+	accessTokenConverter := preset.AccessTokenConverter(oAuth2, userAuthenticationConverter)
+	jwtAccessTokenConverter := preset.JwtAccessTokenConverter(oAuth2, accessTokenConverter)
+	store := preset.TokenStore(jwtAccessTokenConverter)
+	defaultTokenServices := preset.DefaultTokenServices(oAuth2, store)
+	oAuth2Container := &container.OAuth2Container{
 		Config:                      oAuth2,
 		DefaultTokenServices:        defaultTokenServices,
 		TokenStore:                  store,
@@ -141,28 +139,28 @@ func BuildContainer(config2 *config.Config, options *config.Options) (*container
 		AccessTokenConverter:        accessTokenConverter,
 		UserAuthenticationConverter: userAuthenticationConverter,
 	}
-	resourceServerTokenServices := provider2.ResourceServerTokenServices(oAuth2Container, appContainer)
-	tokenExtractor := provider2.TokenExtractor(appContainer)
-	resourceManager := provider2.ResourceAuthenticationManager(oAuth2Container, resourceServerTokenServices, appContainer)
-	oAuth2SecurityConfigurer := provider2.OAuth2SecurityConfigurer(tokenExtractor, resourceManager)
-	resourceServerContainer := &container3.ResourceServerContainer{
+	resourceServerTokenServices := preset.ResourceServerTokenServices(oAuth2Container)
+	tokenExtractor := preset.TokenExtractor()
+	resourceManager := preset.ResourceAuthenticationManager(oAuth2Container, resourceServerTokenServices)
+	oAuth2SecurityConfigurer := preset.OAuth2SecurityConfigurer(tokenExtractor, resourceManager)
+	resourceServerContainer := &container.ResourceServerContainer{
 		ResourceServerTokenServices: resourceServerTokenServices,
 		OAuth2SecurityConfigurer:    oAuth2SecurityConfigurer,
 		TokenExtractor:              tokenExtractor,
 		AuthenticationManager:       resourceManager,
 	}
-	enhancers := provider2.TokenEnhancers(appContainer)
-	enhancer := provider2.TokenEnhancer(enhancers, oAuth2Container, appContainer)
-	authorizationManager := provider2.AuthorizationAuthenticationManager(securityContainer, appContainer)
-	authorizationServerTokenServices := provider2.AuthorizationServerTokenServices(oAuth2Container, securityContainer, enhancer, authorizationManager, appContainer)
-	consumerTokenServices := provider2.ConsumerTokenServices(oAuth2Container, appContainer)
-	authorizationServerContainer := &container3.AuthorizationServerContainer{
+	enhancers := preset.TokenEnhancers()
+	enhancer := preset.TokenEnhancer(enhancers, oAuth2Container)
+	authorizationManager := preset.AuthorizationAuthenticationManager(securityContainer)
+	authorizationServerTokenServices := preset.AuthorizationServerTokenServices(oAuth2Container, securityContainer, enhancer, authorizationManager)
+	consumerTokenServices := preset.ConsumerTokenServices(oAuth2Container)
+	authorizationServerContainer := &container.AuthorizationServerContainer{
 		AuthorizationServerTokenServices: authorizationServerTokenServices,
 		ConsumerTokenServices:            consumerTokenServices,
 		TokenEnhancer:                    enhancer,
 		AuthenticationManager:            authorizationManager,
 	}
-	containerContainer := &container.Container{
+	defaultContainer := &container2.DefaultContainer{
 		HTTPConfig:                   httpConfig,
 		HTTPConfigurer:               apiConfig,
 		SecurityContainer:            securityContainer,
@@ -170,7 +168,153 @@ func BuildContainer(config2 *config.Config, options *config.Options) (*container
 		ResourceServerContainer:      resourceServerContainer,
 		AuthorizationServerContainer: authorizationServerContainer,
 	}
-	return containerContainer, func() {
+	appContainer := &container3.AppContainer{
+		NilSecurityInjector: nilSecurityInjector,
+		DefaultContainer:    defaultContainer,
+	}
+	return appContainer, func() {
+		cleanup2()
+		cleanup()
+	}, nil
+}
+
+func BuildContainer(config2 *config.Config, options *config.Options, securityInjector container.SecurityInjector) (container2.Container, func(), error) {
+	httpConfig, err := factory.HTTPConfig(config2)
+	if err != nil {
+		return nil, nil, err
+	}
+	db, cleanup, err := factory.NewGorm(config2)
+	if err != nil {
+		return nil, nil, err
+	}
+	role := &dao.Role{
+		DB: db,
+	}
+	roleAuthority := &dao.RoleAuthority{
+		DB: db,
+	}
+	authority := &dao.Authority{
+		DB: db,
+	}
+	user := &dao.User{
+		DB: db,
+	}
+	roleUser := &dao.RoleUser{
+		DB: db,
+	}
+	permission := &service.Permission{
+		RoleDao:          role,
+		RoleAuthorityDao: roleAuthority,
+		AuthorityDao:     authority,
+		UserDao:          user,
+		RoleUserDao:      roleUser,
+	}
+	casbinAdapterService := &service.CasbinAdapterService{
+		PermissionService: permission,
+	}
+	syncedEnforcer, cleanup2, err := factory.NewCasbin(options, casbinAdapterService)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	security, err := factory.SecurityConfig(config2)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	auth := &service.Auth{
+		UserDao:     user,
+		RoleUserDao: roleUser,
+		RoleDao:     role,
+	}
+	apiAuth := &api.Auth{
+		AuthService: auth,
+	}
+	apiConfig := &http.APIConfig{
+		CasbinEnforcer: syncedEnforcer,
+		HTTPConfig:     httpConfig,
+		SecurityConfig: security,
+		AuthAPI:        apiAuth,
+	}
+	webSecurityConfigurer := provider2.WebSecurityConfigurer(securityInjector)
+	httpSecurityConfigurer := provider2.HTTPSecurityConfigurer(securityInjector)
+	webSecurityConfigurers := provider2.WebSecurityConfigurers(webSecurityConfigurer, httpSecurityConfigurer, securityInjector)
+	encoder := provider2.PasswordEncoder(securityInjector)
+	userdetailsService := provider2.UserDetailsService(securityInjector)
+	userCache := provider2.UserCache(securityInjector)
+	preChecker := provider2.PreChecker(securityInjector)
+	postChecker := provider2.PostChecker(securityInjector)
+	authenticationProvider := &dao2.AuthenticationProvider{
+		PasswordEncoder:          encoder,
+		UserDetailsService:       userdetailsService,
+		UserCache:                userCache,
+		PreAuthenticationChecks:  preChecker,
+		PostAuthenticationChecks: postChecker,
+	}
+	providers := provider2.Providers(authenticationProvider, securityInjector)
+	clientdetailsService := provider2.ClientDetailsService(securityInjector)
+	securityContainer := &container.SecurityContainer{
+		WebSecurityConfigurer:  webSecurityConfigurer,
+		HTTPSecurityConfigurer: httpSecurityConfigurer,
+		WebSecurityConfigurers: webSecurityConfigurers,
+		Providers:              providers,
+		PasswordEncoder:        encoder,
+		UserCache:              userCache,
+		PreChecker:             preChecker,
+		PostChecker:            postChecker,
+		UserDetailsService:     userdetailsService,
+		ClientDetailsService:   clientdetailsService,
+	}
+	oAuth2, err := factory.OAuth2Config(config2)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	userAuthenticationConverter := provider2.UserAuthenticationConverter(securityInjector)
+	accessTokenConverter := provider2.AccessTokenConverter(oAuth2, userAuthenticationConverter, securityInjector)
+	jwtAccessTokenConverter := provider2.JwtAccessTokenConverter(oAuth2, accessTokenConverter)
+	store := provider2.TokenStore(jwtAccessTokenConverter, securityInjector)
+	defaultTokenServices := provider2.DefaultTokenServices(oAuth2, store)
+	oAuth2Container := &container.OAuth2Container{
+		Config:                      oAuth2,
+		DefaultTokenServices:        defaultTokenServices,
+		TokenStore:                  store,
+		JwtAccessTokenConverter:     jwtAccessTokenConverter,
+		AccessTokenConverter:        accessTokenConverter,
+		UserAuthenticationConverter: userAuthenticationConverter,
+	}
+	resourceServerTokenServices := provider2.ResourceServerTokenServices(oAuth2Container, securityInjector)
+	tokenExtractor := provider2.TokenExtractor(securityInjector)
+	resourceManager := provider2.ResourceAuthenticationManager(oAuth2Container, resourceServerTokenServices, securityInjector)
+	oAuth2SecurityConfigurer := provider2.OAuth2SecurityConfigurer(tokenExtractor, resourceManager)
+	resourceServerContainer := &container.ResourceServerContainer{
+		ResourceServerTokenServices: resourceServerTokenServices,
+		OAuth2SecurityConfigurer:    oAuth2SecurityConfigurer,
+		TokenExtractor:              tokenExtractor,
+		AuthenticationManager:       resourceManager,
+	}
+	enhancers := provider2.TokenEnhancers(securityInjector)
+	enhancer := provider2.TokenEnhancer(enhancers, oAuth2Container, securityInjector)
+	authorizationManager := provider2.AuthorizationAuthenticationManager(securityContainer, securityInjector)
+	authorizationServerTokenServices := provider2.AuthorizationServerTokenServices(oAuth2Container, securityContainer, enhancer, authorizationManager, securityInjector)
+	consumerTokenServices := provider2.ConsumerTokenServices(oAuth2Container, securityInjector)
+	authorizationServerContainer := &container.AuthorizationServerContainer{
+		AuthorizationServerTokenServices: authorizationServerTokenServices,
+		ConsumerTokenServices:            consumerTokenServices,
+		TokenEnhancer:                    enhancer,
+		AuthenticationManager:            authorizationManager,
+	}
+	defaultContainer := &container2.DefaultContainer{
+		HTTPConfig:                   httpConfig,
+		HTTPConfigurer:               apiConfig,
+		SecurityContainer:            securityContainer,
+		OAuth2Container:              oAuth2Container,
+		ResourceServerContainer:      resourceServerContainer,
+		AuthorizationServerContainer: authorizationServerContainer,
+	}
+	return defaultContainer, func() {
 		cleanup2()
 		cleanup()
 	}, nil

@@ -1,32 +1,25 @@
 package container
 
 import (
-	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/config"
+	bootContainer "github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 )
 
 // AppContainer app容器
 type AppContainer struct {
-	HTTPConfig     config.HTTPConfig
-	HTTPConfigurer config.HTTPConfigurer
-
 	*container.NilSecurityInjector
-}
-
-// GetHTTPConfig 获取配置
-func (a *AppContainer) GetHTTPConfig() config.HTTPConfig {
-	return a.HTTPConfig
-}
-
-// GetHTTPConfigurer 获取配置
-func (a *AppContainer) GetHTTPConfigurer() config.HTTPConfigurer {
-	return a.HTTPConfigurer
+	*bootContainer.DefaultContainer
 }
 
 // --- 自定义安全配置 ---
 
 // GetHTTPSecurityConfigurer 设置默认 HttpSecurityConfigurer
 func (a *AppContainer) GetHTTPSecurityConfigurer() security.HTTPSecurityConfigurer {
+	// todo 如何依赖 security 中的对象
 	return nil
 }
+
+// 两步容器编译
+// 1. 默认实现生成容器，可以依赖默认安全容器中的所有实例，生成前置容器
+// 2. 注入前置容器到并生成boot容器，如果有扩展实例则使用新的实例

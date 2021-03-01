@@ -8,6 +8,6 @@ import (
 
 // AppContainer 容器
 var AppContainer = wire.NewSet(
-	wire.Struct(new(container.AppContainer), "HTTPConfig", "HTTPConfigurer"),
+	wire.Struct(new(container.AppContainer), "*"),
 	wire.Bind(new(securityContainer.SecurityInjector), new(*container.AppContainer)),
 )

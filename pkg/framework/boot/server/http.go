@@ -17,29 +17,23 @@ type HTTPServer struct {
 	Context        context.Context
 	Config         config.HTTPConfig
 	HTTPConfigurer config.HTTPConfigurer
-	Container      *container.Container
+	Container      container.Container
 }
 
 // NewHTTPServer 创建 http 服务
-func NewHTTPServer(context context.Context, c *container.Container) *HTTPServer {
+func NewHTTPServer(context context.Context, c container.Container) *HTTPServer {
 	return &HTTPServer{
 		Context:        context,
-		Config:         c.HTTPConfig,
-		HTTPConfigurer: c.HTTPConfigurer,
+		Config:         c.GetHTTPConfig(),
+		HTTPConfigurer: c.GetHTTPConfigurer(),
 		Container:      c,
 	}
 }
 
 // Run 运行Http Web服务
 func (server *HTTPServer) Run() func() {
-	server.initContainer()
 	engine := server.buildHTTPHandler()
 	return server.runHTTPServer(engine)
-}
-
-// 初始化容器实例
-func (server *HTTPServer) initContainer() {
-	container.Instance = server.Container
 }
 
 // BuildHTTPHandler to get gin.Engine
@@ -48,7 +42,7 @@ func (server *HTTPServer) buildHTTPHandler() *gin.Engine {
 
 	engine := gin.New()
 	enableDefaultMiddleware(engine)
-	enableSecurityMiddleware(engine, server.Container.SecurityContainer)
+	enableSecurityMiddleware(engine, server.Container.GetSecurityContainer())
 
 	// 设置 prefix
 	routerGroup := engine.Group(server.Config.Prefix)
