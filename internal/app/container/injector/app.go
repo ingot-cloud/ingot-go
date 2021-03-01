@@ -6,10 +6,9 @@ package injector
 import (
 	"github.com/google/wire"
 	"github.com/ingot-cloud/ingot-go/internal/app/config"
-	app "github.com/ingot-cloud/ingot-go/internal/app/container"
 	"github.com/ingot-cloud/ingot-go/internal/app/container/provider"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
-	securityContainer "github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
+	securityProvider "github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider"
 )
 
 func BuildConfiguration(options *config.Options) (*config.Config, error) {
@@ -17,18 +16,30 @@ func BuildConfiguration(options *config.Options) (*config.Config, error) {
 	return nil, nil
 }
 
-func BuildAppContainer(config *config.Config, options *config.Options) (*app.AppContainer, func(), error) {
+// func BuildAppContainer(config *config.Config, options *config.Options) (*app.AppContainer, func(), error) {
+// 	wire.Build(
+// 		provider.AllSet,
+// 		provider.AllFactory,
+// 		provider.AppContainer,
+// 	)
+// 	return nil, nil, nil
+// }
+
+func BuildContainer(config *config.Config, options *config.Options) (*container.Container, func(), error) {
 	wire.Build(
 		provider.AllSet,
 		provider.AllFactory,
 		provider.AppContainer,
-	)
-	return nil, nil, nil
-}
+		securityProvider.SecurityContainerFields,
+		securityProvider.SecurityContainer,
+		securityProvider.OAuth2ContainerFields,
+		securityProvider.OAuth2Container,
+		securityProvider.AuthorizationServerContainerFields,
+		securityProvider.AuthorizationServerContainer,
+		securityProvider.ResourceServerContainerFields,
+		securityProvider.ResourceServerContainer,
 
-func BuildContainer(httpInjector container.HTTPInjector, securityContainer securityContainer.SecurityAllContainer) (*container.Container, func(), error) {
-	wire.Build(
-		container.BuildContainer,
+		container.BootContainer,
 	)
 	return nil, nil, nil
 }

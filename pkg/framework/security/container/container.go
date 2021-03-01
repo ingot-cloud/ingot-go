@@ -49,39 +49,3 @@ type AuthorizationServerContainer struct {
 	TokenEnhancer                    token.Enhancer
 	AuthenticationManager            coreAuth.AuthorizationManager
 }
-
-// SecurityAllContainer 接口
-type SecurityAllContainer interface {
-	GetSecurityContainer() *SecurityContainer
-	GetOAuth2Container() *OAuth2Container
-	GetResourceServerContainer() *ResourceServerContainer
-	GetAuthorizationServerContainer() *AuthorizationServerContainer
-}
-
-// DefaultSecurityAllContainer 默认实现
-type DefaultSecurityAllContainer struct {
-	SecurityContainer            *SecurityContainer
-	OAuth2Container              *OAuth2Container
-	ResourceServerContainer      *ResourceServerContainer
-	AuthorizationServerContainer *AuthorizationServerContainer
-}
-
-// GetSecurityContainer 获取容器
-func (c *DefaultSecurityAllContainer) GetSecurityContainer() *SecurityContainer {
-	return c.SecurityContainer
-}
-
-// GetOAuth2Container 获取容器
-func (c *DefaultSecurityAllContainer) GetOAuth2Container() *OAuth2Container {
-	return c.OAuth2Container
-}
-
-// GetResourceServerContainer 获取容器
-func (c *DefaultSecurityAllContainer) GetResourceServerContainer() *ResourceServerContainer {
-	return c.ResourceServerContainer
-}
-
-// GetAuthorizationServerContainer 获取容器
-func (c *DefaultSecurityAllContainer) GetAuthorizationServerContainer() *AuthorizationServerContainer {
-	return c.AuthorizationServerContainer
-}
