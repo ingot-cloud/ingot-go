@@ -169,8 +169,9 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 		AuthorizationServerContainer: authorizationServerContainer,
 	}
 	appContainer := &container3.AppContainer{
-		NilSecurityInjector: nilSecurityInjector,
-		DefaultContainer:    defaultContainer,
+		NilSecurityInjector:      nilSecurityInjector,
+		DefaultContainer:         defaultContainer,
+		OAuth2SecurityConfigurer: oAuth2SecurityConfigurer,
 	}
 	return appContainer, func() {
 		cleanup2()
