@@ -19,6 +19,7 @@ var AuthorizationServerContainerFields = wire.NewSet(
 	AuthorizationServerTokenServices,
 	ConsumerTokenServices,
 	TokenEndpoint,
+	TokenEndpointHTTPConfigurer,
 	TokenEnhancer,
 	TokenEnhancers,
 	TokenGranters,
@@ -28,6 +29,9 @@ var AuthorizationServerContainerFields = wire.NewSet(
 
 // AuthorizationAuthenticationManager 授权服务器中的认证管理器
 func AuthorizationAuthenticationManager(securityContainer *container.SecurityContainer, injector container.SecurityInjector) authentication.AuthorizationManager {
+	if !injector.EnableAuthorizationServer() {
+		return nil
+	}
 	if injector.GetAuthorizationAuthenticationManager() != nil {
 		return injector.GetAuthorizationAuthenticationManager()
 	}
@@ -36,6 +40,9 @@ func AuthorizationAuthenticationManager(securityContainer *container.SecurityCon
 
 // AuthorizationServerTokenServices 授权服务器 token 服务
 func AuthorizationServerTokenServices(oauth2Container *container.OAuth2Container, securityContainer *container.SecurityContainer, enhancer token.Enhancer, manager authentication.AuthorizationManager, injector container.SecurityInjector) token.AuthorizationServerTokenServices {
+	if !injector.EnableAuthorizationServer() {
+		return nil
+	}
 	if injector.GetAuthorizationServerTokenServices() != nil {
 		return injector.GetAuthorizationServerTokenServices()
 	}
@@ -44,6 +51,9 @@ func AuthorizationServerTokenServices(oauth2Container *container.OAuth2Container
 
 // ConsumerTokenServices 令牌撤销
 func ConsumerTokenServices(oauth2Container *container.OAuth2Container, injector container.SecurityInjector) token.ConsumerTokenServices {
+	if !injector.EnableAuthorizationServer() {
+		return nil
+	}
 	if injector.GetConsumerTokenServices() != nil {
 		return injector.GetConsumerTokenServices()
 	}
@@ -52,14 +62,32 @@ func ConsumerTokenServices(oauth2Container *container.OAuth2Container, injector 
 
 // TokenEndpoint 端点
 func TokenEndpoint(granter token.Granter, securityContainer *container.SecurityContainer, injector container.SecurityInjector) *endpoint.TokenEndpoint {
+	if !injector.EnableAuthorizationServer() {
+		return nil
+	}
 	if injector.GetTokenEndpoint() != nil {
 		return injector.GetTokenEndpoint()
 	}
 	return preset.TokenEndpoint(granter, securityContainer)
 }
 
+// TokenEndpointHTTPConfigurer 端点配置
+func TokenEndpointHTTPConfigurer(tokenEndpoint *endpoint.TokenEndpoint, injector container.SecurityInjector) endpoint.OAuth2HTTPConfigurer {
+	if !injector.EnableAuthorizationServer() {
+		return nil
+	}
+	if injector.GetTokenEndpointHTTPConfigurer() != nil {
+		return injector.GetTokenEndpointHTTPConfigurer()
+	}
+
+	return preset.TokenEndpointHTTPConfigurer(tokenEndpoint)
+}
+
 // TokenEnhancer token增强，默认使用增强链
 func TokenEnhancer(enhancers token.Enhancers, oauth2Container *container.OAuth2Container, injector container.SecurityInjector) token.Enhancer {
+	if !injector.EnableAuthorizationServer() {
+		return nil
+	}
 	if injector.GetTokenEnhancer() != nil {
 		return injector.GetTokenEnhancer()
 	}
@@ -68,6 +96,9 @@ func TokenEnhancer(enhancers token.Enhancers, oauth2Container *container.OAuth2C
 
 // TokenEnhancers 自定义增强
 func TokenEnhancers(injector container.SecurityInjector) token.Enhancers {
+	if !injector.EnableAuthorizationServer() {
+		return nil
+	}
 	if len(injector.GetTokenEnhancers()) != 0 {
 		return injector.GetTokenEnhancers()
 	}
@@ -76,6 +107,9 @@ func TokenEnhancers(injector container.SecurityInjector) token.Enhancers {
 
 // TokenGranters 自定义授权
 func TokenGranters(injector container.SecurityInjector) token.Granters {
+	if !injector.EnableAuthorizationServer() {
+		return nil
+	}
 	if injector.GetTokenGranters() != nil {
 		return injector.GetTokenGranters()
 	}
@@ -84,6 +118,9 @@ func TokenGranters(injector container.SecurityInjector) token.Granters {
 
 // TokenGranter token 授权
 func TokenGranter(granters token.Granters, password *granter.PasswordTokenGranter, injector container.SecurityInjector) token.Granter {
+	if !injector.EnableAuthorizationServer() {
+		return nil
+	}
 	if injector.GetTokenGranter() != nil {
 		return injector.GetTokenGranter()
 	}
@@ -92,6 +129,9 @@ func TokenGranter(granters token.Granters, password *granter.PasswordTokenGrante
 
 // PasswordTokenGranter 密码模式授权
 func PasswordTokenGranter(tokenServices token.AuthorizationServerTokenServices, manager authentication.AuthorizationManager, injector container.SecurityInjector) *granter.PasswordTokenGranter {
+	if !injector.EnableAuthorizationServer() {
+		return nil
+	}
 	if injector.GetPasswordTokenGranter() != nil {
 		return injector.GetPasswordTokenGranter()
 	}

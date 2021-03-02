@@ -23,6 +23,9 @@ var ResourceServerContainerFields = wire.NewSet(
 
 // ResourceAuthenticationManager 资源服务器中使用的认证管理器
 func ResourceAuthenticationManager(container *container.OAuth2Container, tokenService token.ResourceServerTokenServices, injector container.SecurityInjector) coreAuth.ResourceManager {
+	if !injector.EnableResourceServer() {
+		return nil
+	}
 	if injector.GetResourceAuthenticationManager() != nil {
 		return injector.GetResourceAuthenticationManager()
 	}
@@ -31,6 +34,9 @@ func ResourceAuthenticationManager(container *container.OAuth2Container, tokenSe
 
 // ResourceServerTokenServices 资源服务器 token 服务
 func ResourceServerTokenServices(container *container.OAuth2Container, injector container.SecurityInjector) token.ResourceServerTokenServices {
+	if !injector.EnableResourceServer() {
+		return nil
+	}
 	if injector.GetResourceServerTokenServices() != nil {
 		return injector.GetResourceServerTokenServices()
 	}
@@ -38,12 +44,18 @@ func ResourceServerTokenServices(container *container.OAuth2Container, injector 
 }
 
 // OAuth2SecurityConfigurer 实例化 OAuth2 安全配置
-func OAuth2SecurityConfigurer(tokenExtractor authentication.TokenExtractor, authenticationManager coreAuth.ResourceManager) *config.OAuth2SecurityConfigurer {
+func OAuth2SecurityConfigurer(tokenExtractor authentication.TokenExtractor, authenticationManager coreAuth.ResourceManager, injector container.SecurityInjector) *config.OAuth2SecurityConfigurer {
+	if !injector.EnableResourceServer() {
+		return nil
+	}
 	return preset.OAuth2SecurityConfigurer(tokenExtractor, authenticationManager)
 }
 
 // TokenExtractor TokenExtrator接口默认实现
 func TokenExtractor(injector container.SecurityInjector) authentication.TokenExtractor {
+	if !injector.EnableResourceServer() {
+		return nil
+	}
 	if injector.GetTokenExtractor() != nil {
 		return injector.GetTokenExtractor()
 	}

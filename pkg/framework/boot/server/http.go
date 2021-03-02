@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/api"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/ingot"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 )
@@ -16,7 +17,7 @@ import (
 type HTTPServer struct {
 	Context        context.Context
 	Config         config.HTTPConfig
-	HTTPConfigurer config.HTTPConfigurer
+	HTTPConfigurer api.HTTPConfigurer
 	Container      container.Container
 }
 
@@ -42,8 +43,15 @@ func (server *HTTPServer) buildHTTPHandler() *gin.Engine {
 
 	engine := gin.New()
 	enableDefaultMiddleware(engine)
-	enableSecurityMiddleware(engine, server.Container.GetSecurityContainer())
+	enableSecurityMiddleware(engine, server.Container)
 
+	// todo 根据变量判断，是否开启资源保护，是否开启授权服务
+
+	server.defaultHTTPApi(engine)
+	return engine
+}
+
+func (server *HTTPServer) defaultHTTPApi(engine *gin.Engine) {
 	// 设置 prefix
 	routerGroup := engine.Group(server.Config.Prefix)
 	ingotRouter := ingot.NewRouter(routerGroup)
@@ -51,8 +59,6 @@ func (server *HTTPServer) buildHTTPHandler() *gin.Engine {
 	for _, api := range server.HTTPConfigurer.GetAPI() {
 		api.Apply(ingotRouter)
 	}
-
-	return engine
 }
 
 func (server *HTTPServer) runHTTPServer(handler http.Handler) func() {

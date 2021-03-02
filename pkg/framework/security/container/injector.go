@@ -14,6 +14,11 @@ import (
 
 // SecurityInjector 自定义注入参数，app端实现
 type SecurityInjector interface {
+	// 是否开启授权服务
+	EnableAuthorizationServer() bool
+	// 是否开启资源服务
+	EnableResourceServer() bool
+
 	// SecurityContainer
 	GetWebSecurityConfigurer() security.WebSecurityConfigurer
 	GetHTTPSecurityConfigurer() security.HTTPSecurityConfigurer
@@ -41,6 +46,7 @@ type SecurityInjector interface {
 	GetAuthorizationServerTokenServices() token.AuthorizationServerTokenServices
 	GetConsumerTokenServices() token.ConsumerTokenServices
 	GetTokenEndpoint() *endpoint.TokenEndpoint
+	GetTokenEndpointHTTPConfigurer() endpoint.OAuth2HTTPConfigurer
 	GetTokenEnhancer() token.Enhancer
 	GetTokenEnhancers() token.Enhancers
 	GetTokenGranters() token.Granters
@@ -50,6 +56,16 @@ type SecurityInjector interface {
 
 // NilSecurityInjector 空实现
 type NilSecurityInjector struct {
+}
+
+// EnableAuthorizationServer 是否开启授权服务
+func (*NilSecurityInjector) EnableAuthorizationServer() bool {
+	return false
+}
+
+// EnableResourceServer 是否开启资源服务
+func (*NilSecurityInjector) EnableResourceServer() bool {
+	return false
 }
 
 // GetWebSecurityConfigurer 自定义默认配置
@@ -149,6 +165,11 @@ func (*NilSecurityInjector) GetConsumerTokenServices() token.ConsumerTokenServic
 
 // GetTokenEndpoint 获取自定义值
 func (*NilSecurityInjector) GetTokenEndpoint() *endpoint.TokenEndpoint {
+	return nil
+}
+
+// GetTokenEndpointHTTPConfigurer 获取自定义值
+func (*NilSecurityInjector) GetTokenEndpointHTTPConfigurer() endpoint.OAuth2HTTPConfigurer {
 	return nil
 }
 

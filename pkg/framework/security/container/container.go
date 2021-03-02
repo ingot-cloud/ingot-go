@@ -52,6 +52,7 @@ type AuthorizationServerContainer struct {
 	AuthorizationServerTokenServices token.AuthorizationServerTokenServices
 	ConsumerTokenServices            token.ConsumerTokenServices
 	TokenEndpoint                    *endpoint.TokenEndpoint
+	TokenEndpointHTTPConfigurer      endpoint.OAuth2HTTPConfigurer
 	TokenEnhancer                    token.Enhancer
 	TokenGranter                     token.Granter
 	TokenGranters                    token.Granters

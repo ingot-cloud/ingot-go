@@ -19,6 +19,7 @@ var AuthorizationServerContainerFields = wire.NewSet(
 	AuthorizationServerTokenServices,
 	ConsumerTokenServices,
 	TokenEndpoint,
+	TokenEndpointHTTPConfigurer,
 	TokenEnhancer,
 	TokenEnhancers,
 	TokenGranters,
@@ -51,6 +52,11 @@ func ConsumerTokenServices(oauth2Container *container.OAuth2Container) token.Con
 // TokenEndpoint 端点
 func TokenEndpoint(granter token.Granter, securityContainer *container.SecurityContainer) *endpoint.TokenEndpoint {
 	return endpoint.NewTokenEndpoint(granter, securityContainer.ClientDetailsService)
+}
+
+// TokenEndpointHTTPConfigurer 端点配置
+func TokenEndpointHTTPConfigurer(tokenEndpoint *endpoint.TokenEndpoint) endpoint.OAuth2HTTPConfigurer {
+	return endpoint.NewOAuth2ApiConfig(tokenEndpoint)
 }
 
 // TokenEnhancer token增强，默认使用增强链
