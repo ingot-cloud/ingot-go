@@ -8,10 +8,10 @@ import (
 )
 
 var apiConfigSet = wire.NewSet(wire.Struct(new(http.APIConfig), "*"), wire.Bind(new(config.HTTPConfigurer), new(*http.APIConfig)))
-var apiAuthSet = wire.NewSet(wire.Struct(new(api.Auth), "*"))
+var apiOAuth2 = wire.NewSet(wire.Struct(new(api.OAuth2), "*"))
 
 // APISet api注入
 var APISet = wire.NewSet(
 	apiConfigSet,
-	apiAuthSet,
+	apiOAuth2,
 )
