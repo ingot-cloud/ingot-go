@@ -8,7 +8,9 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/endpoint"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/granter"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/store"
 )
 
@@ -38,16 +40,20 @@ type OAuth2Container struct {
 
 // ResourceServerContainer 资源服务器容器
 type ResourceServerContainer struct {
+	AuthenticationManager       coreAuth.ResourceManager
 	ResourceServerTokenServices token.ResourceServerTokenServices
 	OAuth2SecurityConfigurer    *config.OAuth2SecurityConfigurer
 	TokenExtractor              authentication.TokenExtractor
-	AuthenticationManager       coreAuth.ResourceManager
 }
 
 // AuthorizationServerContainer 授权服务器容器
 type AuthorizationServerContainer struct {
+	AuthenticationManager            coreAuth.AuthorizationManager
 	AuthorizationServerTokenServices token.AuthorizationServerTokenServices
 	ConsumerTokenServices            token.ConsumerTokenServices
+	TokenEndpoint                    *endpoint.TokenEndpoint
 	TokenEnhancer                    token.Enhancer
-	AuthenticationManager            coreAuth.AuthorizationManager
+	TokenGranter                     token.Granter
+	TokenGranters                    token.Granters
+	PasswordTokenGranter             *granter.PasswordTokenGranter
 }

@@ -15,11 +15,19 @@ var ResourceServerContainer = wire.NewSet(wire.Struct(new(container.ResourceServ
 
 // ResourceServerContainerFields 资源服务器容器中所有字段
 var ResourceServerContainerFields = wire.NewSet(
+	ResourceAuthenticationManager,
 	ResourceServerTokenServices,
 	OAuth2SecurityConfigurer,
 	TokenExtractor,
-	ResourceAuthenticationManager,
 )
+
+// ResourceAuthenticationManager 资源服务器中使用的认证管理器
+func ResourceAuthenticationManager(container *container.OAuth2Container, tokenService token.ResourceServerTokenServices, injector container.SecurityInjector) coreAuth.ResourceManager {
+	if injector.GetResourceAuthenticationManager() != nil {
+		return injector.GetResourceAuthenticationManager()
+	}
+	return preset.ResourceAuthenticationManager(container, tokenService)
+}
 
 // ResourceServerTokenServices 资源服务器 token 服务
 func ResourceServerTokenServices(container *container.OAuth2Container, injector container.SecurityInjector) token.ResourceServerTokenServices {
@@ -40,12 +48,4 @@ func TokenExtractor(injector container.SecurityInjector) authentication.TokenExt
 		return injector.GetTokenExtractor()
 	}
 	return preset.TokenExtractor()
-}
-
-// ResourceAuthenticationManager 资源服务器中使用的认证管理器
-func ResourceAuthenticationManager(container *container.OAuth2Container, tokenService token.ResourceServerTokenServices, injector container.SecurityInjector) coreAuth.ResourceManager {
-	if injector.GetResourceAuthenticationManager() != nil {
-		return injector.GetResourceAuthenticationManager()
-	}
-	return preset.ResourceAuthenticationManager(container, tokenService)
 }

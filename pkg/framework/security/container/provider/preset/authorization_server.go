@@ -5,7 +5,9 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/endpoint"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/granter"
 )
 
 // AuthorizationServerContainer 授权服务器容器
@@ -13,12 +15,21 @@ var AuthorizationServerContainer = wire.NewSet(wire.Struct(new(container.Authori
 
 // AuthorizationServerContainerFields 授权服务器容器所有字段
 var AuthorizationServerContainerFields = wire.NewSet(
+	AuthorizationAuthenticationManager,
 	AuthorizationServerTokenServices,
 	ConsumerTokenServices,
+	TokenEndpoint,
 	TokenEnhancer,
 	TokenEnhancers,
-	AuthorizationAuthenticationManager,
+	TokenGranters,
+	TokenGranter,
+	PasswordTokenGranter,
 )
+
+// AuthorizationAuthenticationManager 授权服务器中的认证管理器
+func AuthorizationAuthenticationManager(securityContainer *container.SecurityContainer) authentication.AuthorizationManager {
+	return authentication.NewProviderManager(securityContainer.Providers)
+}
 
 // AuthorizationServerTokenServices 授权服务器 token 服务
 func AuthorizationServerTokenServices(oauth2Container *container.OAuth2Container, securityContainer *container.SecurityContainer, enhancer token.Enhancer, manager authentication.AuthorizationManager) token.AuthorizationServerTokenServices {
@@ -37,6 +48,11 @@ func ConsumerTokenServices(oauth2Container *container.OAuth2Container) token.Con
 	return oauth2Container.DefaultTokenServices
 }
 
+// TokenEndpoint 端点
+func TokenEndpoint(granter token.Granter, securityContainer *container.SecurityContainer) *endpoint.TokenEndpoint {
+	return endpoint.NewTokenEndpoint(granter, securityContainer.ClientDetailsService)
+}
+
 // TokenEnhancer token增强，默认使用增强链
 func TokenEnhancer(enhancers token.Enhancers, oauth2Container *container.OAuth2Container) token.Enhancer {
 	chain := &token.EnhancerChain{}
@@ -51,7 +67,23 @@ func TokenEnhancers() token.Enhancers {
 	return nil
 }
 
-// AuthorizationAuthenticationManager 授权服务器中的认证管理器
-func AuthorizationAuthenticationManager(securityContainer *container.SecurityContainer) authentication.AuthorizationManager {
-	return authentication.NewProviderManager(securityContainer.Providers)
+// TokenGranters 自定义授权
+func TokenGranters() token.Granters {
+	return nil
+}
+
+// TokenGranter token 授权
+func TokenGranter(granters token.Granters, password *granter.PasswordTokenGranter) token.Granter {
+	result := granter.NewCompositeTokenGranter()
+	for _, g := range granters {
+		result.AddTokenGranter(g)
+	}
+
+	result.AddTokenGranter(password)
+	return result
+}
+
+// PasswordTokenGranter 密码模式授权
+func PasswordTokenGranter(tokenServices token.AuthorizationServerTokenServices, manager authentication.AuthorizationManager) *granter.PasswordTokenGranter {
+	return granter.NewPasswordTokenGranter(tokenServices, manager)
 }

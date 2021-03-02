@@ -14,11 +14,18 @@ var ResourceServerContainer = wire.NewSet(wire.Struct(new(container.ResourceServ
 
 // ResourceServerContainerFields 资源服务器容器中所有字段
 var ResourceServerContainerFields = wire.NewSet(
+	ResourceAuthenticationManager,
 	ResourceServerTokenServices,
 	OAuth2SecurityConfigurer,
 	TokenExtractor,
-	ResourceAuthenticationManager,
 )
+
+// ResourceAuthenticationManager 资源服务器中使用的认证管理器
+func ResourceAuthenticationManager(container *container.OAuth2Container, tokenService token.ResourceServerTokenServices) coreAuth.ResourceManager {
+	manager := authentication.NewOAuth2AuthenticationManager(tokenService)
+	manager.ResourceID = container.Config.ResourceServer.ResourceID
+	return manager
+}
 
 // ResourceServerTokenServices 资源服务器 token 服务
 func ResourceServerTokenServices(container *container.OAuth2Container) token.ResourceServerTokenServices {
@@ -33,11 +40,4 @@ func OAuth2SecurityConfigurer(tokenExtractor authentication.TokenExtractor, auth
 // TokenExtractor TokenExtrator接口默认实现
 func TokenExtractor() authentication.TokenExtractor {
 	return authentication.NewBearerTokenExtractor()
-}
-
-// ResourceAuthenticationManager 资源服务器中使用的认证管理器
-func ResourceAuthenticationManager(container *container.OAuth2Container, tokenService token.ResourceServerTokenServices) coreAuth.ResourceManager {
-	manager := authentication.NewOAuth2AuthenticationManager(tokenService)
-	manager.ResourceID = container.Config.ResourceServer.ResourceID
-	return manager
 }

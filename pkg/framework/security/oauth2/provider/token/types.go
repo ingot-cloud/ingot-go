@@ -97,3 +97,6 @@ type Granter interface {
 	// Grant
 	Grant(grantType string, client clientdetails.ClientDetails, tokenRequest *request.TokenRequest) (OAuth2AccessToken, error)
 }
+
+// Granters 授权列表
+type Granters []Granter

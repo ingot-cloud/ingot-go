@@ -8,7 +8,7 @@ import (
 
 // CompositeTokenGranter 组合 granter
 type CompositeTokenGranter struct {
-	tokenGranters []token.Granter
+	tokenGranters token.Granters
 }
 
 // NewCompositeTokenGranter 创建组合 granter

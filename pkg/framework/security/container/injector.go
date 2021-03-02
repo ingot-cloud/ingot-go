@@ -7,7 +7,9 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/crypto/password"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/endpoint"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/granter"
 )
 
 // SecurityInjector 自定义注入参数，app端实现
@@ -30,16 +32,20 @@ type SecurityInjector interface {
 	GetUserAuthenticationConverter() token.UserAuthenticationConverter
 
 	// ResourceServerContainer
+	GetResourceAuthenticationManager() coreAuth.Manager
 	GetResourceServerTokenServices() token.ResourceServerTokenServices
 	GetTokenExtractor() authentication.TokenExtractor
-	GetResourceAuthenticationManager() coreAuth.Manager
 
 	// AuthorizationServerContainer
+	GetAuthorizationAuthenticationManager() coreAuth.Manager
 	GetAuthorizationServerTokenServices() token.AuthorizationServerTokenServices
 	GetConsumerTokenServices() token.ConsumerTokenServices
+	GetTokenEndpoint() *endpoint.TokenEndpoint
 	GetTokenEnhancer() token.Enhancer
 	GetTokenEnhancers() token.Enhancers
-	GetAuthorizationAuthenticationManager() coreAuth.Manager
+	GetTokenGranters() token.Granters
+	GetTokenGranter() token.Granter
+	GetPasswordTokenGranter() *granter.PasswordTokenGranter
 }
 
 // NilSecurityInjector 空实现
@@ -111,6 +117,11 @@ func (*NilSecurityInjector) GetUserAuthenticationConverter() token.UserAuthentic
 	return nil
 }
 
+// GetResourceAuthenticationManager 获取自定义值
+func (*NilSecurityInjector) GetResourceAuthenticationManager() coreAuth.Manager {
+	return nil
+}
+
 // GetResourceServerTokenServices 获取自定义值
 func (*NilSecurityInjector) GetResourceServerTokenServices() token.ResourceServerTokenServices {
 	return nil
@@ -121,8 +132,8 @@ func (*NilSecurityInjector) GetTokenExtractor() authentication.TokenExtractor {
 	return nil
 }
 
-// GetResourceAuthenticationManager 获取自定义值
-func (*NilSecurityInjector) GetResourceAuthenticationManager() coreAuth.Manager {
+// GetAuthorizationAuthenticationManager 获取自定义值
+func (*NilSecurityInjector) GetAuthorizationAuthenticationManager() coreAuth.Manager {
 	return nil
 }
 
@@ -136,6 +147,11 @@ func (*NilSecurityInjector) GetConsumerTokenServices() token.ConsumerTokenServic
 	return nil
 }
 
+// GetTokenEndpoint 获取自定义值
+func (*NilSecurityInjector) GetTokenEndpoint() *endpoint.TokenEndpoint {
+	return nil
+}
+
 // GetTokenEnhancer 获取自定义值
 func (*NilSecurityInjector) GetTokenEnhancer() token.Enhancer {
 	return nil
@@ -146,7 +162,17 @@ func (*NilSecurityInjector) GetTokenEnhancers() token.Enhancers {
 	return nil
 }
 
-// GetAuthorizationAuthenticationManager 获取自定义值
-func (*NilSecurityInjector) GetAuthorizationAuthenticationManager() coreAuth.Manager {
+// GetTokenGranters 获取自定义值
+func (*NilSecurityInjector) GetTokenGranters() token.Granters {
+	return nil
+}
+
+// GetTokenGranter 获取自定义值
+func (*NilSecurityInjector) GetTokenGranter() token.Granter {
+	return nil
+}
+
+// GetPasswordTokenGranter 获取自定义值
+func (*NilSecurityInjector) GetPasswordTokenGranter() *granter.PasswordTokenGranter {
 	return nil
 }
