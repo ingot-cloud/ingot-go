@@ -35,7 +35,7 @@ func BuildContainerInjector(config *config.Config, options *config.Options) (sec
 		preset.ResourceServerContainerFields,
 		preset.ResourceServerContainer,
 
-		container.BootContainer,
+		container.BootContainerPre,
 	)
 	return nil, nil, nil
 }

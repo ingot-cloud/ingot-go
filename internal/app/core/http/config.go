@@ -2,10 +2,9 @@ package http
 
 import (
 	"github.com/casbin/casbin/v2"
-	"github.com/ingot-cloud/ingot-go/internal/app/api"
 	"github.com/ingot-cloud/ingot-go/internal/app/config"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/middleware"
-	bootConfig "github.com/ingot-cloud/ingot-go/pkg/framework/boot/config"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/api"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/ingot"
 )
 
@@ -13,8 +12,6 @@ import (
 type APIConfig struct {
 	CasbinEnforcer *casbin.SyncedEnforcer
 	SecurityConfig config.Security
-
-	OAuth2Api *api.OAuth2
 }
 
 // Configure 应用配置
@@ -25,6 +22,6 @@ func (c *APIConfig) Configure(app *ingot.Router) {
 }
 
 // GetAPI 获取API
-func (c *APIConfig) GetAPI() bootConfig.APIConfigurers {
-	return bootConfig.APIConfigurers{c.OAuth2Api}
+func (c *APIConfig) GetAPI() api.Configurers {
+	return api.Configurers{}
 }
