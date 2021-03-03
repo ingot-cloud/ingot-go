@@ -11,7 +11,7 @@ type DefaultContainer struct {
 	HTTPConfig                   config.HTTPConfig
 	HTTPConfigurer               api.HTTPConfigurer
 	SecurityInjector             container.SecurityInjector
-	SecurityContainer            *container.SecurityContainer
+	Common                       *container.Common
 	OAuth2Container              *container.OAuth2Container
 	ResourceServerContainer      *container.ResourceServerContainer
 	AuthorizationServerContainer *container.AuthorizationServerContainer
@@ -33,8 +33,8 @@ func (c *DefaultContainer) GetSecurityInjector() container.SecurityInjector {
 }
 
 // GetSecurityContainer default
-func (c *DefaultContainer) GetSecurityContainer() *container.SecurityContainer {
-	return c.SecurityContainer
+func (c *DefaultContainer) GetSecurityContainer() *container.Common {
+	return c.Common
 }
 
 // GetOAuth2Container default

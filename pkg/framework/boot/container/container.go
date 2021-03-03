@@ -29,7 +29,7 @@ type Container interface {
 	GetHTTPConfig() config.HTTPConfig
 	GetHTTPConfigurer() api.HTTPConfigurer
 	GetSecurityInjector() container.SecurityInjector
-	GetSecurityContainer() *container.SecurityContainer
+	GetSecurityContainer() *container.Common
 	GetOAuth2Container() *container.OAuth2Container
 	GetResourceServerContainer() *container.ResourceServerContainer
 	GetAuthorizationServerContainer() *container.AuthorizationServerContainer

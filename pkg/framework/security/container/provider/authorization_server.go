@@ -39,14 +39,14 @@ func AuthorizationAuthenticationManager(providerContainer *container.AuthProvide
 }
 
 // AuthorizationServerTokenServices 授权服务器 token 服务
-func AuthorizationServerTokenServices(oauth2Container *container.OAuth2Container, securityContainer *container.SecurityContainer, enhancer token.Enhancer, manager authentication.AuthorizationManager, injector container.SecurityInjector) token.AuthorizationServerTokenServices {
+func AuthorizationServerTokenServices(oauth2Container *container.OAuth2Container, common *container.Common, enhancer token.Enhancer, manager authentication.AuthorizationManager, injector container.SecurityInjector) token.AuthorizationServerTokenServices {
 	if !injector.EnableAuthorizationServer() {
 		return nil
 	}
 	if injector.GetAuthorizationServerTokenServices() != nil {
 		return injector.GetAuthorizationServerTokenServices()
 	}
-	return preset.AuthorizationServerTokenServices(oauth2Container, securityContainer, enhancer, manager)
+	return preset.AuthorizationServerTokenServices(oauth2Container, common, enhancer, manager)
 }
 
 // ConsumerTokenServices 令牌撤销
@@ -61,14 +61,14 @@ func ConsumerTokenServices(oauth2Container *container.OAuth2Container, injector 
 }
 
 // TokenEndpoint 端点
-func TokenEndpoint(granter token.Granter, securityContainer *container.SecurityContainer, injector container.SecurityInjector) *endpoint.TokenEndpoint {
+func TokenEndpoint(granter token.Granter, common *container.Common, injector container.SecurityInjector) *endpoint.TokenEndpoint {
 	if !injector.EnableAuthorizationServer() {
 		return nil
 	}
 	if injector.GetTokenEndpoint() != nil {
 		return injector.GetTokenEndpoint()
 	}
-	return preset.TokenEndpoint(granter, securityContainer)
+	return preset.TokenEndpoint(granter, common)
 }
 
 // TokenEndpointHTTPConfigurer 端点配置

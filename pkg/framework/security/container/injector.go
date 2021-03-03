@@ -19,7 +19,7 @@ type SecurityInjector interface {
 	// 是否开启资源服务
 	EnableResourceServer() bool
 
-	// SecurityContainer
+	// Common
 	GetWebSecurityConfigurer() security.WebSecurityConfigurer
 	GetHTTPSecurityConfigurer() security.HTTPSecurityConfigurer
 	GetWebSecurityConfigurers() security.WebSecurityConfigurers

@@ -10,11 +10,11 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
 )
 
-// SecurityContainer 安全容器
-var SecurityContainer = wire.NewSet(wire.Struct(new(container.SecurityContainer), "*"))
+// Common 容器
+var Common = wire.NewSet(wire.Struct(new(container.Common), "*"))
 
-// SecurityContainerFields 安全容器所有字段
-var SecurityContainerFields = wire.NewSet(
+// CommonFields 容器所有字段
+var CommonFields = wire.NewSet(
 	PasswordEncoder,
 	UserCache,
 	PreChecker,

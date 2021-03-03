@@ -10,7 +10,7 @@ import (
 type DefaultPre struct {
 	HTTPConfig                   config.HTTPConfig
 	HTTPConfigurer               api.HTTPConfigurer
-	SecurityContainer            *container.SecurityContainer
+	Common                       *container.Common
 	OAuth2Container              *container.OAuth2Container
 	ResourceServerContainer      *container.ResourceServerContainer
 	AuthorizationServerContainer *container.AuthorizationServerContainer
@@ -32,8 +32,8 @@ func (c *DefaultPre) GetSecurityInjector() container.SecurityInjector {
 }
 
 // GetSecurityContainer default
-func (c *DefaultPre) GetSecurityContainer() *container.SecurityContainer {
-	return c.SecurityContainer
+func (c *DefaultPre) GetSecurityContainer() *container.Common {
+	return c.Common
 }
 
 // GetOAuth2Container default
