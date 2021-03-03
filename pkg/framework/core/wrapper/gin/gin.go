@@ -27,6 +27,15 @@ func GetToken(ctx *gin.Context, prefix string) string {
 	return token
 }
 
+// IsBasicAuth 是否为 basic 认证
+func IsBasicAuth(ctx *gin.Context) bool {
+	auth := ctx.GetHeader(enums.HeaderAuthentication)
+	if auth != "" {
+		return strings.HasPrefix(auth, string(enums.BasicToken))
+	}
+	return false
+}
+
 // GetBasicToken 获取 basic token
 func GetBasicToken(ctx *gin.Context) string {
 	return GetToken(ctx, string(enums.BasicWithSpace))
