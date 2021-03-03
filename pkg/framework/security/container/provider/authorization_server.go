@@ -39,7 +39,7 @@ func AuthorizationAuthenticationManager(providerContainer *container.AuthProvide
 }
 
 // AuthorizationServerTokenServices 授权服务器 token 服务
-func AuthorizationServerTokenServices(oauth2Container *container.OAuth2Container, common *container.Common, enhancer token.Enhancer, manager authentication.AuthorizationManager, injector container.SecurityInjector) token.AuthorizationServerTokenServices {
+func AuthorizationServerTokenServices(oauth2Container *container.OAuth2Container, common *container.CommonContainer, enhancer token.Enhancer, manager authentication.AuthorizationManager, injector container.SecurityInjector) token.AuthorizationServerTokenServices {
 	if !injector.EnableAuthorizationServer() {
 		return nil
 	}
@@ -61,7 +61,7 @@ func ConsumerTokenServices(oauth2Container *container.OAuth2Container, injector 
 }
 
 // TokenEndpoint 端点
-func TokenEndpoint(granter token.Granter, common *container.Common, injector container.SecurityInjector) *endpoint.TokenEndpoint {
+func TokenEndpoint(granter token.Granter, common *container.CommonContainer, injector container.SecurityInjector) *endpoint.TokenEndpoint {
 	if !injector.EnableAuthorizationServer() {
 		return nil
 	}

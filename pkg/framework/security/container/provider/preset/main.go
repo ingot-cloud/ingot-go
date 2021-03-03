@@ -8,8 +8,8 @@ import (
 // All 所有实例
 var All = wire.NewSet(
 	NilSecurityInjector,
-	CommonFields,
-	Common,
+	CommonContainerFields,
+	CommonContainer,
 	OAuth2ContainerFields,
 	OAuth2Container,
 	AuthorizationServerContainerFields,
@@ -18,7 +18,8 @@ var All = wire.NewSet(
 	ResourceServerContainer,
 	AuthProvidersContainer,
 	AuthProvidersContainerFields,
+	SecurityContainer,
 )
 
 // SecurityContainer 安全容器
-var SecurityContainer = wire.NewSet(new(container.SecurityContainer), "*")
+var SecurityContainer = wire.NewSet(wire.Struct(new(container.SecurityContainer), "*"))

@@ -8,13 +8,10 @@ import (
 
 // DefaultContainer for app
 type DefaultContainer struct {
-	HTTPConfig                   config.HTTPConfig
-	HTTPConfigurer               api.HTTPConfigurer
-	SecurityInjector             container.SecurityInjector
-	Common                       *container.Common
-	OAuth2Container              *container.OAuth2Container
-	ResourceServerContainer      *container.ResourceServerContainer
-	AuthorizationServerContainer *container.AuthorizationServerContainer
+	HTTPConfig        config.HTTPConfig
+	HTTPConfigurer    api.HTTPConfigurer
+	SecurityInjector  container.SecurityInjector
+	SecurityContainer *container.SecurityContainer
 }
 
 // GetHTTPConfig default
@@ -33,21 +30,6 @@ func (c *DefaultContainer) GetSecurityInjector() container.SecurityInjector {
 }
 
 // GetSecurityContainer default
-func (c *DefaultContainer) GetSecurityContainer() *container.Common {
-	return c.Common
-}
-
-// GetOAuth2Container default
-func (c *DefaultContainer) GetOAuth2Container() *container.OAuth2Container {
-	return c.OAuth2Container
-}
-
-// GetResourceServerContainer default
-func (c *DefaultContainer) GetResourceServerContainer() *container.ResourceServerContainer {
-	return c.ResourceServerContainer
-}
-
-// GetAuthorizationServerContainer default
-func (c *DefaultContainer) GetAuthorizationServerContainer() *container.AuthorizationServerContainer {
-	return c.AuthorizationServerContainer
+func (c *DefaultContainer) GetSecurityContainer() *container.SecurityContainer {
+	return c.SecurityContainer
 }

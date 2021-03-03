@@ -18,10 +18,10 @@ func enableSecurityMiddleware(engine *gin.Engine, boot bootContainer.Container) 
 	enableAuthorization := boot.GetSecurityInjector().EnableAuthorizationServer()
 	enableResource := boot.GetSecurityInjector().EnableResourceServer()
 
-	webConfigurers := boot.GetSecurityContainer().WebSecurityConfigurers
+	webConfigurers := boot.GetSecurityContainer().CommonContainer.WebSecurityConfigurers
 	// 开启资源服务，增加 OAuth2 安全配置
 	if enableResource {
-		oauth2Auth := config.NewWebSecurityConfigurerAdapter(nil, boot.GetResourceServerContainer().OAuth2SecurityConfigurer)
+		oauth2Auth := config.NewWebSecurityConfigurerAdapter(nil, boot.GetSecurityContainer().ResourceServerContainer.OAuth2SecurityConfigurer)
 		webConfigurers = append(webConfigurers, oauth2Auth)
 	}
 
@@ -30,7 +30,7 @@ func enableSecurityMiddleware(engine *gin.Engine, boot bootContainer.Container) 
 	// 开启授权服务，增加 token 端点
 	if enableAuthorization {
 		ingotRouter := ingot.NewRouter(engine.Group(""))
-		oauthConfig := boot.GetAuthorizationServerContainer().TokenEndpointHTTPConfigurer
+		oauthConfig := boot.GetSecurityContainer().AuthorizationServerContainer.TokenEndpointHTTPConfigurer
 		oauthConfig.Configure(ingotRouter)
 		for _, api := range oauthConfig.GetAPI() {
 			api.Apply(ingotRouter)

@@ -13,11 +13,11 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/config"
 )
 
-// Common 容器
-var Common = wire.NewSet(wire.Struct(new(container.Common), "*"))
+// CommonContainer 容器
+var CommonContainer = wire.NewSet(wire.Struct(new(container.CommonContainer), "*"))
 
-// CommonFields 容器所有字段
-var CommonFields = wire.NewSet(
+// CommonContainerFields 容器所有字段
+var CommonContainerFields = wire.NewSet(
 	PasswordEncoder,
 	UserCache,
 	PreChecker,

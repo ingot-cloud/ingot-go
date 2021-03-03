@@ -14,17 +14,8 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/store"
 )
 
-// SecurityContainer 容器汇总
-type SecurityContainer struct {
-	Common              *Common
-	OAuth2              *OAuth2Container
-	ResourceServer      *ResourceServerContainer
-	AuthorizationServer *AuthorizationServerContainer
-	AuthProviders       *AuthProvidersContainer
-}
-
-// Common 容器
-type Common struct {
+// CommonContainer 容器
+type CommonContainer struct {
 	WebSecurityConfigurer  security.WebSecurityConfigurer
 	HTTPSecurityConfigurer security.HTTPSecurityConfigurer
 	WebSecurityConfigurers security.WebSecurityConfigurers

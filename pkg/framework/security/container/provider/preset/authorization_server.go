@@ -33,7 +33,7 @@ func AuthorizationAuthenticationManager(providerContainer *container.AuthProvide
 }
 
 // AuthorizationServerTokenServices 授权服务器 token 服务
-func AuthorizationServerTokenServices(oauth2Container *container.OAuth2Container, common *container.Common, enhancer token.Enhancer, manager authentication.AuthorizationManager) token.AuthorizationServerTokenServices {
+func AuthorizationServerTokenServices(oauth2Container *container.OAuth2Container, common *container.CommonContainer, enhancer token.Enhancer, manager authentication.AuthorizationManager) token.AuthorizationServerTokenServices {
 	tokenServices := oauth2Container.DefaultTokenServices
 	client := common.ClientDetailsService
 	if _, ok := client.(*clientdetails.NilClientdetails); !ok {
@@ -50,7 +50,7 @@ func ConsumerTokenServices(oauth2Container *container.OAuth2Container) token.Con
 }
 
 // TokenEndpoint 端点
-func TokenEndpoint(granter token.Granter, common *container.Common) *endpoint.TokenEndpoint {
+func TokenEndpoint(granter token.Granter, common *container.CommonContainer) *endpoint.TokenEndpoint {
 	return endpoint.NewTokenEndpoint(granter, common.ClientDetailsService)
 }
 

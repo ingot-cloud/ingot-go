@@ -8,12 +8,9 @@ import (
 
 // DefaultPre 为了执行 BuildContainerInjector
 type DefaultPre struct {
-	HTTPConfig                   config.HTTPConfig
-	HTTPConfigurer               api.HTTPConfigurer
-	Common                       *container.Common
-	OAuth2Container              *container.OAuth2Container
-	ResourceServerContainer      *container.ResourceServerContainer
-	AuthorizationServerContainer *container.AuthorizationServerContainer
+	HTTPConfig        config.HTTPConfig
+	HTTPConfigurer    api.HTTPConfigurer
+	SecurityContainer *container.SecurityContainer
 }
 
 // GetHTTPConfig default
@@ -32,21 +29,6 @@ func (c *DefaultPre) GetSecurityInjector() container.SecurityInjector {
 }
 
 // GetSecurityContainer default
-func (c *DefaultPre) GetSecurityContainer() *container.Common {
-	return c.Common
-}
-
-// GetOAuth2Container default
-func (c *DefaultPre) GetOAuth2Container() *container.OAuth2Container {
-	return c.OAuth2Container
-}
-
-// GetResourceServerContainer default
-func (c *DefaultPre) GetResourceServerContainer() *container.ResourceServerContainer {
-	return c.ResourceServerContainer
-}
-
-// GetAuthorizationServerContainer default
-func (c *DefaultPre) GetAuthorizationServerContainer() *container.AuthorizationServerContainer {
-	return c.AuthorizationServerContainer
+func (c *DefaultPre) GetSecurityContainer() *container.SecurityContainer {
+	return c.SecurityContainer
 }
