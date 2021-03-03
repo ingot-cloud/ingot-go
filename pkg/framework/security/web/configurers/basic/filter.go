@@ -23,7 +23,7 @@ func NewFilter(manager authentication.Manager) *Filter {
 
 // Name 名字
 func (b *Filter) Name() string {
-	return "BasicFilter"
+	return "BasicAuthenticationFilter"
 }
 
 // Order 过滤器排序
