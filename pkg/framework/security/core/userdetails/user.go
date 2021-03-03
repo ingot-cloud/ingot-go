@@ -7,10 +7,28 @@ type User struct {
 	Authorities           []core.GrantedAuthority
 	Username              string
 	Password              string
-	accountNonExpired     bool
-	accountNonLocked      bool
+	AccountNonExpired     bool
+	AccountNonLocked      bool
 	CredentialsNonExpired bool
 	Enabled               bool
+}
+
+// NewUser 实例化
+func NewUser(username, password string, authorities []core.GrantedAuthority) *User {
+	return NewUserAllParams(username, password, authorities, true, true, true, true)
+}
+
+// NewUserAllParams 实例化
+func NewUserAllParams(username, password string, authorities []core.GrantedAuthority, accountNonExpired, accountNonLocked, credentialsNonExpired, enabled bool) *User {
+	return &User{
+		Username:              username,
+		Password:              password,
+		Authorities:           authorities,
+		AccountNonExpired:     accountNonExpired,
+		AccountNonLocked:      accountNonLocked,
+		CredentialsNonExpired: credentialsNonExpired,
+		Enabled:               enabled,
+	}
 }
 
 // GetAuthorities 获取授予用户的权限
@@ -30,12 +48,12 @@ func (u *User) GetPassword() string {
 
 // IsAccountNonExpired 账户是否未过期
 func (u *User) IsAccountNonExpired() bool {
-	return u.accountNonExpired
+	return u.AccountNonExpired
 }
 
 // IsAccountNonLocked 账户是否未锁定
 func (u *User) IsAccountNonLocked() bool {
-	return u.accountNonLocked
+	return u.AccountNonLocked
 }
 
 // IsCredentialsNonExpired 用户凭证（密码）是否未过期
