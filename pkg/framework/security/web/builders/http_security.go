@@ -6,7 +6,6 @@ import (
 	coreUtils "github.com/ingot-cloud/ingot-go/pkg/framework/core/utils"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/filter"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/configurers"
 	securityFilter "github.com/ingot-cloud/ingot-go/pkg/framework/security/web/filter"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/utils"
 )
@@ -59,11 +58,6 @@ func (security *HTTPSecurity) Apply(configurer security.HTTPSecurityConfigurer) 
 	if _, ok := security.configurers[typeStr]; !ok {
 		security.configurers[typeStr] = configurer
 	}
-}
-
-// HTTPBasic 开启 basic 验证
-func (security *HTTPSecurity) HTTPBasic() {
-	security.Apply(&configurers.BasicAuthentication{})
 }
 
 func (security *HTTPSecurity) configure() error {
