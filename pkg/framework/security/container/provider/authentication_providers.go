@@ -1,0 +1,31 @@
+package provider
+
+import (
+	"github.com/google/wire"
+	coreAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication/provider/dao"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/preset"
+)
+
+// ProviderAll 所有provider
+var ProviderAll = wire.NewSet(
+	DaoAuthenticationProvider,
+	Providers,
+)
+
+// DaoAuthenticationProvider UsernamePasswordAuthenticationToken 认证提供者
+var DaoAuthenticationProvider = wire.NewSet(wire.Struct(new(dao.AuthenticationProvider), "*"))
+
+// // BasicAuthenticationProvider 认证提供者，其中注入了 ClientDetailsUserDetailsService
+// func BasicAuthenticationProvider(encoder password.Encoder, service clientdetails.Service, cache userdetails.UserCache, preChecker userdetails.Checker, postChecker userdetails.Checker) *basic.AuthenticationProvider {
+// 	return basic.NewProvider(encoder, service, cache, preChecker, postChecker)
+// }
+
+// Providers 所有认证提供者
+func Providers(dao *dao.AuthenticationProvider, injector container.SecurityInjector) coreAuth.Providers {
+	if len(injector.GetProviders()) != 0 {
+		return injector.GetProviders()
+	}
+	return preset.Providers(dao)
+}
