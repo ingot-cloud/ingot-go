@@ -28,14 +28,14 @@ var AuthorizationServerContainerFields = wire.NewSet(
 )
 
 // AuthorizationAuthenticationManager 授权服务器中的认证管理器
-func AuthorizationAuthenticationManager(securityContainer *container.SecurityContainer, injector container.SecurityInjector) authentication.AuthorizationManager {
+func AuthorizationAuthenticationManager(providerContainer *container.AuthProvidersContainer, injector container.SecurityInjector) authentication.AuthorizationManager {
 	if !injector.EnableAuthorizationServer() {
 		return nil
 	}
 	if injector.GetAuthorizationAuthenticationManager() != nil {
 		return injector.GetAuthorizationAuthenticationManager()
 	}
-	return preset.AuthorizationAuthenticationManager(securityContainer)
+	return preset.AuthorizationAuthenticationManager(providerContainer)
 }
 
 // AuthorizationServerTokenServices 授权服务器 token 服务

@@ -25,15 +25,7 @@ func BuildContainerInjector(config *config.Config, options *config.Options) (sec
 		provider.AllFactory,
 		provider.AppContainer,
 
-		preset.NilSecurityInjector,
-		preset.SecurityContainerFields,
-		preset.SecurityContainer,
-		preset.OAuth2ContainerFields,
-		preset.OAuth2Container,
-		preset.AuthorizationServerContainerFields,
-		preset.AuthorizationServerContainer,
-		preset.ResourceServerContainerFields,
-		preset.ResourceServerContainer,
+		preset.All,
 
 		container.BootContainerPre,
 	)
@@ -45,14 +37,7 @@ func BuildContainer(config *config.Config, options *config.Options, securityInje
 		provider.AllSet,
 		provider.AllFactory,
 
-		securityProvider.SecurityContainerFields,
-		securityProvider.SecurityContainer,
-		securityProvider.OAuth2ContainerFields,
-		securityProvider.OAuth2Container,
-		securityProvider.AuthorizationServerContainerFields,
-		securityProvider.AuthorizationServerContainer,
-		securityProvider.ResourceServerContainerFields,
-		securityProvider.ResourceServerContainer,
+		securityProvider.All,
 
 		container.BootContainer,
 	)

@@ -84,24 +84,15 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 	httpSecurityConfigurer := preset.HTTPSecurityConfigurer()
 	webSecurityConfigurers := preset.WebSecurityConfigurers(webSecurityConfigurer, httpSecurityConfigurer)
 	encoder := preset.PasswordEncoder()
-	userdetailsService := preset.UserDetailsService()
 	userCache := preset.UserCache()
 	preChecker := preset.PreChecker()
 	postChecker := preset.PostChecker()
-	authenticationProvider := &dao2.AuthenticationProvider{
-		PasswordEncoder:          encoder,
-		UserDetailsService:       userdetailsService,
-		UserCache:                userCache,
-		PreAuthenticationChecks:  preChecker,
-		PostAuthenticationChecks: postChecker,
-	}
-	providers := preset.Providers(authenticationProvider)
+	userdetailsService := preset.UserDetailsService()
 	clientdetailsService := preset.ClientDetailsService()
 	securityContainer := &container.SecurityContainer{
 		WebSecurityConfigurer:  webSecurityConfigurer,
 		HTTPSecurityConfigurer: httpSecurityConfigurer,
 		WebSecurityConfigurers: webSecurityConfigurers,
-		Providers:              providers,
 		PasswordEncoder:        encoder,
 		UserCache:              userCache,
 		PreChecker:             preChecker,
@@ -138,7 +129,18 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 		OAuth2SecurityConfigurer:    oAuth2SecurityConfigurer,
 		TokenExtractor:              tokenExtractor,
 	}
-	authorizationManager := preset.AuthorizationAuthenticationManager(securityContainer)
+	authenticationProvider := &dao2.AuthenticationProvider{
+		PasswordEncoder:          encoder,
+		UserDetailsService:       userdetailsService,
+		UserCache:                userCache,
+		PreAuthenticationChecks:  preChecker,
+		PostAuthenticationChecks: postChecker,
+	}
+	providers := preset.Providers(authenticationProvider)
+	authProvidersContainer := &container.AuthProvidersContainer{
+		Providers: providers,
+	}
+	authorizationManager := preset.AuthorizationAuthenticationManager(authProvidersContainer)
 	enhancers := preset.TokenEnhancers()
 	enhancer := preset.TokenEnhancer(enhancers, oAuth2Container)
 	authorizationServerTokenServices := preset.AuthorizationServerTokenServices(oAuth2Container, securityContainer, enhancer, authorizationManager)
@@ -232,24 +234,15 @@ func BuildContainer(config2 *config.Config, options *config.Options, securityInj
 	httpSecurityConfigurer := provider2.HTTPSecurityConfigurer(securityInjector)
 	webSecurityConfigurers := provider2.WebSecurityConfigurers(webSecurityConfigurer, httpSecurityConfigurer, securityInjector)
 	encoder := provider2.PasswordEncoder(securityInjector)
-	userdetailsService := provider2.UserDetailsService(securityInjector)
 	userCache := provider2.UserCache(securityInjector)
 	preChecker := provider2.PreChecker(securityInjector)
 	postChecker := provider2.PostChecker(securityInjector)
-	authenticationProvider := &dao2.AuthenticationProvider{
-		PasswordEncoder:          encoder,
-		UserDetailsService:       userdetailsService,
-		UserCache:                userCache,
-		PreAuthenticationChecks:  preChecker,
-		PostAuthenticationChecks: postChecker,
-	}
-	providers := provider2.Providers(authenticationProvider, securityInjector)
+	userdetailsService := provider2.UserDetailsService(securityInjector)
 	clientdetailsService := provider2.ClientDetailsService(securityInjector)
 	securityContainer := &container.SecurityContainer{
 		WebSecurityConfigurer:  webSecurityConfigurer,
 		HTTPSecurityConfigurer: httpSecurityConfigurer,
 		WebSecurityConfigurers: webSecurityConfigurers,
-		Providers:              providers,
 		PasswordEncoder:        encoder,
 		UserCache:              userCache,
 		PreChecker:             preChecker,
@@ -286,7 +279,18 @@ func BuildContainer(config2 *config.Config, options *config.Options, securityInj
 		OAuth2SecurityConfigurer:    oAuth2SecurityConfigurer,
 		TokenExtractor:              tokenExtractor,
 	}
-	authorizationManager := provider2.AuthorizationAuthenticationManager(securityContainer, securityInjector)
+	authenticationProvider := &dao2.AuthenticationProvider{
+		PasswordEncoder:          encoder,
+		UserDetailsService:       userdetailsService,
+		UserCache:                userCache,
+		PreAuthenticationChecks:  preChecker,
+		PostAuthenticationChecks: postChecker,
+	}
+	providers := provider2.Providers(authenticationProvider, securityInjector)
+	authProvidersContainer := &container.AuthProvidersContainer{
+		Providers: providers,
+	}
+	authorizationManager := provider2.AuthorizationAuthenticationManager(authProvidersContainer, securityInjector)
 	enhancers := provider2.TokenEnhancers(securityInjector)
 	enhancer := provider2.TokenEnhancer(enhancers, oAuth2Container, securityInjector)
 	authorizationServerTokenServices := provider2.AuthorizationServerTokenServices(oAuth2Container, securityContainer, enhancer, authorizationManager, securityInjector)

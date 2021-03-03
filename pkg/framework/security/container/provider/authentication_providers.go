@@ -8,19 +8,14 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/preset"
 )
 
-// ProviderAll 所有provider
-var ProviderAll = wire.NewSet(
-	DaoAuthenticationProvider,
+// AuthProvidersContainer 容器
+var AuthProvidersContainer = wire.NewSet(wire.Struct(new(container.AuthProvidersContainer), "*"))
+
+// AuthProvidersContainerFields 所有provider
+var AuthProvidersContainerFields = wire.NewSet(
 	Providers,
+	DaoAuthenticationProvider,
 )
-
-// DaoAuthenticationProvider UsernamePasswordAuthenticationToken 认证提供者
-var DaoAuthenticationProvider = wire.NewSet(wire.Struct(new(dao.AuthenticationProvider), "*"))
-
-// // BasicAuthenticationProvider 认证提供者，其中注入了 ClientDetailsUserDetailsService
-// func BasicAuthenticationProvider(encoder password.Encoder, service clientdetails.Service, cache userdetails.UserCache, preChecker userdetails.Checker, postChecker userdetails.Checker) *basic.AuthenticationProvider {
-// 	return basic.NewProvider(encoder, service, cache, preChecker, postChecker)
-// }
 
 // Providers 所有认证提供者
 func Providers(dao *dao.AuthenticationProvider, injector container.SecurityInjector) coreAuth.Providers {
@@ -29,3 +24,11 @@ func Providers(dao *dao.AuthenticationProvider, injector container.SecurityInjec
 	}
 	return preset.Providers(dao)
 }
+
+// DaoAuthenticationProvider UsernamePasswordAuthenticationToken 认证提供者
+var DaoAuthenticationProvider = wire.NewSet(wire.Struct(new(dao.AuthenticationProvider), "*"))
+
+// // BasicAuthenticationProvider 认证提供者，其中注入了 ClientDetailsUserDetailsService
+// func BasicAuthenticationProvider(encoder password.Encoder, service clientdetails.Service, cache userdetails.UserCache, preChecker userdetails.Checker, postChecker userdetails.Checker) *basic.AuthenticationProvider {
+// 	return basic.NewProvider(encoder, service, cache, preChecker, postChecker)
+// }

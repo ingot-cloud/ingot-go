@@ -23,7 +23,6 @@ type SecurityInjector interface {
 	GetWebSecurityConfigurer() security.WebSecurityConfigurer
 	GetHTTPSecurityConfigurer() security.HTTPSecurityConfigurer
 	GetWebSecurityConfigurers() security.WebSecurityConfigurers
-	GetProviders() coreAuth.Providers
 	GetPasswordEncoder() password.Encoder
 	GetUserCache() userdetails.UserCache
 	GetPreChecker() userdetails.PreChecker
@@ -52,6 +51,9 @@ type SecurityInjector interface {
 	GetTokenGranters() token.Granters
 	GetTokenGranter() token.Granter
 	GetPasswordTokenGranter() *granter.PasswordTokenGranter
+
+	// AuthProvidersContainer
+	GetProviders() coreAuth.Providers
 }
 
 // NilSecurityInjector 空实现
@@ -80,11 +82,6 @@ func (*NilSecurityInjector) GetHTTPSecurityConfigurer() security.HTTPSecurityCon
 
 // GetWebSecurityConfigurers 获取自定义值
 func (*NilSecurityInjector) GetWebSecurityConfigurers() security.WebSecurityConfigurers {
-	return nil
-}
-
-// GetProviders 获取自定义值
-func (*NilSecurityInjector) GetProviders() coreAuth.Providers {
 	return nil
 }
 
@@ -195,5 +192,10 @@ func (*NilSecurityInjector) GetTokenGranter() token.Granter {
 
 // GetPasswordTokenGranter 获取自定义值
 func (*NilSecurityInjector) GetPasswordTokenGranter() *granter.PasswordTokenGranter {
+	return nil
+}
+
+// GetProviders 获取自定义值
+func (*NilSecurityInjector) GetProviders() coreAuth.Providers {
 	return nil
 }

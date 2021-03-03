@@ -28,8 +28,8 @@ var AuthorizationServerContainerFields = wire.NewSet(
 )
 
 // AuthorizationAuthenticationManager 授权服务器中的认证管理器
-func AuthorizationAuthenticationManager(securityContainer *container.SecurityContainer) authentication.AuthorizationManager {
-	return authentication.NewProviderManager(securityContainer.Providers)
+func AuthorizationAuthenticationManager(providerContainer *container.AuthProvidersContainer) authentication.AuthorizationManager {
+	return authentication.NewProviderManager(providerContainer.Providers)
 }
 
 // AuthorizationServerTokenServices 授权服务器 token 服务

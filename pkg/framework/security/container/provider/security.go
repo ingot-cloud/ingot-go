@@ -15,7 +15,6 @@ var SecurityContainer = wire.NewSet(wire.Struct(new(container.SecurityContainer)
 
 // SecurityContainerFields 安全容器所有字段
 var SecurityContainerFields = wire.NewSet(
-	ProviderAll,
 	PasswordEncoder,
 	UserCache,
 	PreChecker,

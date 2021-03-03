@@ -19,7 +19,6 @@ type SecurityContainer struct {
 	WebSecurityConfigurer  security.WebSecurityConfigurer
 	HTTPSecurityConfigurer security.HTTPSecurityConfigurer
 	WebSecurityConfigurers security.WebSecurityConfigurers
-	Providers              coreAuth.Providers
 	PasswordEncoder        password.Encoder
 	UserCache              userdetails.UserCache
 	PreChecker             userdetails.PreChecker
@@ -57,4 +56,9 @@ type AuthorizationServerContainer struct {
 	TokenGranter                     token.Granter
 	TokenGranters                    token.Granters
 	PasswordTokenGranter             *granter.PasswordTokenGranter
+}
+
+// AuthProvidersContainer 认证提供者容器
+type AuthProvidersContainer struct {
+	Providers coreAuth.Providers
 }
