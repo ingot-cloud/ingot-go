@@ -16,7 +16,7 @@ var AuthProvidersContainer = wire.NewSet(wire.Struct(new(container.AuthProviders
 var AuthProvidersContainerFields = wire.NewSet(
 	DaoAuthenticationProvider,
 	BasicAuthenticationProvider,
-	wire.Struct(new(ProvidersImpl), "Basic", "Dao"),
+	wire.Struct(new(ProvidersImpl), "Injector", "Basic", "Dao"),
 	wire.Bind(new(coreAuth.Providers), new(*ProvidersImpl)),
 )
 
@@ -31,6 +31,10 @@ type ProvidersImpl struct {
 
 // Add 追加provider
 func (p *ProvidersImpl) Add(item coreAuth.Provider) {
+	if p.Injector.GetProviders() != nil {
+		p.Injector.GetProviders().Add(item)
+		return
+	}
 	p.providers = append(p.providers, item)
 }
 

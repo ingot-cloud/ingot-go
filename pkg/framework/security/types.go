@@ -32,5 +32,9 @@ type HTTPSecurityBuilder interface {
 	Apply(HTTPSecurityConfigurer)
 }
 
-// WebSecurityConfigurers 定义 Web Security 配置列表
-type WebSecurityConfigurers []WebSecurityConfigurer
+// WebSecurityConfigurers 定义 Web Security 配置列表接口
+type WebSecurityConfigurers interface {
+	Add(WebSecurityConfigurer)
+	// 获取所有 WebSecurityConfigurer
+	Get() []WebSecurityConfigurer
+}

@@ -16,8 +16,6 @@ import (
 
 // CommonContainer 容器
 type CommonContainer struct {
-	WebSecurityConfigurer  security.WebSecurityConfigurer
-	HTTPSecurityConfigurer security.HTTPSecurityConfigurer
 	WebSecurityConfigurers security.WebSecurityConfigurers
 	PasswordEncoder        password.Encoder
 	UserCache              userdetails.UserCache

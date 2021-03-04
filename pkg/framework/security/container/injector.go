@@ -20,8 +20,6 @@ type SecurityInjector interface {
 	EnableResourceServer() bool
 
 	// Common
-	GetWebSecurityConfigurer() security.WebSecurityConfigurer
-	GetHTTPSecurityConfigurer() security.HTTPSecurityConfigurer
 	GetWebSecurityConfigurers() security.WebSecurityConfigurers
 	GetPasswordEncoder() password.Encoder
 	GetUserCache() userdetails.UserCache
@@ -68,16 +66,6 @@ func (*NilSecurityInjector) EnableAuthorizationServer() bool {
 // EnableResourceServer 是否开启资源服务
 func (*NilSecurityInjector) EnableResourceServer() bool {
 	return false
-}
-
-// GetWebSecurityConfigurer 自定义默认配置
-func (*NilSecurityInjector) GetWebSecurityConfigurer() security.WebSecurityConfigurer {
-	return nil
-}
-
-// GetHTTPSecurityConfigurer 自定义默认配置
-func (*NilSecurityInjector) GetHTTPSecurityConfigurer() security.HTTPSecurityConfigurer {
-	return nil
 }
 
 // GetWebSecurityConfigurers 获取自定义值

@@ -21,10 +21,34 @@ var CommonContainerFields = wire.NewSet(
 	PostChecker,
 	WebSecurityConfigurer,
 	HTTPSecurityConfigurer,
-	WebSecurityConfigurers,
 	UserDetailsService,
 	ClientDetailsService,
+	wire.Struct(new(WebSecurityConfigurersImpl)),
+	wire.Bind(new(security.WebSecurityConfigurers), new(*WebSecurityConfigurersImpl)),
 )
+
+// WebSecurityConfigurersImpl 接口实现
+type WebSecurityConfigurersImpl struct {
+	configurers []security.WebSecurityConfigurer
+	Injector    container.SecurityInjector
+}
+
+// Add 追加
+func (web *WebSecurityConfigurersImpl) Add(c security.WebSecurityConfigurer) {
+	if web.Injector.GetWebSecurityConfigurers() != nil {
+		web.Injector.GetWebSecurityConfigurers().Add(c)
+		return
+	}
+	web.configurers = append(web.configurers, c)
+}
+
+// Get 获取所有 WebSecurityConfigurer
+func (web *WebSecurityConfigurersImpl) Get() []security.WebSecurityConfigurer {
+	if web.Injector.GetWebSecurityConfigurers() != nil && len(web.Injector.GetWebSecurityConfigurers().Get()) != 0 {
+		return web.Injector.GetWebSecurityConfigurers().Get()
+	}
+	return web.configurers
+}
 
 // PasswordEncoder encoder
 func PasswordEncoder(injector container.SecurityInjector) password.Encoder {
@@ -72,14 +96,6 @@ func HTTPSecurityConfigurer(injector container.SecurityInjector) security.HTTPSe
 		return injector.GetHTTPSecurityConfigurer()
 	}
 	return preset.HTTPSecurityConfigurer()
-}
-
-// WebSecurityConfigurers web 安全配置
-func WebSecurityConfigurers(web security.WebSecurityConfigurer, http security.HTTPSecurityConfigurer, injector container.SecurityInjector) security.WebSecurityConfigurers {
-	if len(injector.GetWebSecurityConfigurers()) != 0 {
-		return injector.GetWebSecurityConfigurers()
-	}
-	return preset.WebSecurityConfigurers(web, http)
 }
 
 // UserDetailsService 用户详情服务

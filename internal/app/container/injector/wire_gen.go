@@ -80,9 +80,7 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 		CasbinEnforcer: syncedEnforcer,
 		SecurityConfig: security,
 	}
-	webSecurityConfigurer := preset.WebSecurityConfigurer()
-	httpSecurityConfigurer := preset.HTTPSecurityConfigurer()
-	webSecurityConfigurers := preset.WebSecurityConfigurers(webSecurityConfigurer, httpSecurityConfigurer)
+	webSecurityConfigurersImpl := &preset.WebSecurityConfigurersImpl{}
 	encoder := preset.PasswordEncoder()
 	userCache := preset.UserCache()
 	preChecker := preset.PreChecker()
@@ -90,9 +88,7 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 	userdetailsService := preset.UserDetailsService()
 	clientdetailsService := preset.ClientDetailsService()
 	commonContainer := &container.CommonContainer{
-		WebSecurityConfigurer:  webSecurityConfigurer,
-		HTTPSecurityConfigurer: httpSecurityConfigurer,
-		WebSecurityConfigurers: webSecurityConfigurers,
+		WebSecurityConfigurers: webSecurityConfigurersImpl,
 		PasswordEncoder:        encoder,
 		UserCache:              userCache,
 		PreChecker:             preChecker,
@@ -238,9 +234,7 @@ func BuildContainer(config2 *config.Config, options *config.Options, securityInj
 		CasbinEnforcer: syncedEnforcer,
 		SecurityConfig: security,
 	}
-	webSecurityConfigurer := provider2.WebSecurityConfigurer(securityInjector)
-	httpSecurityConfigurer := provider2.HTTPSecurityConfigurer(securityInjector)
-	webSecurityConfigurers := provider2.WebSecurityConfigurers(webSecurityConfigurer, httpSecurityConfigurer, securityInjector)
+	webSecurityConfigurersImpl := &provider2.WebSecurityConfigurersImpl{}
 	encoder := provider2.PasswordEncoder(securityInjector)
 	userCache := provider2.UserCache(securityInjector)
 	preChecker := provider2.PreChecker(securityInjector)
@@ -248,9 +242,7 @@ func BuildContainer(config2 *config.Config, options *config.Options, securityInj
 	userdetailsService := provider2.UserDetailsService(securityInjector)
 	clientdetailsService := provider2.ClientDetailsService(securityInjector)
 	commonContainer := &container.CommonContainer{
-		WebSecurityConfigurer:  webSecurityConfigurer,
-		HTTPSecurityConfigurer: httpSecurityConfigurer,
-		WebSecurityConfigurers: webSecurityConfigurers,
+		WebSecurityConfigurers: webSecurityConfigurersImpl,
 		PasswordEncoder:        encoder,
 		UserCache:              userCache,
 		PreChecker:             preChecker,

@@ -10,7 +10,6 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/crypto/factory"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/crypto/password"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/config"
 )
 
 // CommonContainer 容器
@@ -24,10 +23,26 @@ var CommonContainerFields = wire.NewSet(
 	PostChecker,
 	WebSecurityConfigurer,
 	HTTPSecurityConfigurer,
-	WebSecurityConfigurers,
 	UserDetailsService,
 	ClientDetailsService,
+	wire.Struct(new(WebSecurityConfigurersImpl)),
+	wire.Bind(new(security.WebSecurityConfigurers), new(*WebSecurityConfigurersImpl)),
 )
+
+// WebSecurityConfigurersImpl 接口实现
+type WebSecurityConfigurersImpl struct {
+	configurers []security.WebSecurityConfigurer
+}
+
+// Add 追加
+func (web *WebSecurityConfigurersImpl) Add(c security.WebSecurityConfigurer) {
+	web.configurers = append(web.configurers, c)
+}
+
+// Get 获取所有 WebSecurityConfigurer
+func (web *WebSecurityConfigurersImpl) Get() []security.WebSecurityConfigurer {
+	return web.configurers
+}
 
 // PasswordEncoder encoder
 func PasswordEncoder() password.Encoder {
@@ -57,13 +72,6 @@ func WebSecurityConfigurer() security.WebSecurityConfigurer {
 // HTTPSecurityConfigurer 默认配置
 func HTTPSecurityConfigurer() security.HTTPSecurityConfigurer {
 	return nil
-}
-
-// WebSecurityConfigurers web 安全配置
-func WebSecurityConfigurers(web security.WebSecurityConfigurer, http security.HTTPSecurityConfigurer) security.WebSecurityConfigurers {
-	var configurers security.WebSecurityConfigurers
-	configurers = append(configurers, config.NewWebSecurityConfigurerAdapter(web, http))
-	return configurers
 }
 
 // UserDetailsService 用户详情服务

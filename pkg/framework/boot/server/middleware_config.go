@@ -22,7 +22,7 @@ func enableSecurityMiddleware(engine *gin.Engine, boot bootContainer.Container) 
 	// 开启资源服务，增加 OAuth2 安全配置
 	if enableResource {
 		oauth2Auth := config.NewWebSecurityConfigurerAdapter(nil, boot.GetSecurityContainer().ResourceServerContainer.OAuth2SecurityConfigurer)
-		webConfigurers = append(webConfigurers, oauth2Auth)
+		webConfigurers.Add(oauth2Auth)
 	}
 
 	config.EnableWebSecurity(engine, webConfigurers)
