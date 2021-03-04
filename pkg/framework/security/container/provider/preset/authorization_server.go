@@ -2,8 +2,10 @@ package preset
 
 import (
 	"github.com/google/wire"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/configurer"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/endpoint"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
@@ -16,6 +18,7 @@ var AuthorizationServerContainer = wire.NewSet(wire.Struct(new(container.Authori
 // AuthorizationServerContainerFields 授权服务器容器所有字段
 var AuthorizationServerContainerFields = wire.NewSet(
 	AuthorizationAuthenticationManager,
+	AuthorizationServerWebSecurityConfigurer,
 	AuthorizationServerTokenServices,
 	ConsumerTokenServices,
 	TokenEndpoint,
@@ -30,6 +33,11 @@ var AuthorizationServerContainerFields = wire.NewSet(
 // AuthorizationAuthenticationManager 授权服务器中的认证管理器
 func AuthorizationAuthenticationManager(providerContainer *container.AuthProvidersContainer) authentication.AuthorizationManager {
 	return authentication.NewProviderManager(providerContainer.Providers)
+}
+
+// AuthorizationServerWebSecurityConfigurer 授权服务器配置
+func AuthorizationServerWebSecurityConfigurer(manager authentication.AuthorizationManager) security.AuthorizationServerWebSecurityConfigurer {
+	return configurer.NewAuthorizationServerWebSecurityConfigurer(manager)
 }
 
 // AuthorizationServerTokenServices 授权服务器 token 服务

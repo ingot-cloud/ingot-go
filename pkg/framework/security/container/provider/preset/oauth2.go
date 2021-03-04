@@ -4,8 +4,8 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/google/wire"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/errors"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/model"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/store"
 )
@@ -23,7 +23,7 @@ var OAuth2ContainerFields = wire.NewSet(
 )
 
 // DefaultTokenServices 默认的服务
-func DefaultTokenServices(config config.OAuth2, tokenStore token.Store) *token.DefaultTokenServices {
+func DefaultTokenServices(config model.OAuth2, tokenStore token.Store) *token.DefaultTokenServices {
 	service := token.NewDefaultTokenServices(tokenStore)
 	service.ReuseRefreshToken = config.AuthorizationServer.ReuseRefreshToken
 	service.SupportRefreshToken = config.AuthorizationServer.SupportRefreshToken
@@ -36,7 +36,7 @@ func TokenStore(converter *store.JwtAccessTokenConverter) token.Store {
 }
 
 // JwtAccessTokenConverter 实例
-func JwtAccessTokenConverter(config config.OAuth2, tokenConverter token.AccessTokenConverter) *store.JwtAccessTokenConverter {
+func JwtAccessTokenConverter(config model.OAuth2, tokenConverter token.AccessTokenConverter) *store.JwtAccessTokenConverter {
 	var method jwt.SigningMethod
 	switch config.Jwt.SigningMethod {
 	case "HS256":
@@ -58,7 +58,7 @@ func JwtAccessTokenConverter(config config.OAuth2, tokenConverter token.AccessTo
 }
 
 // AccessTokenConverter token转换器
-func AccessTokenConverter(config config.OAuth2, userConverter token.UserAuthenticationConverter) token.AccessTokenConverter {
+func AccessTokenConverter(config model.OAuth2, userConverter token.UserAuthenticationConverter) token.AccessTokenConverter {
 	converter := token.NewDefaultAccessTokenConverter()
 	converter.IncludeGrantType = config.IncludeGrantType
 	converter.UserAuthenticationConverter = userConverter

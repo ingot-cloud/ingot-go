@@ -1,4 +1,4 @@
-package config
+package model
 
 // OAuth2 配置
 type OAuth2 struct {

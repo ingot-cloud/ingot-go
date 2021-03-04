@@ -19,8 +19,6 @@ var CommonContainerFields = wire.NewSet(
 	UserCache,
 	PreChecker,
 	PostChecker,
-	WebSecurityConfigurer,
-	HTTPSecurityConfigurer,
 	UserDetailsService,
 	ClientDetailsService,
 	wire.Struct(new(WebSecurityConfigurersImpl)),
@@ -80,22 +78,6 @@ func PostChecker(injector container.SecurityInjector) userdetails.PostChecker {
 		return injector.GetPostChecker()
 	}
 	return preset.PostChecker()
-}
-
-// WebSecurityConfigurer 默认配置
-func WebSecurityConfigurer(injector container.SecurityInjector) security.WebSecurityConfigurer {
-	if injector.GetWebSecurityConfigurer() != nil {
-		return injector.GetWebSecurityConfigurer()
-	}
-	return preset.WebSecurityConfigurer()
-}
-
-// HTTPSecurityConfigurer 默认配置
-func HTTPSecurityConfigurer(injector container.SecurityInjector) security.HTTPSecurityConfigurer {
-	if injector.GetHTTPSecurityConfigurer() != nil {
-		return injector.GetHTTPSecurityConfigurer()
-	}
-	return preset.HTTPSecurityConfigurer()
 }
 
 // UserDetailsService 用户详情服务

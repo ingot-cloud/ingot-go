@@ -38,3 +38,13 @@ type WebSecurityConfigurers interface {
 	// 获取所有 WebSecurityConfigurer
 	Get() []WebSecurityConfigurer
 }
+
+// ResourceServerWebSecurityConfigurer 资源服务器配置
+type ResourceServerWebSecurityConfigurer interface {
+	WebSecurityConfigurer
+}
+
+// AuthorizationServerWebSecurityConfigurer 授权服务器配置
+type AuthorizationServerWebSecurityConfigurer interface {
+	WebSecurityConfigurer
+}

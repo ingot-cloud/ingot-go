@@ -15,7 +15,7 @@ var webSecurity *webSecurityConfiguration
 var once sync.Once
 
 // EnableWebSecurity 启用 WebSecurity
-func EnableWebSecurity(engine *gin.Engine, configurers security.WebSecurityConfigurers) {
+func enableWebSecurity(engine *gin.Engine, configurers security.WebSecurityConfigurers) {
 	once.Do(func() {
 		filter, err := buildWebSecurityFilter(configurers)
 		if err != nil {
@@ -34,7 +34,7 @@ func EnableWebSecurity(engine *gin.Engine, configurers security.WebSecurityConfi
 func buildWebSecurityFilter(configurers security.WebSecurityConfigurers) (filter.Filter, error) {
 	webSecurity := builders.NewWebSecurity()
 
-	for _, configurer := range configurers {
+	for _, configurer := range configurers.Get() {
 		webSecurity.Apply(configurer)
 	}
 

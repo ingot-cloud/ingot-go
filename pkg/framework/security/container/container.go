@@ -6,7 +6,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/crypto/password"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/authentication"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/model"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/endpoint"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
@@ -27,7 +27,7 @@ type CommonContainer struct {
 
 // OAuth2Container OAuth2 容器
 type OAuth2Container struct {
-	Config                      config.OAuth2
+	Config                      model.OAuth2
 	DefaultTokenServices        *token.DefaultTokenServices
 	TokenStore                  token.Store
 	JwtAccessTokenConverter     *store.JwtAccessTokenConverter
@@ -37,23 +37,24 @@ type OAuth2Container struct {
 
 // ResourceServerContainer 资源服务器容器
 type ResourceServerContainer struct {
-	AuthenticationManager       coreAuth.ResourceManager
-	ResourceServerTokenServices token.ResourceServerTokenServices
-	OAuth2SecurityConfigurer    *config.OAuth2SecurityConfigurer
-	TokenExtractor              authentication.TokenExtractor
+	AuthenticationManager               coreAuth.ResourceManager
+	ResourceServerWebSecurityConfigurer security.ResourceServerWebSecurityConfigurer
+	ResourceServerTokenServices         token.ResourceServerTokenServices
+	TokenExtractor                      authentication.TokenExtractor
 }
 
 // AuthorizationServerContainer 授权服务器容器
 type AuthorizationServerContainer struct {
-	AuthenticationManager            coreAuth.AuthorizationManager
-	AuthorizationServerTokenServices token.AuthorizationServerTokenServices
-	ConsumerTokenServices            token.ConsumerTokenServices
-	TokenEndpoint                    *endpoint.TokenEndpoint
-	TokenEndpointHTTPConfigurer      endpoint.OAuth2HTTPConfigurer
-	TokenEnhancer                    token.Enhancer
-	TokenGranter                     token.Granter
-	TokenGranters                    token.Granters
-	PasswordTokenGranter             *granter.PasswordTokenGranter
+	AuthenticationManager                    coreAuth.AuthorizationManager
+	AuthorizationServerWebSecurityConfigurer security.AuthorizationServerWebSecurityConfigurer
+	AuthorizationServerTokenServices         token.AuthorizationServerTokenServices
+	ConsumerTokenServices                    token.ConsumerTokenServices
+	TokenEndpoint                            *endpoint.TokenEndpoint
+	TokenEndpointHTTPConfigurer              endpoint.OAuth2HTTPConfigurer
+	TokenEnhancer                            token.Enhancer
+	TokenGranter                             token.Granter
+	TokenGranters                            token.Granters
+	PasswordTokenGranter                     *granter.PasswordTokenGranter
 }
 
 // AuthProvidersContainer 认证提供者容器

@@ -21,8 +21,6 @@ var CommonContainerFields = wire.NewSet(
 	UserCache,
 	PreChecker,
 	PostChecker,
-	WebSecurityConfigurer,
-	HTTPSecurityConfigurer,
 	UserDetailsService,
 	ClientDetailsService,
 	wire.Struct(new(WebSecurityConfigurersImpl)),
@@ -62,16 +60,6 @@ func PreChecker() userdetails.PreChecker {
 // PostChecker 后置检查器
 func PostChecker() userdetails.PostChecker {
 	return dao.NewPostChecker()
-}
-
-// WebSecurityConfigurer 默认配置
-func WebSecurityConfigurer() security.WebSecurityConfigurer {
-	return nil
-}
-
-// HTTPSecurityConfigurer 默认配置
-func HTTPSecurityConfigurer() security.HTTPSecurityConfigurer {
-	return nil
 }
 
 // UserDetailsService 用户详情服务
