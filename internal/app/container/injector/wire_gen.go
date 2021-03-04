@@ -11,6 +11,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/internal/app/container/provider"
 	"github.com/ingot-cloud/ingot-go/internal/app/container/provider/factory"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/http"
+	service2 "github.com/ingot-cloud/ingot-go/internal/app/core/security/service"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"
 	"github.com/ingot-cloud/ingot-go/internal/app/service"
 	container2 "github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
@@ -175,10 +176,21 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 		HTTPConfigurer:    apiConfig,
 		SecurityContainer: securityContainer,
 	}
+	oauthClientDetails := &dao.OauthClientDetails{
+		DB: db,
+	}
+	clientDetails := &service2.ClientDetails{
+		OauthClientDetailsDao: oauthClientDetails,
+	}
+	userDetails := &service2.UserDetails{
+		UserDao: user,
+	}
 	appContainer := &container3.AppContainer{
-		NilSecurityInjector: nilSecurityInjector,
-		DefaultPre:          defaultPre,
-		SecurityConfig:      security,
+		NilSecurityInjector:  nilSecurityInjector,
+		DefaultPre:           defaultPre,
+		SecurityConfig:       security,
+		ClientDetailsService: clientDetails,
+		UserDetailsService:   userDetails,
 	}
 	return appContainer, func() {
 		cleanup2()

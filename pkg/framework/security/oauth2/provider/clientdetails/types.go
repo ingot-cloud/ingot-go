@@ -9,7 +9,7 @@ type ClientDetails interface {
 	// 获取可以访问的资源ID
 	GetResourceIDs() []string
 	// 验证此客户端是否需要秘钥
-	isSecretRequired() bool
+	IsSecretRequired() bool
 	// 获取客户端秘钥
 	GetClientSecret() string
 	// 是否需要验证 scope
@@ -19,7 +19,7 @@ type ClientDetails interface {
 	// 客户端的授权类型
 	GetAuthorizedGrantTypes() []string
 	// 获取授权码模式预定义的重定向uri
-	GetRegisteredRedirectUri() []string
+	GetRegisteredRedirectURI() []string
 	// 获取授予客户端的权限
 	GetAuthorities() []core.GrantedAuthority
 	// 客户端访问令牌有效时间，单位秒

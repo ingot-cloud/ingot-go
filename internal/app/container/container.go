@@ -2,6 +2,7 @@ package container
 
 import (
 	appConfig "github.com/ingot-cloud/ingot-go/internal/app/config"
+	"github.com/ingot-cloud/ingot-go/internal/app/core/security/service"
 	bootContainer "github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
@@ -13,7 +14,9 @@ type AppContainer struct {
 	*container.NilSecurityInjector
 	*bootContainer.DefaultPre
 
-	SecurityConfig appConfig.Security
+	SecurityConfig       appConfig.Security
+	ClientDetailsService *service.ClientDetails
+	UserDetailsService   *service.UserDetails
 }
 
 // --- 自定义安全配置 ---
@@ -30,10 +33,10 @@ func (a *AppContainer) EnableResourceServer() bool {
 
 // GetUserDetailsService 获取自定义值
 func (a *AppContainer) GetUserDetailsService() userdetails.Service {
-	return nil
+	return a.UserDetailsService
 }
 
 // GetClientDetailsService 获取自定义值
 func (a *AppContainer) GetClientDetailsService() clientdetails.Service {
-	return nil
+	return a.ClientDetailsService
 }

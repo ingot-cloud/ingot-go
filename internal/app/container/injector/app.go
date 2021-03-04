@@ -24,6 +24,7 @@ func BuildContainerInjector(config *config.Config, options *config.Options) (sec
 		provider.AllSet,
 		provider.AllFactory,
 		provider.AppContainer,
+		provider.CustomSecurityAll,
 
 		preset.All,
 
