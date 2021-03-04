@@ -28,6 +28,8 @@ type Provider interface {
 
 // Providers 所有 provider
 type Providers interface {
+	// 追加provider
+	Add(Provider)
 	// 获取所有provider
 	Get() []Provider
 }
