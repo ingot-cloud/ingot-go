@@ -20,7 +20,7 @@ func NewAuthenticationConverter() *AuthenticationConverter {
 }
 
 // Converter 转换
-func (c *AuthenticationConverter) Converter(ctx *ingot.Context) (*authentication.UsernamePasswordAuthenticationToken, error) {
+func (c *AuthenticationConverter) Converter(ctx *ingot.Context) (*authentication.ClientUsernamePasswordAuthenticationToken, error) {
 	if !ginwrapper.IsBasicAuth(ctx.Context) {
 		return nil, nil
 	}
@@ -39,6 +39,6 @@ func (c *AuthenticationConverter) Converter(ctx *ingot.Context) (*authentication
 	}
 	token := strings.Split(rawString, ":")
 
-	result := authentication.NewUnauthenticatedUsernamePasswordAuthToken(token[0], token[1])
+	result := authentication.NewClientUsernamePasswordAuthToken(token[0], token[1])
 	return result, nil
 }
