@@ -3,10 +3,8 @@ package container
 import (
 	appConfig "github.com/ingot-cloud/ingot-go/internal/app/config"
 	bootContainer "github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
 )
 
@@ -15,8 +13,7 @@ type AppContainer struct {
 	*container.NilSecurityInjector
 	*bootContainer.DefaultPre
 
-	SecurityConfig           appConfig.Security
-	OAuth2SecurityConfigurer *config.OAuth2SecurityConfigurer
+	SecurityConfig appConfig.Security
 }
 
 // --- 自定义安全配置 ---
@@ -29,11 +26,6 @@ func (a *AppContainer) EnableAuthorizationServer() bool {
 // EnableResourceServer 是否开启资源服务
 func (a *AppContainer) EnableResourceServer() bool {
 	return a.SecurityConfig.EnableResourceServer
-}
-
-// GetHTTPSecurityConfigurer 设置默认 HttpSecurityConfigurer
-func (a *AppContainer) GetHTTPSecurityConfigurer() security.HTTPSecurityConfigurer {
-	return a.OAuth2SecurityConfigurer
 }
 
 // GetUserDetailsService 获取自定义值

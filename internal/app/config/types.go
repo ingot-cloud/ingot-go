@@ -3,7 +3,7 @@ package config
 import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
-	oauth2Config "github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
+	oauth2Config "github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/model"
 )
 
 // Config struct
