@@ -45,8 +45,6 @@ func (server *HTTPServer) buildHTTPHandler() *gin.Engine {
 	enableDefaultMiddleware(engine)
 	enableSecurityMiddleware(engine, server.Container)
 
-	// todo 根据变量判断，是否开启资源保护，是否开启授权服务
-
 	server.defaultHTTPApi(engine)
 	return engine
 }

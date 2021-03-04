@@ -16,13 +16,18 @@ func EnableWebSecurity(enableAuthorization, enableResource bool, securityContain
 		webConfigurers.Add(securityContainer.ResourceServerContainer.ResourceServerWebSecurityConfigurer)
 	}
 
-	// 开启授权服务，增加配置和token 端点
+	// 开启授权服务，增加配置
 	if enableAuthorization {
 		webConfigurers.Add(securityContainer.AuthorizationServerContainer.AuthorizationServerWebSecurityConfigurer)
-		enableOAuth2Endpoint(securityContainer, engine)
 	}
 
 	enableWebSecurity(engine, webConfigurers)
+
+	// 增加端点，需要在设置完 WebSecurity 后在进行开启端点，下面的端点不会执行过滤器链
+	if enableAuthorization {
+		enableOAuth2Endpoint(securityContainer, engine)
+	}
+
 }
 
 // enableOAuth2Endpoint 开启端点

@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/filter"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/response"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/ingot"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/builders"
@@ -49,6 +50,7 @@ type webSecurityConfiguration struct {
 // Middleware 中间件
 func (h *webSecurityConfiguration) middleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		log.Infof("开始执行WebSecurity中间件, URL=%s", ctx.Request.RequestURI)
 		context := ingot.NewContext(ctx)
 		err := h.Filter.DoFilter(context, internalChain)
 		if err != nil {
