@@ -4,7 +4,7 @@ import (
 	"github.com/google/wire"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/preset"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/model"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/store"
 )
@@ -22,7 +22,7 @@ var OAuth2ContainerFields = wire.NewSet(
 )
 
 // DefaultTokenServices 默认的服务
-func DefaultTokenServices(config model.OAuth2, tokenStore token.Store) *token.DefaultTokenServices {
+func DefaultTokenServices(config config.OAuth2, tokenStore token.Store) *token.DefaultTokenServices {
 	return preset.DefaultTokenServices(config, tokenStore)
 }
 
@@ -35,12 +35,12 @@ func TokenStore(converter *store.JwtAccessTokenConverter, injector container.Sec
 }
 
 // JwtAccessTokenConverter 实例
-func JwtAccessTokenConverter(config model.OAuth2, tokenConverter token.AccessTokenConverter) *store.JwtAccessTokenConverter {
+func JwtAccessTokenConverter(config config.OAuth2, tokenConverter token.AccessTokenConverter) *store.JwtAccessTokenConverter {
 	return preset.JwtAccessTokenConverter(config, tokenConverter)
 }
 
 // AccessTokenConverter token转换器
-func AccessTokenConverter(config model.OAuth2, userConverter token.UserAuthenticationConverter, injector container.SecurityInjector) token.AccessTokenConverter {
+func AccessTokenConverter(config config.OAuth2, userConverter token.UserAuthenticationConverter, injector container.SecurityInjector) token.AccessTokenConverter {
 	if injector.GetAccessTokenConverter() != nil {
 		return injector.GetAccessTokenConverter()
 	}

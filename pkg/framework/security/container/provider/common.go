@@ -21,7 +21,7 @@ var CommonContainerFields = wire.NewSet(
 	PostChecker,
 	UserDetailsService,
 	ClientDetailsService,
-	wire.Struct(new(WebSecurityConfigurersImpl)),
+	wire.Struct(new(WebSecurityConfigurersImpl), "Injector"),
 	wire.Bind(new(security.WebSecurityConfigurers), new(*WebSecurityConfigurersImpl)),
 )
 

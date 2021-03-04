@@ -4,7 +4,7 @@ import (
 	"github.com/google/wire"
 	"github.com/ingot-cloud/ingot-go/internal/app/config"
 	httpConfig "github.com/ingot-cloud/ingot-go/pkg/framework/boot/config"
-	oauth2Config "github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/model"
+	oauth2Config "github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
 )
 
 // HTTPConfig 单独注入 http config

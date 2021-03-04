@@ -235,7 +235,9 @@ func BuildContainer(config2 *config.Config, options *config.Options, securityInj
 		CasbinEnforcer: syncedEnforcer,
 		SecurityConfig: security,
 	}
-	webSecurityConfigurersImpl := &provider2.WebSecurityConfigurersImpl{}
+	webSecurityConfigurersImpl := &provider2.WebSecurityConfigurersImpl{
+		Injector: securityInjector,
+	}
 	encoder := provider2.PasswordEncoder(securityInjector)
 	userCache := provider2.UserCache(securityInjector)
 	preChecker := provider2.PreChecker(securityInjector)
