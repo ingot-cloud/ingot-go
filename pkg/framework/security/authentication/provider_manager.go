@@ -24,7 +24,7 @@ func (m *ProviderManager) Authenticate(auth core.Authentication) (core.Authentic
 
 	var result core.Authentication
 	var err error = nil
-	for _, provider := range m.providers {
+	for _, provider := range m.providers.Get() {
 		if !provider.Supports(auth) {
 			continue
 		}

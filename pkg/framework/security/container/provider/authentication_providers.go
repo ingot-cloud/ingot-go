@@ -14,17 +14,25 @@ var AuthProvidersContainer = wire.NewSet(wire.Struct(new(container.AuthProviders
 
 // AuthProvidersContainerFields 所有provider
 var AuthProvidersContainerFields = wire.NewSet(
-	Providers,
 	DaoAuthenticationProvider,
 	BasicAuthenticationProvider,
+	wire.Struct(new(ProvidersImpl), "*"),
+	wire.Bind(new(coreAuth.Providers), new(*ProvidersImpl)),
 )
 
-// Providers 所有认证提供者
-func Providers(dao *dao.AuthenticationProvider, injector container.SecurityInjector) coreAuth.Providers {
-	if len(injector.GetProviders()) != 0 {
-		return injector.GetProviders()
+// ProvidersImpl 接口实现
+type ProvidersImpl struct {
+	Injector container.SecurityInjector
+	Basic    *basic.AuthenticationProvider
+	Dao      *dao.AuthenticationProvider
+}
+
+// Get 获取所有Provider
+func (p *ProvidersImpl) Get() []coreAuth.Provider {
+	if p.Injector.GetProviders() != nil && len(p.Injector.GetProviders().Get()) != 0 {
+		return p.Injector.GetProviders().Get()
 	}
-	return preset.Providers(dao)
+	return []coreAuth.Provider{p.Basic, p.Dao}
 }
 
 // DaoAuthenticationProvider UsernamePasswordAuthenticationToken 认证提供者

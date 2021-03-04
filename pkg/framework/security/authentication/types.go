@@ -26,5 +26,8 @@ type Provider interface {
 	Supports(interface{}) bool
 }
 
-// Providers 提供者列表
-type Providers []Provider
+// Providers 所有 provider
+type Providers interface {
+	// 获取所有provider
+	Get() []Provider
+}

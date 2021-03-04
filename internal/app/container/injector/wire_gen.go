@@ -129,16 +129,20 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 		OAuth2SecurityConfigurer:    oAuth2SecurityConfigurer,
 		TokenExtractor:              tokenExtractor,
 	}
-	authenticationProvider := &dao2.AuthenticationProvider{
+	authenticationProvider := preset.BasicAuthenticationProvider(commonContainer)
+	daoAuthenticationProvider := &dao2.AuthenticationProvider{
 		PasswordEncoder:          encoder,
 		UserDetailsService:       userdetailsService,
 		UserCache:                userCache,
 		PreAuthenticationChecks:  preChecker,
 		PostAuthenticationChecks: postChecker,
 	}
-	providers := preset.Providers(authenticationProvider)
+	providersImpl := &preset.ProvidersImpl{
+		Basic: authenticationProvider,
+		Dao:   daoAuthenticationProvider,
+	}
 	authProvidersContainer := &container.AuthProvidersContainer{
-		Providers: providers,
+		Providers: providersImpl,
 	}
 	authorizationManager := preset.AuthorizationAuthenticationManager(authProvidersContainer)
 	enhancers := preset.TokenEnhancers()
@@ -283,16 +287,21 @@ func BuildContainer(config2 *config.Config, options *config.Options, securityInj
 		OAuth2SecurityConfigurer:    oAuth2SecurityConfigurer,
 		TokenExtractor:              tokenExtractor,
 	}
-	authenticationProvider := &dao2.AuthenticationProvider{
+	authenticationProvider := provider2.BasicAuthenticationProvider(commonContainer)
+	daoAuthenticationProvider := &dao2.AuthenticationProvider{
 		PasswordEncoder:          encoder,
 		UserDetailsService:       userdetailsService,
 		UserCache:                userCache,
 		PreAuthenticationChecks:  preChecker,
 		PostAuthenticationChecks: postChecker,
 	}
-	providers := provider2.Providers(authenticationProvider, securityInjector)
+	providersImpl := &provider2.ProvidersImpl{
+		Injector: securityInjector,
+		Basic:    authenticationProvider,
+		Dao:      daoAuthenticationProvider,
+	}
 	authProvidersContainer := &container.AuthProvidersContainer{
-		Providers: providers,
+		Providers: providersImpl,
 	}
 	authorizationManager := provider2.AuthorizationAuthenticationManager(authProvidersContainer, securityInjector)
 	enhancers := provider2.TokenEnhancers(securityInjector)
