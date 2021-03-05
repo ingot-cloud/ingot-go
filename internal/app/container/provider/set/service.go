@@ -7,11 +7,14 @@ import (
 	"github.com/google/wire"
 )
 
-var servicePermissionSet = wire.NewSet(wire.Struct(new(service.Permission), "*"))
-var serviceCasbinAdapterSet = wire.NewSet(wire.Struct(new(service.CasbinAdapterService), "*"), wire.Bind(new(persist.Adapter), new(*service.CasbinAdapterService)))
+var servicePermissionSet = wire.NewSet()
+var serviceCasbinAdapter = wire.NewSet(
+	wire.Struct(new(service.CasbinAdapterService), "*"),
+	wire.Bind(new(persist.Adapter), new(*service.CasbinAdapterService)),
+)
 
 // ServiceSet inject
 var ServiceSet = wire.NewSet(
-	servicePermissionSet,
-	serviceCasbinAdapterSet,
+	serviceCasbinAdapter,
+	wire.Struct(new(service.Permission), "*"),
 )
