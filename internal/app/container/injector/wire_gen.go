@@ -179,8 +179,9 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 	clientDetails := &service.ClientDetails{
 		OauthClientDetailsDao: oauthClientDetails,
 	}
+	userDetail := &impl.UserDetail{}
 	userDetails := &service.UserDetails{
-		UserDao: user,
+		UserDetailService: userDetail,
 	}
 	appContainer := &container3.AppContainer{
 		NilSecurityInjector:  nilSecurityInjector,

@@ -1,25 +1,29 @@
 package service
 
 import (
-	"context"
-
-	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"
+	"github.com/ingot-cloud/ingot-go/internal/app/core/security/user"
+	"github.com/ingot-cloud/ingot-go/internal/app/model/dto"
+	"github.com/ingot-cloud/ingot-go/internal/app/service"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/authority"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
 )
 
 // UserDetails 服务
 type UserDetails struct {
-	UserDao *dao.User
+	UserDetailService service.UserDetail
 }
 
 // LoadUserByUsername 加载指定 username 的用户
 func (u *UserDetails) LoadUserByUsername(username string) (userdetails.UserDetails, error) {
-	user, err := u.UserDao.One(context.TODO(), username)
+
+	// TODO 临时测试
+	params := dto.UserDetailsDto{
+		UniqueCode: username,
+	}
+	details, err := u.UserDetailService.GetUserAuthDetails(1, params)
 	if err != nil {
 		return nil, err
 	}
-
-	// todo 查询角色
-
-	return nil, nil
+	coreUser := userdetails.NewUserAllParams(username, details.Password, authority.CreateAuthorityList(details.Roles), true, true, true, true)
+	return user.NewIngotUser(details.ID, details.DeptID, details.TenantID, details.AuthType, coreUser), nil
 }
