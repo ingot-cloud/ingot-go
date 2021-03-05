@@ -24,7 +24,6 @@ var AuthorizationServerContainerFields = wire.NewSet(
 	TokenEndpoint,
 	TokenEndpointHTTPConfigurer,
 	TokenEnhancer,
-	TokenEnhancers,
 	TokenGranters,
 	TokenGranter,
 	PasswordTokenGranter,
@@ -68,17 +67,13 @@ func TokenEndpointHTTPConfigurer(tokenEndpoint *endpoint.TokenEndpoint) endpoint
 }
 
 // TokenEnhancer token增强，默认使用增强链
-func TokenEnhancer(enhancers token.Enhancers, oauth2Container *container.OAuth2Container) token.Enhancer {
-	chain := &token.EnhancerChain{}
+func TokenEnhancer(oauth2Container *container.OAuth2Container) token.Enhancer {
+	chain := token.NewEnhancerChain()
+	var enhancers []token.Enhancer
 	// 默认追加 jwt enhancer
 	enhancers = append(enhancers, oauth2Container.JwtAccessTokenConverter)
 	chain.SetTokenEnhancers(enhancers)
 	return chain
-}
-
-// TokenEnhancers 自定义增强
-func TokenEnhancers() token.Enhancers {
-	return nil
 }
 
 // TokenGranters 自定义授权

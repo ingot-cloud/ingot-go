@@ -7,6 +7,11 @@ type EnhancerChain struct {
 	delegates []Enhancer
 }
 
+// NewEnhancerChain 实例化
+func NewEnhancerChain() *EnhancerChain {
+	return &EnhancerChain{}
+}
+
 // SetTokenEnhancers 设置token增强列表
 func (c *EnhancerChain) SetTokenEnhancers(delegates []Enhancer) {
 	c.delegates = delegates

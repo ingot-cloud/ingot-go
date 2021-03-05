@@ -143,8 +143,7 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 	}
 	authorizationManager := preset.AuthorizationAuthenticationManager(authProvidersContainer)
 	authorizationServerWebSecurityConfigurer := preset.AuthorizationServerWebSecurityConfigurer(authorizationManager)
-	enhancers := preset.TokenEnhancers()
-	enhancer := preset.TokenEnhancer(enhancers, oAuth2Container)
+	enhancer := preset.TokenEnhancer(oAuth2Container)
 	authorizationServerTokenServices := preset.AuthorizationServerTokenServices(oAuth2Container, commonContainer, enhancer, authorizationManager)
 	consumerTokenServices := preset.ConsumerTokenServices(oAuth2Container)
 	granters := preset.TokenGranters()
@@ -312,8 +311,7 @@ func BuildContainer(config2 *config.Config, options *config.Options, securityInj
 	}
 	authorizationManager := provider2.AuthorizationAuthenticationManager(authProvidersContainer, securityInjector)
 	authorizationServerWebSecurityConfigurer := provider2.AuthorizationServerWebSecurityConfigurer(authorizationManager, securityInjector)
-	enhancers := provider2.TokenEnhancers(securityInjector)
-	enhancer := provider2.TokenEnhancer(enhancers, oAuth2Container, securityInjector)
+	enhancer := provider2.TokenEnhancer(oAuth2Container, securityInjector)
 	authorizationServerTokenServices := provider2.AuthorizationServerTokenServices(oAuth2Container, commonContainer, enhancer, authorizationManager, securityInjector)
 	consumerTokenServices := provider2.ConsumerTokenServices(oAuth2Container, securityInjector)
 	granters := provider2.TokenGranters(securityInjector)
