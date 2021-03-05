@@ -164,7 +164,7 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 		TokenGranters:                            granters,
 		PasswordTokenGranter:                     passwordTokenGranter,
 	}
-	securityContainer := &container.SecurityContainer{
+	securityContainerImpl := &container.SecurityContainerImpl{
 		CommonContainer:              commonContainer,
 		OAuth2Container:              oAuth2Container,
 		ResourceServerContainer:      resourceServerContainer,
@@ -174,7 +174,7 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 	defaultPre := &container2.DefaultPre{
 		HTTPConfig:        httpConfig,
 		HTTPConfigurer:    apiConfig,
-		SecurityContainer: securityContainer,
+		SecurityContainer: securityContainerImpl,
 	}
 	oauthClientDetails := &dao.OauthClientDetails{
 		DB: db,
@@ -333,19 +333,19 @@ func BuildContainer(config2 *config.Config, options *config.Options, securityInj
 		TokenGranters:                            granters,
 		PasswordTokenGranter:                     passwordTokenGranter,
 	}
-	securityContainer := &container.SecurityContainer{
+	securityContainerImpl := &container.SecurityContainerImpl{
 		CommonContainer:              commonContainer,
 		OAuth2Container:              oAuth2Container,
 		ResourceServerContainer:      resourceServerContainer,
 		AuthorizationServerContainer: authorizationServerContainer,
 		AuthProvidersContainer:       authProvidersContainer,
 	}
-	printSecurityInjector := provider2.PrintInjectInstance(securityContainer)
+	printSecurityInjector := provider2.PrintInjectInstance(securityContainerImpl)
 	defaultContainer := &container2.DefaultContainer{
 		HTTPConfig:         httpConfig,
 		HTTPConfigurer:     apiConfig,
 		SecurityInjector:   securityInjector,
-		SecurityContainer:  securityContainer,
+		SecurityContainer:  securityContainerImpl,
 		DebugPrintInjector: printSecurityInjector,
 	}
 	return defaultContainer, func() {

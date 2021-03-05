@@ -22,4 +22,7 @@ var All = wire.NewSet(
 )
 
 // SecurityContainer 安全容器
-var SecurityContainer = wire.NewSet(wire.Struct(new(container.SecurityContainer), "*"))
+var SecurityContainer = wire.NewSet(
+	wire.Struct(new(container.SecurityContainerImpl), "*"),
+	wire.Bind(new(container.SecurityContainer), new(*container.SecurityContainerImpl)),
+)

@@ -25,10 +25,13 @@ var All = wire.NewSet(
 )
 
 // SecurityContainer 安全容器
-var SecurityContainer = wire.NewSet(wire.Struct(new(container.SecurityContainer), "*"))
+var SecurityContainer = wire.NewSet(
+	wire.Struct(new(container.SecurityContainerImpl), "*"),
+	wire.Bind(new(container.SecurityContainer), new(*container.SecurityContainerImpl)),
+)
 
 // PrintInjectInstance 打印注入
-func PrintInjectInstance(sc *container.SecurityContainer) container.PrintSecurityInjector {
+func PrintInjectInstance(sc container.SecurityContainer) container.PrintSecurityInjector {
 	log.Debugf("PrintInjectInstance %s", coreUtils.GetType(sc))
 	var result struct{}
 	return &result
