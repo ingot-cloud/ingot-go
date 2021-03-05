@@ -340,11 +340,13 @@ func BuildContainer(config2 *config.Config, options *config.Options, securityInj
 		AuthorizationServerContainer: authorizationServerContainer,
 		AuthProvidersContainer:       authProvidersContainer,
 	}
+	printSecurityInjector := provider2.PrintInjectInstance(securityContainer)
 	defaultContainer := &container2.DefaultContainer{
-		HTTPConfig:        httpConfig,
-		HTTPConfigurer:    apiConfig,
-		SecurityInjector:  securityInjector,
-		SecurityContainer: securityContainer,
+		HTTPConfig:         httpConfig,
+		HTTPConfigurer:     apiConfig,
+		SecurityInjector:   securityInjector,
+		SecurityContainer:  securityContainer,
+		DebugPrintInjector: printSecurityInjector,
 	}
 	return defaultContainer, func() {
 		cleanup2()

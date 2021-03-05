@@ -12,6 +12,9 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/granter"
 )
 
+// PrintSecurityInjector 打印注入
+type PrintSecurityInjector interface{}
+
 // SecurityInjector 自定义注入参数，app端实现
 type SecurityInjector interface {
 	// 是否开启授权服务

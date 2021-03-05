@@ -8,10 +8,11 @@ import (
 
 // DefaultContainer for app
 type DefaultContainer struct {
-	HTTPConfig        config.HTTPConfig
-	HTTPConfigurer    api.HTTPConfigurer
-	SecurityInjector  container.SecurityInjector
-	SecurityContainer *container.SecurityContainer
+	HTTPConfig         config.HTTPConfig
+	HTTPConfigurer     api.HTTPConfigurer
+	SecurityInjector   container.SecurityInjector
+	SecurityContainer  *container.SecurityContainer
+	DebugPrintInjector container.PrintSecurityInjector
 }
 
 // GetHTTPConfig default
