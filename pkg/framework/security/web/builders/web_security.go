@@ -3,6 +3,7 @@ package builders
 import (
 	coreUtils "github.com/ingot-cloud/ingot-go/pkg/framework/core/utils"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/filter"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	securityFilter "github.com/ingot-cloud/ingot-go/pkg/framework/security/web/filter"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/utils"
@@ -44,6 +45,7 @@ func (w *WebSecurity) AddIgnoreRequestMatcher(matcher utils.RequestMatcher) {
 // Apply 应用Web安全配置
 func (w *WebSecurity) Apply(configurer security.WebSecurityConfigurer) {
 	typeStr := coreUtils.GetType(configurer)
+	log.Debugf("web security apply config = %s", typeStr)
 	if _, ok := w.webSecurityConfigurers[typeStr]; !ok {
 		w.webSecurityConfigurers[typeStr] = configurer
 	}

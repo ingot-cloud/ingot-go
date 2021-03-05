@@ -4,6 +4,8 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	coreAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/ingot"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/endpoint"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/config"
 	anonymous "github.com/ingot-cloud/ingot-go/pkg/framework/security/web/configurers/anoymous"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/configurers/basic"
@@ -11,20 +13,37 @@ import (
 
 // AuthorizationWebSecurityConfigurer 授权服务器配置
 type AuthorizationWebSecurityConfigurer struct {
-	authenticationManager authentication.Manager
+	*config.WebSecurityConfigurerAdapter
 }
 
 // NewAuthorizationServerWebSecurityConfigurer 实例化
 func NewAuthorizationServerWebSecurityConfigurer(authenticationManager coreAuth.Manager) security.AuthorizationServerWebSecurityConfigurer {
-	configurer := &AuthorizationWebSecurityConfigurer{
+	pre := &authorizationHTTPSecurityConfigurer{
 		authenticationManager: authenticationManager,
 	}
-	return config.NewWebSecurityConfigurerAdapter(nil, configurer)
+	return &AuthorizationWebSecurityConfigurer{
+		WebSecurityConfigurerAdapter: config.NewWebSecurityConfigurerAdapter(nil, pre),
+	}
+}
+
+type authorizationHTTPSecurityConfigurer struct {
+	authenticationManager authentication.Manager
 }
 
 // Configure 配置
-func (oa *AuthorizationWebSecurityConfigurer) Configure(http security.HTTPSecurityBuilder) error {
+func (oa *authorizationHTTPSecurityConfigurer) Configure(http security.HTTPSecurityBuilder) error {
+	http.RequestMatcher(oa.requestMatcher)
 	http.Apply(basic.NewSecurityConfigurer(oa.authenticationManager))
 	http.Apply(anonymous.NewSecurityConfigurer())
 	return nil
+}
+
+func (oa *authorizationHTTPSecurityConfigurer) requestMatcher(ctx *ingot.Context) bool {
+	current := ctx.Request.RequestURI
+	for _, p := range endpoint.Paths {
+		if p == current {
+			return true
+		}
+	}
+	return false
 }

@@ -5,6 +5,16 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/ingot"
 )
 
+// API
+const (
+	APIOAuthToken = "/oauth/token"
+)
+
+// Paths 所有端点
+var Paths = []string{
+	APIOAuthToken,
+}
+
 // OAuth2Api 端点
 type OAuth2Api struct {
 	TokenEndpoint *TokenEndpoint
