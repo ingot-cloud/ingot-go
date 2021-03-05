@@ -24,7 +24,6 @@ var AuthorizationServerContainerFields = wire.NewSet(
 	TokenEndpoint,
 	TokenEndpointHTTPConfigurer,
 	TokenEnhancer,
-	TokenGranters,
 	TokenGranter,
 	PasswordTokenGranter,
 )
@@ -76,18 +75,9 @@ func TokenEnhancer(oauth2Container *container.OAuth2Container) token.Enhancer {
 	return chain
 }
 
-// TokenGranters 自定义授权
-func TokenGranters() token.Granters {
-	return nil
-}
-
 // TokenGranter token 授权
-func TokenGranter(granters token.Granters, password *granter.PasswordTokenGranter) token.Granter {
+func TokenGranter(password *granter.PasswordTokenGranter) token.Granter {
 	result := granter.NewCompositeTokenGranter()
-	for _, g := range granters {
-		result.AddTokenGranter(g)
-	}
-
 	result.AddTokenGranter(password)
 	return result
 }

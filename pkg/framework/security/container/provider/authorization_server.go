@@ -23,7 +23,6 @@ var AuthorizationServerContainerFields = wire.NewSet(
 	TokenEndpoint,
 	TokenEndpointHTTPConfigurer,
 	TokenEnhancer,
-	TokenGranters,
 	TokenGranter,
 	PasswordTokenGranter,
 )
@@ -106,26 +105,15 @@ func TokenEnhancer(oauth2Container *container.OAuth2Container, injector containe
 	return preset.TokenEnhancer(oauth2Container)
 }
 
-// TokenGranters 自定义授权
-func TokenGranters(injector container.SecurityInjector) token.Granters {
-	if !injector.EnableAuthorizationServer() {
-		return nil
-	}
-	if injector.GetTokenGranters() != nil {
-		return injector.GetTokenGranters()
-	}
-	return preset.TokenGranters()
-}
-
 // TokenGranter token 授权
-func TokenGranter(granters token.Granters, password *granter.PasswordTokenGranter, injector container.SecurityInjector) token.Granter {
+func TokenGranter(password *granter.PasswordTokenGranter, injector container.SecurityInjector) token.Granter {
 	if !injector.EnableAuthorizationServer() {
 		return nil
 	}
 	if injector.GetTokenGranter() != nil {
 		return injector.GetTokenGranter()
 	}
-	return preset.TokenGranter(granters, password)
+	return preset.TokenGranter(password)
 }
 
 // PasswordTokenGranter 密码模式授权

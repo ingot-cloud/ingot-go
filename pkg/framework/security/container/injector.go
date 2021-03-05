@@ -50,7 +50,6 @@ type SecurityInjector interface {
 	GetTokenEndpoint() *endpoint.TokenEndpoint
 	GetTokenEndpointHTTPConfigurer() endpoint.OAuth2HTTPConfigurer
 	GetTokenEnhancer() token.Enhancer
-	GetTokenGranters() token.Granters
 	GetTokenGranter() token.Granter
 	GetPasswordTokenGranter() *granter.PasswordTokenGranter
 
@@ -174,11 +173,6 @@ func (*NilSecurityInjector) GetTokenEndpointHTTPConfigurer() endpoint.OAuth2HTTP
 
 // GetTokenEnhancer 获取自定义值
 func (*NilSecurityInjector) GetTokenEnhancer() token.Enhancer {
-	return nil
-}
-
-// GetTokenGranters 获取自定义值
-func (*NilSecurityInjector) GetTokenGranters() token.Granters {
 	return nil
 }
 

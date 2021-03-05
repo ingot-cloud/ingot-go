@@ -146,9 +146,8 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 	enhancer := preset.TokenEnhancer(oAuth2Container)
 	authorizationServerTokenServices := preset.AuthorizationServerTokenServices(oAuth2Container, commonContainer, enhancer, authorizationManager)
 	consumerTokenServices := preset.ConsumerTokenServices(oAuth2Container)
-	granters := preset.TokenGranters()
 	passwordTokenGranter := preset.PasswordTokenGranter(authorizationServerTokenServices, authorizationManager)
-	granter := preset.TokenGranter(granters, passwordTokenGranter)
+	granter := preset.TokenGranter(passwordTokenGranter)
 	tokenEndpoint := preset.TokenEndpoint(granter, commonContainer)
 	oAuth2HTTPConfigurer := preset.TokenEndpointHTTPConfigurer(tokenEndpoint)
 	authorizationServerContainer := &container.AuthorizationServerContainer{
@@ -160,7 +159,6 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 		TokenEndpointHTTPConfigurer:              oAuth2HTTPConfigurer,
 		TokenEnhancer:                            enhancer,
 		TokenGranter:                             granter,
-		TokenGranters:                            granters,
 		PasswordTokenGranter:                     passwordTokenGranter,
 	}
 	securityContainerImpl := &container.SecurityContainerImpl{
@@ -314,9 +312,8 @@ func BuildContainer(config2 *config.Config, options *config.Options, securityInj
 	enhancer := provider2.TokenEnhancer(oAuth2Container, securityInjector)
 	authorizationServerTokenServices := provider2.AuthorizationServerTokenServices(oAuth2Container, commonContainer, enhancer, authorizationManager, securityInjector)
 	consumerTokenServices := provider2.ConsumerTokenServices(oAuth2Container, securityInjector)
-	granters := provider2.TokenGranters(securityInjector)
 	passwordTokenGranter := provider2.PasswordTokenGranter(authorizationServerTokenServices, authorizationManager, securityInjector)
-	granter := provider2.TokenGranter(granters, passwordTokenGranter, securityInjector)
+	granter := provider2.TokenGranter(passwordTokenGranter, securityInjector)
 	tokenEndpoint := provider2.TokenEndpoint(granter, commonContainer, securityInjector)
 	oAuth2HTTPConfigurer := provider2.TokenEndpointHTTPConfigurer(tokenEndpoint, securityInjector)
 	authorizationServerContainer := &container.AuthorizationServerContainer{
@@ -328,7 +325,6 @@ func BuildContainer(config2 *config.Config, options *config.Options, securityInj
 		TokenEndpointHTTPConfigurer:              oAuth2HTTPConfigurer,
 		TokenEnhancer:                            enhancer,
 		TokenGranter:                             granter,
-		TokenGranters:                            granters,
 		PasswordTokenGranter:                     passwordTokenGranter,
 	}
 	securityContainerImpl := &container.SecurityContainerImpl{

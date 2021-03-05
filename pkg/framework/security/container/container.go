@@ -53,7 +53,6 @@ type AuthorizationServerContainer struct {
 	TokenEndpointHTTPConfigurer              endpoint.OAuth2HTTPConfigurer
 	TokenEnhancer                            token.Enhancer
 	TokenGranter                             token.Granter
-	TokenGranters                            token.Granters
 	PasswordTokenGranter                     *granter.PasswordTokenGranter
 }
 
