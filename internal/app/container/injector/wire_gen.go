@@ -11,9 +11,9 @@ import (
 	"github.com/ingot-cloud/ingot-go/internal/app/container/provider"
 	"github.com/ingot-cloud/ingot-go/internal/app/container/provider/factory"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/http"
-	service2 "github.com/ingot-cloud/ingot-go/internal/app/core/security/service"
+	"github.com/ingot-cloud/ingot-go/internal/app/core/security/service"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"
-	"github.com/ingot-cloud/ingot-go/internal/app/service"
+	"github.com/ingot-cloud/ingot-go/internal/app/service/impl"
 	container2 "github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
 	dao2 "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication/provider/dao"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
@@ -56,14 +56,14 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 	roleUser := &dao.RoleUser{
 		DB: db,
 	}
-	permission := &service.Permission{
+	permission := &impl.Permission{
 		RoleDao:          role,
 		RoleAuthorityDao: roleAuthority,
 		AuthorityDao:     authority,
 		UserDao:          user,
 		RoleUserDao:      roleUser,
 	}
-	casbinAdapterService := &service.CasbinAdapterService{
+	casbinAdapterService := &impl.CasbinAdapterService{
 		PermissionService: permission,
 	}
 	syncedEnforcer, cleanup2, err := factory.NewCasbin(options, casbinAdapterService)
@@ -176,10 +176,10 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 	oauthClientDetails := &dao.OauthClientDetails{
 		DB: db,
 	}
-	clientDetails := &service2.ClientDetails{
+	clientDetails := &service.ClientDetails{
 		OauthClientDetailsDao: oauthClientDetails,
 	}
-	userDetails := &service2.UserDetails{
+	userDetails := &service.UserDetails{
 		UserDao: user,
 	}
 	appContainer := &container3.AppContainer{
@@ -219,14 +219,14 @@ func BuildContainer(config2 *config.Config, options *config.Options, securityInj
 	roleUser := &dao.RoleUser{
 		DB: db,
 	}
-	permission := &service.Permission{
+	permission := &impl.Permission{
 		RoleDao:          role,
 		RoleAuthorityDao: roleAuthority,
 		AuthorityDao:     authority,
 		UserDao:          user,
 		RoleUserDao:      roleUser,
 	}
-	casbinAdapterService := &service.CasbinAdapterService{
+	casbinAdapterService := &impl.CasbinAdapterService{
 		PermissionService: permission,
 	}
 	syncedEnforcer, cleanup2, err := factory.NewCasbin(options, casbinAdapterService)

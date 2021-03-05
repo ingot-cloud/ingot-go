@@ -1,9 +1,10 @@
-package service
+package impl
 
 import (
 	"context"
 	"fmt"
 
+	"github.com/ingot-cloud/ingot-go/internal/app/service"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 
 	casbinModel "github.com/casbin/casbin/v2/model"
@@ -12,7 +13,7 @@ import (
 
 // CasbinAdapterService casbin适配器
 type CasbinAdapterService struct {
-	PermissionService *Permission
+	PermissionService service.Permission
 }
 
 // LoadPolicy loads all policy rules from the storage.
