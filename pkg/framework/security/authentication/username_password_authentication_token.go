@@ -5,8 +5,9 @@ import "github.com/ingot-cloud/ingot-go/pkg/framework/security/core"
 // NewUnauthenticatedUsernamePasswordAuthToken 获取未验证的token
 func NewUnauthenticatedUsernamePasswordAuthToken(principal interface{}, credentials string) *UsernamePasswordAuthenticationToken {
 	token := &UsernamePasswordAuthenticationToken{
-		Principal:   principal,
-		Credentials: credentials,
+		Principal:                   principal,
+		Credentials:                 credentials,
+		AbstractAuthenticationToken: &AbstractAuthenticationToken{},
 	}
 	token.SetAuthenticated(false)
 	return token

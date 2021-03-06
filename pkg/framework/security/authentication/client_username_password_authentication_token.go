@@ -7,11 +7,7 @@ type ClientUsernamePasswordAuthenticationToken struct {
 
 // NewClientUsernamePasswordAuthToken client token
 func NewClientUsernamePasswordAuthToken(principal interface{}, credentials string) *ClientUsernamePasswordAuthenticationToken {
-	token := &UsernamePasswordAuthenticationToken{
-		Principal:   principal,
-		Credentials: credentials,
-	}
-	token.SetAuthenticated(false)
+	token := NewUnauthenticatedUsernamePasswordAuthToken(principal, credentials)
 	return &ClientUsernamePasswordAuthenticationToken{
 		UsernamePasswordAuthenticationToken: token,
 	}

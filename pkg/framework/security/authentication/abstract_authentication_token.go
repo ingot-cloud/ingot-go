@@ -58,6 +58,8 @@ func (token *AbstractAuthenticationToken) GetName(target core.Authentication) st
 	switch value := object.(type) {
 	case userdetails.UserDetails:
 		return value.GetUsername()
+	case string:
+		return value
 	default:
 		return ""
 	}

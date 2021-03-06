@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/errors"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 )
 
 const (
@@ -42,6 +43,7 @@ func (e *DelegatingEncoder) Matches(raw string, encodedPassword string) (bool, e
 	if raw == "" && encodedPassword == "" {
 		return true, nil
 	}
+	log.Infof("password delegate raw=%s, encodedPass=%s", raw, encodedPassword)
 	id := e.extractID(encodedPassword)
 	encoder, ok := e.IDToPasswordEncoder[id]
 	if !ok {
