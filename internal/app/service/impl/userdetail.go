@@ -20,7 +20,7 @@ func (u *UserDetail) GetUserAuthDetails(tenantID types.ID, params dto.UserDetail
 		DeptID:   1,
 		TenantID: 1,
 		Username: params.UniqueCode,
-		Password: params.UniqueCode,
+		Password: "{noop}" + params.UniqueCode,
 		Status:   enums.UserStatusEnable,
 		AuthType: "standard",
 		Roles:    []string{"admin"},
