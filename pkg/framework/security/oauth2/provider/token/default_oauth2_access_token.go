@@ -1,6 +1,8 @@
 package token
 
 import (
+	"encoding/json"
+	"strings"
 	"time"
 
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/model/enums"
@@ -15,6 +17,23 @@ type DefaultOAuth2AccessToken struct {
 	RefreshToken          OAuth2RefreshToken
 	Scope                 []string
 	AdditionalInformation map[string]interface{}
+}
+
+// MarshalJSON 自定义序列化
+func (token *DefaultOAuth2AccessToken) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		AccessToken  string `json:"accessToken"`
+		RefreshToken string `json:"refreshToken"`
+		ExpiresIn    int    `json:"expiresIn"`
+		TokenType    string `json:"tokenType"`
+		Scope        string `json:"scope"`
+	}{
+		AccessToken:  token.GetValue(),
+		RefreshToken: token.GetRefreshToken().GetRefreshTokenValue(),
+		ExpiresIn:    int(token.Expiration.Sub(time.Now()).Seconds()),
+		TokenType:    string(token.TokenType),
+		Scope:        strings.Join(token.Scope, ","),
+	})
 }
 
 // NewDefaultOAuth2AccessToken 创建默认 OAuth2AccessToken
