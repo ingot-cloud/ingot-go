@@ -14,31 +14,29 @@ import (
 // AuthorizationWebSecurityConfigurer 授权服务器配置
 type AuthorizationWebSecurityConfigurer struct {
 	*config.WebSecurityConfigurerAdapter
+
+	authenticationManager authentication.Manager
 }
 
 // NewAuthorizationServerWebSecurityConfigurer 实例化
 func NewAuthorizationServerWebSecurityConfigurer(authenticationManager coreAuth.Manager) security.AuthorizationServerWebSecurityConfigurer {
-	pre := &authorizationHTTPSecurityConfigurer{
+	pre := &AuthorizationWebSecurityConfigurer{
 		authenticationManager: authenticationManager,
 	}
 	return &AuthorizationWebSecurityConfigurer{
-		WebSecurityConfigurerAdapter: config.NewWebSecurityConfigurerAdapter(nil, pre),
+		WebSecurityConfigurerAdapter: config.NewWebSecurityConfigurerAdapter(pre),
 	}
 }
 
-type authorizationHTTPSecurityConfigurer struct {
-	authenticationManager authentication.Manager
-}
-
-// Configure 配置
-func (oa *authorizationHTTPSecurityConfigurer) HTTPConfigure(http security.HTTPSecurityBuilder) error {
-	http.RequestMatcher(oa.requestMatcher)
-	http.Apply(basic.NewSecurityConfigurer(oa.authenticationManager))
+// HTTPConfigure 配置
+func (c *AuthorizationWebSecurityConfigurer) HTTPConfigure(http security.HTTPSecurityBuilder) error {
+	http.RequestMatcher(c.requestMatcher)
+	http.Apply(basic.NewSecurityConfigurer(c.authenticationManager))
 	http.Apply(anonymous.NewSecurityConfigurer())
 	return nil
 }
 
-func (oa *authorizationHTTPSecurityConfigurer) requestMatcher(ctx *ingot.Context) bool {
+func (c *AuthorizationWebSecurityConfigurer) requestMatcher(ctx *ingot.Context) bool {
 	current := ctx.Request.RequestURI
 	for _, p := range endpoint.Paths {
 		if p == current {

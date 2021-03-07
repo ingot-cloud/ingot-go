@@ -14,36 +14,35 @@ import (
 // ResourceWebSecurityConfigurer 资源服务器安全配置
 type ResourceWebSecurityConfigurer struct {
 	*config.WebSecurityConfigurerAdapter
+
+	tokenExtractor        authentication.TokenExtractor
+	authenticationManager coreAuth.Manager
 }
 
 // NewResourceServerWebSecurityConfigurer 实例化
 func NewResourceServerWebSecurityConfigurer(tokenExtractor authentication.TokenExtractor, authenticationManager coreAuth.Manager) security.ResourceServerWebSecurityConfigurer {
-	pre := &resourceHTTPSecurityConfigurer{
+	pre := &ResourceWebSecurityConfigurer{
 		tokenExtractor:        tokenExtractor,
 		authenticationManager: authenticationManager,
 	}
-	return &ResourceWebSecurityConfigurer{
-		WebSecurityConfigurerAdapter: config.NewWebSecurityConfigurerAdapter(nil, pre),
-	}
-}
 
-type resourceHTTPSecurityConfigurer struct {
-	tokenExtractor        authentication.TokenExtractor
-	authenticationManager coreAuth.Manager
+	return &ResourceWebSecurityConfigurer{
+		WebSecurityConfigurerAdapter: config.NewWebSecurityConfigurerAdapter(pre),
+	}
 }
 
 // todo 自定义过滤器，如何加入到资源服务器中
 
 // HTTPConfigure 配置
-func (oa *resourceHTTPSecurityConfigurer) HTTPConfigure(http security.HTTPSecurityBuilder) error {
-	http.RequestMatcher(oa.requestMatcher)
-	http.AddFilter(authentication.NewOAuth2ProcessingFilter(oa.tokenExtractor, oa.authenticationManager))
+func (c *ResourceWebSecurityConfigurer) HTTPConfigure(http security.HTTPSecurityBuilder) error {
+	http.RequestMatcher(c.requestMatcher)
+	http.AddFilter(authentication.NewOAuth2ProcessingFilter(c.tokenExtractor, c.authenticationManager))
 	http.Apply(anonymous.NewSecurityConfigurer())
 	http.Apply(authresult.NewSecurityConfigurer())
 	return nil
 }
 
-func (oa *resourceHTTPSecurityConfigurer) requestMatcher(ctx *ingot.Context) bool {
+func (c *ResourceWebSecurityConfigurer) requestMatcher(ctx *ingot.Context) bool {
 	current := ctx.Request.RequestURI
 	// 当前url不能匹配token授权url
 	for _, p := range endpoint.Paths {
