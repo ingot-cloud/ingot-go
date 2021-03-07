@@ -19,10 +19,10 @@ func NewWebSecurityConfigurerAdapter(webSecurity security.WebSecurityConfigurer,
 	}
 }
 
-// Configure Web安全配置
-func (adapter *WebSecurityConfigurerAdapter) Configure(web security.WebSecurityBuilder) error {
+// WebConfigure Web安全配置
+func (adapter *WebSecurityConfigurerAdapter) WebConfigure(web security.WebSecurityBuilder) error {
 	if adapter.AdditionalWebSecurityConfigurer != nil {
-		adapter.AdditionalWebSecurityConfigurer.Configure(web)
+		adapter.AdditionalWebSecurityConfigurer.WebConfigure(web)
 	}
 
 	http, err := adapter.getHTTP()
@@ -45,7 +45,7 @@ func (adapter *WebSecurityConfigurerAdapter) getHTTP() (security.HTTPSecurityBui
 	}
 
 	if adapter.AdditionalHTTPSecurityConfigurer != nil {
-		err = adapter.AdditionalHTTPSecurityConfigurer.Configure(http)
+		err = adapter.AdditionalHTTPSecurityConfigurer.HTTPConfigure(http)
 	}
 
 	return http, err

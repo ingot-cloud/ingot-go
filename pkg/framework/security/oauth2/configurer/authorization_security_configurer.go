@@ -31,7 +31,7 @@ type authorizationHTTPSecurityConfigurer struct {
 }
 
 // Configure 配置
-func (oa *authorizationHTTPSecurityConfigurer) Configure(http security.HTTPSecurityBuilder) error {
+func (oa *authorizationHTTPSecurityConfigurer) HTTPConfigure(http security.HTTPSecurityBuilder) error {
 	http.RequestMatcher(oa.requestMatcher)
 	http.Apply(basic.NewSecurityConfigurer(oa.authenticationManager))
 	http.Apply(anonymous.NewSecurityConfigurer())

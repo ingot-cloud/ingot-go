@@ -63,7 +63,7 @@ func (security *HTTPSecurity) Apply(configurer security.HTTPSecurityConfigurer) 
 func (security *HTTPSecurity) configure() error {
 	// 执行配置
 	for _, item := range security.configurers {
-		if err := item.Configure(security); err != nil {
+		if err := item.HTTPConfigure(security); err != nil {
 			return err
 		}
 	}

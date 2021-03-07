@@ -32,8 +32,10 @@ type resourceHTTPSecurityConfigurer struct {
 	authenticationManager coreAuth.Manager
 }
 
-// Configure 配置
-func (oa *resourceHTTPSecurityConfigurer) Configure(http security.HTTPSecurityBuilder) error {
+// todo 自定义过滤器，如何加入到资源服务器中
+
+// HTTPConfigure 配置
+func (oa *resourceHTTPSecurityConfigurer) HTTPConfigure(http security.HTTPSecurityBuilder) error {
 	http.RequestMatcher(oa.requestMatcher)
 	http.AddFilter(authentication.NewOAuth2ProcessingFilter(oa.tokenExtractor, oa.authenticationManager))
 	http.Apply(anonymous.NewSecurityConfigurer())

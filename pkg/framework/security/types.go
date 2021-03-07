@@ -8,12 +8,12 @@ import (
 
 // WebSecurityConfigurer Web security 配置
 type WebSecurityConfigurer interface {
-	Configure(WebSecurityBuilder) error
+	WebConfigure(WebSecurityBuilder) error
 }
 
 // HTTPSecurityConfigurer HTTP security 配置
 type HTTPSecurityConfigurer interface {
-	Configure(HTTPSecurityBuilder) error
+	HTTPConfigure(HTTPSecurityBuilder) error
 }
 
 // WebSecurityBuilder 构造器

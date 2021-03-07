@@ -11,8 +11,8 @@ func NewSecurityConfigurer() *SecurityConfigurer {
 	return &SecurityConfigurer{}
 }
 
-// Configure 配置
-func (b *SecurityConfigurer) Configure(http security.HTTPSecurityBuilder) error {
+// HTTPConfigure 配置
+func (b *SecurityConfigurer) HTTPConfigure(http security.HTTPSecurityBuilder) error {
 	http.AddFilter(NewFilter())
 	return nil
 }

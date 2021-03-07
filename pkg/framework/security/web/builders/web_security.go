@@ -54,7 +54,7 @@ func (w *WebSecurity) Apply(configurer security.WebSecurityConfigurer) {
 func (w *WebSecurity) configure() error {
 	// 执行配置
 	for _, item := range w.webSecurityConfigurers {
-		if err := item.Configure(w); err != nil {
+		if err := item.WebConfigure(w); err != nil {
 			return err
 		}
 	}
