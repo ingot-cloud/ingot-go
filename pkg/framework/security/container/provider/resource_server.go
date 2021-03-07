@@ -44,14 +44,14 @@ func ResourceServerWebSecurityConfigurer(tokenExtractor authentication.TokenExtr
 }
 
 // ResourceServerTokenServices 资源服务器 token 服务
-func ResourceServerTokenServices(container *container.OAuth2Container, injector container.SecurityInjector) token.ResourceServerTokenServices {
+func ResourceServerTokenServices(tokenStore token.Store, injector container.SecurityInjector) token.ResourceServerTokenServices {
 	if !injector.EnableResourceServer() {
 		return nil
 	}
 	if injector.GetResourceServerTokenServices() != nil {
 		return injector.GetResourceServerTokenServices()
 	}
-	return preset.ResourceServerTokenServices(container)
+	return preset.ResourceServerTokenServices(tokenStore)
 }
 
 // TokenExtractor TokenExtrator接口默认实现

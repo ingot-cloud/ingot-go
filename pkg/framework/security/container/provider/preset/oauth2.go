@@ -15,7 +15,6 @@ var OAuth2Container = wire.NewSet(wire.Struct(new(container.OAuth2Container), "*
 
 // OAuth2ContainerFields OAuth2容器所有字段
 var OAuth2ContainerFields = wire.NewSet(
-	DefaultTokenServices,
 	TokenStore,
 	JwtAccessTokenConverter,
 	AccessTokenConverter,

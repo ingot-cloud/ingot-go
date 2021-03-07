@@ -5,6 +5,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/configurer"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/endpoint"
@@ -39,8 +40,11 @@ func AuthorizationServerWebSecurityConfigurer(manager authentication.Authorizati
 }
 
 // AuthorizationServerTokenServices 授权服务器 token 服务
-func AuthorizationServerTokenServices(oauth2Container *container.OAuth2Container, common *container.CommonContainer, enhancer token.Enhancer, manager authentication.AuthorizationManager) token.AuthorizationServerTokenServices {
-	tokenServices := oauth2Container.DefaultTokenServices
+func AuthorizationServerTokenServices(config config.OAuth2, tokenStore token.Store, common *container.CommonContainer, enhancer token.Enhancer, manager authentication.AuthorizationManager) token.AuthorizationServerTokenServices {
+	tokenServices := token.NewDefaultTokenServices(tokenStore)
+	tokenServices.ReuseRefreshToken = config.AuthorizationServer.ReuseRefreshToken
+	tokenServices.SupportRefreshToken = config.AuthorizationServer.SupportRefreshToken
+
 	client := common.ClientDetailsService
 	if _, ok := client.(*clientdetails.NilClientdetails); !ok {
 		tokenServices.ClientDetailsService = client
@@ -51,8 +55,8 @@ func AuthorizationServerTokenServices(oauth2Container *container.OAuth2Container
 }
 
 // ConsumerTokenServices 令牌撤销
-func ConsumerTokenServices(oauth2Container *container.OAuth2Container) token.ConsumerTokenServices {
-	return oauth2Container.DefaultTokenServices
+func ConsumerTokenServices(tokenStore token.Store) token.ConsumerTokenServices {
+	return token.NewDefaultTokenServices(tokenStore)
 }
 
 // TokenEndpoint 端点

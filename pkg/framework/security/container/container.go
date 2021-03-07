@@ -28,7 +28,6 @@ type CommonContainer struct {
 // OAuth2Container OAuth2 容器
 type OAuth2Container struct {
 	Config                      config.OAuth2
-	DefaultTokenServices        *token.DefaultTokenServices
 	TokenStore                  token.Store
 	JwtAccessTokenConverter     *store.JwtAccessTokenConverter
 	AccessTokenConverter        token.AccessTokenConverter

@@ -34,8 +34,9 @@ func ResourceServerWebSecurityConfigurer(tokenExtractor authentication.TokenExtr
 }
 
 // ResourceServerTokenServices 资源服务器 token 服务
-func ResourceServerTokenServices(container *container.OAuth2Container) token.ResourceServerTokenServices {
-	return container.DefaultTokenServices
+func ResourceServerTokenServices(tokenStore token.Store) token.ResourceServerTokenServices {
+	service := token.NewDefaultTokenServices(tokenStore)
+	return service
 }
 
 // TokenExtractor TokenExtrator接口默认实现

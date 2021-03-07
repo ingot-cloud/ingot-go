@@ -6,6 +6,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/preset"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/endpoint"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/granter"
@@ -50,25 +51,25 @@ func AuthorizationServerWebSecurityConfigurer(manager authentication.Authorizati
 }
 
 // AuthorizationServerTokenServices 授权服务器 token 服务
-func AuthorizationServerTokenServices(oauth2Container *container.OAuth2Container, common *container.CommonContainer, enhancer token.Enhancer, manager authentication.AuthorizationManager, injector container.SecurityInjector) token.AuthorizationServerTokenServices {
+func AuthorizationServerTokenServices(config config.OAuth2, tokenStore token.Store, common *container.CommonContainer, enhancer token.Enhancer, manager authentication.AuthorizationManager, injector container.SecurityInjector) token.AuthorizationServerTokenServices {
 	if !injector.EnableAuthorizationServer() {
 		return nil
 	}
 	if injector.GetAuthorizationServerTokenServices() != nil {
 		return injector.GetAuthorizationServerTokenServices()
 	}
-	return preset.AuthorizationServerTokenServices(oauth2Container, common, enhancer, manager)
+	return preset.AuthorizationServerTokenServices(config, tokenStore, common, enhancer, manager)
 }
 
 // ConsumerTokenServices 令牌撤销
-func ConsumerTokenServices(oauth2Container *container.OAuth2Container, injector container.SecurityInjector) token.ConsumerTokenServices {
+func ConsumerTokenServices(tokenStore token.Store, injector container.SecurityInjector) token.ConsumerTokenServices {
 	if !injector.EnableAuthorizationServer() {
 		return nil
 	}
 	if injector.GetConsumerTokenServices() != nil {
 		return injector.GetConsumerTokenServices()
 	}
-	return preset.ConsumerTokenServices(oauth2Container)
+	return preset.ConsumerTokenServices(tokenStore)
 }
 
 // TokenEndpoint 端点
