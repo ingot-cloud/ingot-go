@@ -6,7 +6,6 @@ import (
 
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/errors"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/model/enums"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -44,22 +43,6 @@ func GetBasicToken(ctx *gin.Context) string {
 // GetBearerToken 获取 bearer token
 func GetBearerToken(ctx *gin.Context) string {
 	return GetToken(ctx, string(enums.BearerWithSpace))
-}
-
-// GetUser 获取User
-func GetUser(ctx *gin.Context) (*security.User, bool) {
-	user, ok := ctx.Get(keyContextUser)
-	if !ok {
-		return nil, false
-	}
-
-	user1, ok1 := (user).(*security.User)
-	return user1, ok1
-}
-
-// SetUser 设置 user
-func SetUser(ctx *gin.Context, user *security.User) {
-	ctx.Set(keyContextUser, user)
 }
 
 // ParseJSON 解析请求JSON

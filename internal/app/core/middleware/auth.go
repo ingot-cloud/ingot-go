@@ -1,10 +1,6 @@
 package middleware
 
 import (
-	contextwrapper "github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/context"
-	ginwrapper "github.com/ingot-cloud/ingot-go/pkg/framework/core/wrapper/gin"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -34,8 +30,8 @@ func UserAuthMiddleware(permits ...PermitFunc) gin.HandlerFunc {
 	}
 }
 
-func wrapUserAuthContext(c *gin.Context, user *security.User) {
-	ginwrapper.SetUser(c, user)
-	ctx := contextwrapper.WithUser(c.Request.Context(), user)
-	c.Request = c.Request.WithContext(ctx)
-}
+// func wrapUserAuthContext(c *gin.Context, user *security.User) {
+// 	ginwrapper.SetUser(c, user)
+// 	ctx := contextwrapper.WithUser(c.Request.Context(), user)
+// 	c.Request = c.Request.WithContext(ctx)
+// }
