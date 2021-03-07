@@ -48,3 +48,9 @@ func CredentialsExpired(args ...string) error {
 	message := utils.StringCombine(args...)
 	return errors.New(http.StatusUnauthorized, CredentialsExpiredCode, message)
 }
+
+// InsufficientAuthentication 身份验证不充分
+func InsufficientAuthentication(args ...string) error {
+	message := utils.StringCombine(args...)
+	return errors.New(http.StatusForbidden, InsufficientAuthenticationCode, message)
+}

@@ -8,6 +8,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/endpoint"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/config"
 	anonymous "github.com/ingot-cloud/ingot-go/pkg/framework/security/web/configurers/anoymous"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/configurers/authresult"
 )
 
 // ResourceWebSecurityConfigurer 资源服务器安全配置
@@ -36,6 +37,7 @@ func (oa *resourceHTTPSecurityConfigurer) Configure(http security.HTTPSecurityBu
 	http.RequestMatcher(oa.requestMatcher)
 	http.AddFilter(authentication.NewOAuth2ProcessingFilter(oa.tokenExtractor, oa.authenticationManager))
 	http.Apply(anonymous.NewSecurityConfigurer())
+	http.Apply(authresult.NewSecurityConfigurer())
 	return nil
 }
 
