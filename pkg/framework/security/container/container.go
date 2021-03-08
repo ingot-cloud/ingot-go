@@ -36,23 +36,23 @@ type OAuth2Container struct {
 
 // ResourceServerContainer 资源服务器容器
 type ResourceServerContainer struct {
-	AuthenticationManager               coreAuth.ResourceManager
-	ResourceServerWebSecurityConfigurer security.ResourceServerWebSecurityConfigurer
-	ResourceServerTokenServices         token.ResourceServerTokenServices
-	TokenExtractor                      authentication.TokenExtractor
+	AuthenticationManager       coreAuth.ResourceManager
+	ResourceServerConfigurer    security.ResourceServerConfigurer
+	ResourceServerTokenServices token.ResourceServerTokenServices
+	TokenExtractor              authentication.TokenExtractor
 }
 
 // AuthorizationServerContainer 授权服务器容器
 type AuthorizationServerContainer struct {
-	AuthenticationManager                    coreAuth.AuthorizationManager
-	AuthorizationServerWebSecurityConfigurer security.AuthorizationServerConfigurer
-	AuthorizationServerTokenServices         token.AuthorizationServerTokenServices
-	ConsumerTokenServices                    token.ConsumerTokenServices
-	TokenEndpoint                            *endpoint.TokenEndpoint
-	TokenEndpointHTTPConfigurer              endpoint.OAuth2HTTPConfigurer
-	TokenEnhancer                            token.Enhancer
-	TokenGranter                             token.Granter
-	PasswordTokenGranter                     *granter.PasswordTokenGranter
+	AuthenticationManager            coreAuth.AuthorizationManager
+	AuthorizationServerConfigurer    security.AuthorizationServerConfigurer
+	AuthorizationServerTokenServices token.AuthorizationServerTokenServices
+	ConsumerTokenServices            token.ConsumerTokenServices
+	TokenEndpoint                    *endpoint.TokenEndpoint
+	TokenEndpointHTTPConfigurer      endpoint.OAuth2HTTPConfigurer
+	TokenEnhancer                    token.Enhancer
+	TokenGranter                     token.Granter
+	PasswordTokenGranter             *granter.PasswordTokenGranter
 }
 
 // AuthProvidersContainer 认证提供者容器

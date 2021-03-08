@@ -44,8 +44,8 @@ func AuthorizationServerConfigurer(manager authentication.AuthorizationManager, 
 	if !injector.EnableAuthorizationServer() {
 		return nil
 	}
-	if injector.GetAuthorizationServerWebSecurityConfigurer() != nil {
-		return injector.GetAuthorizationServerWebSecurityConfigurer()
+	if injector.GetAuthorizationServerConfigurer() != nil {
+		return injector.GetAuthorizationServerConfigurer()
 	}
 	return preset.AuthorizationServerConfigurer(manager)
 }

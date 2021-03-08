@@ -20,8 +20,8 @@ type ResourceServerConfigurerAdapter struct {
 	authenticationManager coreAuth.Manager
 }
 
-// NewResourceServerWebSecurityConfigurer 实例化
-func NewResourceServerWebSecurityConfigurer(tokenExtractor authentication.TokenExtractor, authenticationManager coreAuth.Manager) security.ResourceServerWebSecurityConfigurer {
+// NewResourceServerConfigurer 实例化
+func NewResourceServerConfigurer(tokenExtractor authentication.TokenExtractor, authenticationManager coreAuth.Manager) security.ResourceServerConfigurer {
 	instance := &ResourceServerConfigurerAdapter{
 		tokenExtractor:        tokenExtractor,
 		authenticationManager: authenticationManager,

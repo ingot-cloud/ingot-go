@@ -16,7 +16,7 @@ var ResourceServerContainer = wire.NewSet(wire.Struct(new(container.ResourceServ
 // ResourceServerContainerFields 资源服务器容器中所有字段
 var ResourceServerContainerFields = wire.NewSet(
 	ResourceAuthenticationManager,
-	ResourceServerWebSecurityConfigurer,
+	ResourceServerConfigurer,
 	ResourceServerTokenServices,
 	TokenExtractor,
 )
@@ -28,9 +28,9 @@ func ResourceAuthenticationManager(container *container.OAuth2Container, tokenSe
 	return manager
 }
 
-// ResourceServerWebSecurityConfigurer 资源服务器配置
-func ResourceServerWebSecurityConfigurer(tokenExtractor authentication.TokenExtractor, authenticationManager coreAuth.ResourceManager) security.ResourceServerWebSecurityConfigurer {
-	return configurer.NewResourceServerWebSecurityConfigurer(tokenExtractor, authenticationManager)
+// ResourceServerConfigurer 资源服务器配置
+func ResourceServerConfigurer(tokenExtractor authentication.TokenExtractor, authenticationManager coreAuth.ResourceManager) security.ResourceServerConfigurer {
+	return configurer.NewResourceServerConfigurer(tokenExtractor, authenticationManager)
 }
 
 // ResourceServerTokenServices 资源服务器 token 服务

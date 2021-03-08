@@ -38,13 +38,13 @@ type SecurityInjector interface {
 
 	// ResourceServerContainer
 	GetResourceAuthenticationManager() coreAuth.Manager
-	GetResourceServerWebSecurityConfigurer() security.ResourceServerWebSecurityConfigurer
+	GetResourceServerConfigurer() security.ResourceServerConfigurer
 	GetResourceServerTokenServices() token.ResourceServerTokenServices
 	GetTokenExtractor() authentication.TokenExtractor
 
 	// AuthorizationServerContainer
 	GetAuthorizationAuthenticationManager() coreAuth.Manager
-	GetAuthorizationServerWebSecurityConfigurer() security.AuthorizationServerConfigurer
+	GetAuthorizationServerConfigurer() security.AuthorizationServerConfigurer
 	GetAuthorizationServerTokenServices() token.AuthorizationServerTokenServices
 	GetConsumerTokenServices() token.ConsumerTokenServices
 	GetTokenEndpoint() *endpoint.TokenEndpoint
@@ -126,8 +126,8 @@ func (*NilSecurityInjector) GetResourceAuthenticationManager() coreAuth.Manager 
 	return nil
 }
 
-// GetResourceServerWebSecurityConfigurer 自定义
-func (*NilSecurityInjector) GetResourceServerWebSecurityConfigurer() security.ResourceServerWebSecurityConfigurer {
+// GetResourceServerConfigurer 自定义
+func (*NilSecurityInjector) GetResourceServerConfigurer() security.ResourceServerConfigurer {
 	return nil
 }
 
@@ -146,8 +146,8 @@ func (*NilSecurityInjector) GetAuthorizationAuthenticationManager() coreAuth.Man
 	return nil
 }
 
-// GetAuthorizationServerWebSecurityConfigurer 自定义
-func (*NilSecurityInjector) GetAuthorizationServerWebSecurityConfigurer() security.AuthorizationServerConfigurer {
+// GetAuthorizationServerConfigurer 自定义
+func (*NilSecurityInjector) GetAuthorizationServerConfigurer() security.AuthorizationServerConfigurer {
 	return nil
 }
 

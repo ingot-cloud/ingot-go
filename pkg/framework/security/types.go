@@ -39,8 +39,8 @@ type WebSecurityConfigurers interface {
 	Get() []WebSecurityConfigurer
 }
 
-// ResourceServerWebSecurityConfigurer 资源服务器配置
-type ResourceServerWebSecurityConfigurer interface {
+// ResourceServerConfigurer 资源服务器配置
+type ResourceServerConfigurer interface {
 	WebSecurityConfigurer
 }
 

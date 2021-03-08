@@ -36,7 +36,7 @@ func AuthorizationAuthenticationManager(providerContainer *container.AuthProvide
 
 // AuthorizationServerConfigurer 授权服务器配置
 func AuthorizationServerConfigurer(manager authentication.AuthorizationManager) security.AuthorizationServerConfigurer {
-	return configurer.NewAuthorizationServerWebSecurityConfigurer(manager)
+	return configurer.NewAuthorizationServerConfigurer(manager)
 }
 
 // AuthorizationServerTokenServices 授权服务器 token 服务
