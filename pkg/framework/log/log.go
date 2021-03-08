@@ -66,8 +66,28 @@ func SetFormatter(format string) {
 	case "json":
 		logrus.SetFormatter(new(logrus.JSONFormatter))
 	default:
-		logrus.SetFormatter(new(logrus.TextFormatter))
+		// ReportCaller 开启后性能降低
+		// logrus.SetReportCaller(true)
+		logrus.SetFormatter(&logrus.TextFormatter{
+			ForceColors:     true,
+			FullTimestamp:   true,
+			TimestampFormat: "2006-01-02 15:04:05",
+			// CallerPrettyfier: func(f *runtime.Frame) (string, string) {
+			// 	// _, filename := path.Split(f.File)
+			// 	return "", f.File
+			// },
+		})
 	}
+}
+
+// WithField 设置字段
+func WithField(key string, value interface{}) *Entry {
+	return logrus.WithField(key, value)
+}
+
+// WithFields 设置字段
+func WithFields(fields Fields) *Entry {
+	return logrus.WithFields(fields)
 }
 
 // SetOutput 设定日志输出
