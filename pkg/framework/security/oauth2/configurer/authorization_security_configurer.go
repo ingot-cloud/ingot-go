@@ -19,7 +19,7 @@ type AuthorizationServerConfigurerAdapter struct {
 }
 
 // NewAuthorizationServerWebSecurityConfigurer 实例化
-func NewAuthorizationServerWebSecurityConfigurer(authenticationManager coreAuth.Manager) security.AuthorizationServerWebSecurityConfigurer {
+func NewAuthorizationServerWebSecurityConfigurer(authenticationManager coreAuth.Manager) security.AuthorizationServerConfigurer {
 	instance := &AuthorizationServerConfigurerAdapter{
 		authenticationManager: authenticationManager,
 	}

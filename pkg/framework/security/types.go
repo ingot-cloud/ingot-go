@@ -44,7 +44,7 @@ type ResourceServerWebSecurityConfigurer interface {
 	WebSecurityConfigurer
 }
 
-// AuthorizationServerWebSecurityConfigurer 授权服务器配置
-type AuthorizationServerWebSecurityConfigurer interface {
+// AuthorizationServerConfigurer 授权服务器配置
+type AuthorizationServerConfigurer interface {
 	WebSecurityConfigurer
 }

@@ -19,7 +19,7 @@ var AuthorizationServerContainer = wire.NewSet(wire.Struct(new(container.Authori
 // AuthorizationServerContainerFields 授权服务器容器所有字段
 var AuthorizationServerContainerFields = wire.NewSet(
 	AuthorizationAuthenticationManager,
-	AuthorizationServerWebSecurityConfigurer,
+	AuthorizationServerConfigurer,
 	AuthorizationServerTokenServices,
 	ConsumerTokenServices,
 	TokenEndpoint,
@@ -34,8 +34,8 @@ func AuthorizationAuthenticationManager(providerContainer *container.AuthProvide
 	return authentication.NewProviderManager(providerContainer.Providers)
 }
 
-// AuthorizationServerWebSecurityConfigurer 授权服务器配置
-func AuthorizationServerWebSecurityConfigurer(manager authentication.AuthorizationManager) security.AuthorizationServerWebSecurityConfigurer {
+// AuthorizationServerConfigurer 授权服务器配置
+func AuthorizationServerConfigurer(manager authentication.AuthorizationManager) security.AuthorizationServerConfigurer {
 	return configurer.NewAuthorizationServerWebSecurityConfigurer(manager)
 }
 

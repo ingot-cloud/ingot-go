@@ -45,7 +45,7 @@ type ResourceServerContainer struct {
 // AuthorizationServerContainer 授权服务器容器
 type AuthorizationServerContainer struct {
 	AuthenticationManager                    coreAuth.AuthorizationManager
-	AuthorizationServerWebSecurityConfigurer security.AuthorizationServerWebSecurityConfigurer
+	AuthorizationServerWebSecurityConfigurer security.AuthorizationServerConfigurer
 	AuthorizationServerTokenServices         token.AuthorizationServerTokenServices
 	ConsumerTokenServices                    token.ConsumerTokenServices
 	TokenEndpoint                            *endpoint.TokenEndpoint

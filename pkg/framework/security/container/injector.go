@@ -44,7 +44,7 @@ type SecurityInjector interface {
 
 	// AuthorizationServerContainer
 	GetAuthorizationAuthenticationManager() coreAuth.Manager
-	GetAuthorizationServerWebSecurityConfigurer() security.AuthorizationServerWebSecurityConfigurer
+	GetAuthorizationServerWebSecurityConfigurer() security.AuthorizationServerConfigurer
 	GetAuthorizationServerTokenServices() token.AuthorizationServerTokenServices
 	GetConsumerTokenServices() token.ConsumerTokenServices
 	GetTokenEndpoint() *endpoint.TokenEndpoint
@@ -147,7 +147,7 @@ func (*NilSecurityInjector) GetAuthorizationAuthenticationManager() coreAuth.Man
 }
 
 // GetAuthorizationServerWebSecurityConfigurer 自定义
-func (*NilSecurityInjector) GetAuthorizationServerWebSecurityConfigurer() security.AuthorizationServerWebSecurityConfigurer {
+func (*NilSecurityInjector) GetAuthorizationServerWebSecurityConfigurer() security.AuthorizationServerConfigurer {
 	return nil
 }
 

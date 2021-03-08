@@ -18,7 +18,7 @@ var AuthorizationServerContainer = wire.NewSet(wire.Struct(new(container.Authori
 // AuthorizationServerContainerFields 授权服务器容器所有字段
 var AuthorizationServerContainerFields = wire.NewSet(
 	AuthorizationAuthenticationManager,
-	AuthorizationServerWebSecurityConfigurer,
+	AuthorizationServerConfigurer,
 	AuthorizationServerTokenServices,
 	ConsumerTokenServices,
 	TokenEndpoint,
@@ -39,15 +39,15 @@ func AuthorizationAuthenticationManager(providerContainer *container.AuthProvide
 	return preset.AuthorizationAuthenticationManager(providerContainer)
 }
 
-// AuthorizationServerWebSecurityConfigurer 授权服务器配置
-func AuthorizationServerWebSecurityConfigurer(manager authentication.AuthorizationManager, injector container.SecurityInjector) security.AuthorizationServerWebSecurityConfigurer {
+// AuthorizationServerConfigurer 授权服务器配置
+func AuthorizationServerConfigurer(manager authentication.AuthorizationManager, injector container.SecurityInjector) security.AuthorizationServerConfigurer {
 	if !injector.EnableAuthorizationServer() {
 		return nil
 	}
 	if injector.GetAuthorizationServerWebSecurityConfigurer() != nil {
 		return injector.GetAuthorizationServerWebSecurityConfigurer()
 	}
-	return preset.AuthorizationServerWebSecurityConfigurer(manager)
+	return preset.AuthorizationServerConfigurer(manager)
 }
 
 // AuthorizationServerTokenServices 授权服务器 token 服务
