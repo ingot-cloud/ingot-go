@@ -5,14 +5,15 @@ import (
 	coreAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/ingot"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/authentication"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/configurer/oauth"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/endpoint"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/config"
 	anonymous "github.com/ingot-cloud/ingot-go/pkg/framework/security/web/configurers/anoymous"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/configurers/authresult"
 )
 
-// ResourceWebSecurityConfigurer 资源服务器安全配置
-type ResourceWebSecurityConfigurer struct {
+// ResourceServerConfigurerAdapter 资源服务器安全配置
+type ResourceServerConfigurerAdapter struct {
 	*config.WebSecurityConfigurerAdapter
 
 	tokenExtractor        authentication.TokenExtractor
@@ -21,28 +22,26 @@ type ResourceWebSecurityConfigurer struct {
 
 // NewResourceServerWebSecurityConfigurer 实例化
 func NewResourceServerWebSecurityConfigurer(tokenExtractor authentication.TokenExtractor, authenticationManager coreAuth.Manager) security.ResourceServerWebSecurityConfigurer {
-	pre := &ResourceWebSecurityConfigurer{
+	instance := &ResourceServerConfigurerAdapter{
 		tokenExtractor:        tokenExtractor,
 		authenticationManager: authenticationManager,
 	}
 
-	return &ResourceWebSecurityConfigurer{
-		WebSecurityConfigurerAdapter: config.NewWebSecurityConfigurerAdapter(pre),
-	}
+	instance.WebSecurityConfigurerAdapter = config.NewWebSecurityConfigurerAdapter(instance)
+	return instance
 }
 
-// todo 自定义过滤器，如何加入到资源服务器中
-
 // HTTPConfigure 配置
-func (c *ResourceWebSecurityConfigurer) HTTPConfigure(http security.HTTPSecurityBuilder) error {
-	http.RequestMatcher(c.requestMatcher)
-	http.AddFilter(authentication.NewOAuth2ProcessingFilter(c.tokenExtractor, c.authenticationManager))
+func (a *ResourceServerConfigurerAdapter) HTTPConfigure(http security.HTTPSecurityBuilder) error {
+	http.RequestMatcher(a.RequestMatcher)
+	http.Apply(oauth.NewSecurityConfigurer(a.tokenExtractor, a.authenticationManager))
 	http.Apply(anonymous.NewSecurityConfigurer())
 	http.Apply(authresult.NewSecurityConfigurer())
 	return nil
 }
 
-func (c *ResourceWebSecurityConfigurer) requestMatcher(ctx *ingot.Context) bool {
+// RequestMatcher 请求匹配器
+func (a *ResourceServerConfigurerAdapter) RequestMatcher(ctx *ingot.Context) bool {
 	current := ctx.Request.RequestURI
 	// 当前url不能匹配token授权url
 	for _, p := range endpoint.Paths {
