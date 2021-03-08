@@ -190,6 +190,8 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 		SecurityConfig:       security,
 		ClientDetailsService: clientDetails,
 		UserDetailsService:   userDetails,
+		TokenExtractor:       tokenExtractor,
+		ResourceManager:      resourceManager,
 	}
 	return appContainer, func() {
 		cleanup2()
