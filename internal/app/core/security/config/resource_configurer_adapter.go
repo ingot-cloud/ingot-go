@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/ingot-cloud/ingot-go/internal/app/core/security/filter"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/configurer"
 )
@@ -12,9 +13,10 @@ type ResourceServerAdapter struct {
 
 // NewResourceServerAdapter 实例化
 func NewResourceServerAdapter(parent *configurer.ResourceServerConfigurerAdapter) *ResourceServerAdapter {
-	return &ResourceServerAdapter{
-		ResourceServerConfigurerAdapter: parent,
-	}
+	result := &ResourceServerAdapter{}
+	result.ResourceServerConfigurerAdapter = parent
+	result.AdditionalHTTPSecurityConfigurer = result
+	return result
 }
 
 // WebConfigure Web安全配置
@@ -33,6 +35,8 @@ func (adapter *ResourceServerAdapter) HTTPConfigure(http security.HTTPSecurityBu
 	if err != nil {
 		return err
 	}
+
+	http.AddFilter(filter.NewTenantFilter())
 
 	return nil
 }
