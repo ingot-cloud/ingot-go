@@ -30,8 +30,8 @@ var (
 
 // Define key
 const (
-	TraceIDKey = "trace_id"
-	UserIDKey  = "user_id"
+	TraceIDKey = "traceID"
+	UserIDKey  = "userID"
 	TagKey     = "tag"
 	StackKey   = "stack"
 )
