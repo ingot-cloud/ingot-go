@@ -50,7 +50,7 @@ type webSecurityConfiguration struct {
 // Middleware 中间件
 func (h *webSecurityConfiguration) middleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		log.Infof("开始执行WebSecurity中间件, URL=%s", ctx.Request.RequestURI)
+		log.WithContext(ctx).Infof("======> 开始执行WebSecurity中间件, URL=%s", ctx.Request.RequestURI)
 		context := ingot.NewContext(ctx)
 		err := h.Filter.DoFilter(context, internalChain)
 		if err != nil {
@@ -59,6 +59,7 @@ func (h *webSecurityConfiguration) middleware() gin.HandlerFunc {
 			return
 		}
 
+		log.WithContext(ctx).Infof("<====== 结束执行WebSecurity中间件, URL=%s", ctx.Request.RequestURI)
 		ctx.Next()
 	}
 }

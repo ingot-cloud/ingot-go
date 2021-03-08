@@ -12,13 +12,13 @@ func EnableWebSecurity(enableAuthorization, enableResource bool, securityContain
 	webConfigurers := securityContainer.GetCommonContainer().WebSecurityConfigurers
 	// 开启资源服务，增加 OAuth2 安全配置
 	if enableResource {
-		log.Info("开启资源服务器安全配置")
+		log.Info(">>>>>> 开启资源服务器安全配置 <<<<<<")
 		webConfigurers.Add(securityContainer.GetResourceServerContainer().ResourceServerWebSecurityConfigurer)
 	}
 
 	// 开启授权服务，增加配置
 	if enableAuthorization {
-		log.Info("开启授权服务器安全配置")
+		log.Info(">>>>>> 开启授权服务器安全配置 <<<<<<")
 		webConfigurers.Add(securityContainer.GetAuthorizationServerContainer().AuthorizationServerWebSecurityConfigurer)
 	}
 

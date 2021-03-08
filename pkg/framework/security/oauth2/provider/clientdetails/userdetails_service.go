@@ -1,6 +1,8 @@
 package clientdetails
 
-import "github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
+import (
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
+)
 
 // UserDetailsService client实现
 type UserDetailsService struct {
