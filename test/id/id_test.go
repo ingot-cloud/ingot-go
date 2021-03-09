@@ -1,8 +1,6 @@
 package id
 
 import (
-	"encoding/base64"
-	"strings"
 	"sync"
 	"testing"
 
@@ -45,13 +43,4 @@ func TestID(t *testing.T) {
 	}
 
 	t.Logf("所有ID生成完成，共计%d个", len(m))
-}
-
-func TestBasicToken(t *testing.T) {
-	base64Token := "d2ViLWNsb3VkOndlYi1jbG91ZA=="
-	raw, _ := base64.StdEncoding.DecodeString(base64Token)
-	rawString := string(raw)
-
-	token := strings.Split(rawString, ":")
-	t.Log(token[0], token[1])
 }
