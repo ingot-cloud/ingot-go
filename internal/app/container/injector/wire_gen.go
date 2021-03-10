@@ -184,14 +184,15 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 	userDetails := &service.UserDetails{
 		UserDetailService: userDetail,
 	}
+	requestMatcher := provider.PermitURLMatcher(security)
+	resourceServerAdapter := provider.ResourceServerAdapter(tokenExtractor, resourceManager, requestMatcher)
 	appContainer := &container3.AppContainer{
-		NilSecurityInjector:  nilSecurityInjector,
-		DefaultPre:           defaultPre,
-		SecurityConfig:       security,
-		ClientDetailsService: clientDetails,
-		UserDetailsService:   userDetails,
-		TokenExtractor:       tokenExtractor,
-		ResourceManager:      resourceManager,
+		NilSecurityInjector:   nilSecurityInjector,
+		DefaultPre:            defaultPre,
+		SecurityConfig:        security,
+		ClientDetailsService:  clientDetails,
+		UserDetailsService:    userDetails,
+		ResourceServerAdapter: resourceServerAdapter,
 	}
 	return appContainer, func() {
 		cleanup2()

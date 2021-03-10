@@ -6,11 +6,8 @@ import (
 	"github.com/ingot-cloud/ingot-go/internal/app/core/security/service"
 	bootContainer "github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
-	securityAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/authentication"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/configurer"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
 )
 
@@ -19,11 +16,10 @@ type AppContainer struct {
 	*container.NilSecurityInjector
 	*bootContainer.DefaultPre
 
-	SecurityConfig       appConfig.Security
-	ClientDetailsService *service.ClientDetails
-	UserDetailsService   *service.UserDetails
-	TokenExtractor       authentication.TokenExtractor
-	ResourceManager      securityAuth.ResourceManager
+	SecurityConfig        appConfig.Security
+	ClientDetailsService  *service.ClientDetails
+	UserDetailsService    *service.UserDetails
+	ResourceServerAdapter *config.ResourceServerAdapter
 }
 
 // --- 自定义安全配置 ---
@@ -40,8 +36,7 @@ func (a *AppContainer) EnableResourceServer() bool {
 
 // GetResourceServerConfigurer 自定义资源服务配置
 func (a *AppContainer) GetResourceServerConfigurer() security.ResourceServerConfigurer {
-	parent := configurer.NewResourceServerConfigurer(a.TokenExtractor, a.ResourceManager)
-	return config.NewResourceServerAdapter(parent)
+	return a.ResourceServerAdapter
 }
 
 // GetUserDetailsService 获取自定义值
