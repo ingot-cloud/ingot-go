@@ -39,7 +39,8 @@ func (token *DefaultOAuth2AccessToken) MarshalJSON() ([]byte, error) {
 // NewDefaultOAuth2AccessToken 创建默认 OAuth2AccessToken
 func NewDefaultOAuth2AccessToken(value string) *DefaultOAuth2AccessToken {
 	return &DefaultOAuth2AccessToken{
-		Value: value,
+		Value:                 value,
+		AdditionalInformation: make(map[string]interface{}),
 	}
 }
 
