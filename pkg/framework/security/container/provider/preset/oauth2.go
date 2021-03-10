@@ -21,14 +21,6 @@ var OAuth2ContainerFields = wire.NewSet(
 	UserAuthenticationConverter,
 )
 
-// DefaultTokenServices 默认的服务
-func DefaultTokenServices(config config.OAuth2, tokenStore token.Store) *token.DefaultTokenServices {
-	service := token.NewDefaultTokenServices(tokenStore)
-	service.ReuseRefreshToken = config.AuthorizationServer.ReuseRefreshToken
-	service.SupportRefreshToken = config.AuthorizationServer.SupportRefreshToken
-	return service
-}
-
 // TokenStore 实例
 func TokenStore(converter *store.JwtAccessTokenConverter) token.Store {
 	return store.NewJwtTokenStore(converter)
@@ -58,9 +50,8 @@ func JwtAccessTokenConverter(config config.OAuth2, tokenConverter token.AccessTo
 
 // AccessTokenConverter token转换器
 func AccessTokenConverter(config config.OAuth2, userConverter token.UserAuthenticationConverter) token.AccessTokenConverter {
-	converter := token.NewDefaultAccessTokenConverter()
+	converter := token.NewDefaultAccessTokenConverter(userConverter)
 	converter.IncludeGrantType = config.IncludeGrantType
-	converter.UserAuthenticationConverter = userConverter
 	return converter
 }
 
