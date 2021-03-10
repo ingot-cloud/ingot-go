@@ -18,9 +18,9 @@ type DefaultAccessTokenConverter struct {
 }
 
 // NewDefaultAccessTokenConverter 实例化
-func NewDefaultAccessTokenConverter() *DefaultAccessTokenConverter {
+func NewDefaultAccessTokenConverter(userConverter UserAuthenticationConverter) *DefaultAccessTokenConverter {
 	return &DefaultAccessTokenConverter{
-		UserAuthenticationConverter: NewDefaultUserAuthenticationConverter(),
+		UserAuthenticationConverter: userConverter,
 		IncludeGrantType:            false,
 	}
 }
