@@ -4,11 +4,14 @@ import (
 	appConfig "github.com/ingot-cloud/ingot-go/internal/app/config"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/security/config"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/security/service"
+	appToken "github.com/ingot-cloud/ingot-go/internal/app/core/security/token"
 	bootContainer "github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/store"
 )
 
 // AppContainer app容器
@@ -20,6 +23,9 @@ type AppContainer struct {
 	ClientDetailsService  *service.ClientDetails
 	UserDetailsService    *service.UserDetails
 	ResourceServerAdapter *config.ResourceServerAdapter
+	IngotEnhancer         *appToken.IngotEnhancer
+
+	JwtAccessTokenConverter *store.JwtAccessTokenConverter
 }
 
 // --- 自定义安全配置 ---
@@ -37,6 +43,17 @@ func (a *AppContainer) EnableResourceServer() bool {
 // GetResourceServerConfigurer 自定义资源服务配置
 func (a *AppContainer) GetResourceServerConfigurer() security.ResourceServerConfigurer {
 	return a.ResourceServerAdapter
+}
+
+// GetTokenEnhancer 自定义token增强
+func (a *AppContainer) GetTokenEnhancer() token.Enhancer {
+	chain := token.NewEnhancerChain()
+	var enhancers []token.Enhancer
+	enhancers = append(enhancers, a.IngotEnhancer)
+	// 默认追加 jwt enhancer
+	enhancers = append(enhancers, a.JwtAccessTokenConverter)
+	chain.SetTokenEnhancers(enhancers)
+	return chain
 }
 
 // GetUserDetailsService 获取自定义值

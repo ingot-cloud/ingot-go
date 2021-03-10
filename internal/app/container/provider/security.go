@@ -5,6 +5,7 @@ import (
 	appConfig "github.com/ingot-cloud/ingot-go/internal/app/config"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/security/config"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/security/service"
+	"github.com/ingot-cloud/ingot-go/internal/app/core/security/token"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/utils/pathmatcher"
 	securityAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/ingot"
@@ -19,6 +20,7 @@ var CustomSecurityAll = wire.NewSet(
 	SecurityUserDetailsService,
 	ResourceServerAdapter,
 	PermitURLMatcher,
+	IngotTokenEnhancer,
 )
 
 // SecurityClientDetailsService 服务实现
@@ -26,6 +28,9 @@ var SecurityClientDetailsService = wire.Struct(new(service.ClientDetails), "*")
 
 // SecurityUserDetailsService 服务实现
 var SecurityUserDetailsService = wire.Struct(new(service.UserDetails), "*")
+
+// IngotTokenEnhancer token增强
+var IngotTokenEnhancer = wire.Struct(new(token.IngotEnhancer), "*")
 
 // ResourceServerAdapter 自定义适配器
 func ResourceServerAdapter(tokenExtractor authentication.TokenExtractor, resourceManager securityAuth.ResourceManager, ignore utils.RequestMatcher) *config.ResourceServerAdapter {

@@ -13,6 +13,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/internal/app/container/provider/factory"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/http"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/security/service"
+	"github.com/ingot-cloud/ingot-go/internal/app/core/security/token"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"
 	"github.com/ingot-cloud/ingot-go/internal/app/service/impl"
 	container2 "github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
@@ -186,13 +187,16 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 	}
 	requestMatcher := provider.PermitURLMatcher(security)
 	resourceServerAdapter := provider.ResourceServerAdapter(tokenExtractor, resourceManager, requestMatcher)
+	ingotEnhancer := &token.IngotEnhancer{}
 	appContainer := &container3.AppContainer{
-		NilSecurityInjector:   nilSecurityInjector,
-		DefaultPre:            defaultPre,
-		SecurityConfig:        security,
-		ClientDetailsService:  clientDetails,
-		UserDetailsService:    userDetails,
-		ResourceServerAdapter: resourceServerAdapter,
+		NilSecurityInjector:     nilSecurityInjector,
+		DefaultPre:              defaultPre,
+		SecurityConfig:          security,
+		ClientDetailsService:    clientDetails,
+		UserDetailsService:      userDetails,
+		ResourceServerAdapter:   resourceServerAdapter,
+		IngotEnhancer:           ingotEnhancer,
+		JwtAccessTokenConverter: jwtAccessTokenConverter,
 	}
 	return appContainer, func() {
 		cleanup2()
