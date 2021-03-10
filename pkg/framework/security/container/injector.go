@@ -10,6 +10,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/endpoint"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/granter"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/store"
 )
 
 // PrintSecurityInjector 打印注入
@@ -35,6 +36,7 @@ type SecurityInjector interface {
 	GetTokenStore() token.Store
 	GetAccessTokenConverter() token.AccessTokenConverter
 	GetUserAuthenticationConverter() token.UserAuthenticationConverter
+	GetJwtAccessTokenConverter() *store.JwtAccessTokenConverter
 
 	// ResourceServerContainer
 	GetResourceAuthenticationManager() coreAuth.Manager
@@ -118,6 +120,11 @@ func (*NilSecurityInjector) GetAccessTokenConverter() token.AccessTokenConverter
 
 // GetUserAuthenticationConverter 获取自定义值
 func (*NilSecurityInjector) GetUserAuthenticationConverter() token.UserAuthenticationConverter {
+	return nil
+}
+
+// GetJwtAccessTokenConverter 自定义值
+func (*NilSecurityInjector) GetJwtAccessTokenConverter() *store.JwtAccessTokenConverter {
 	return nil
 }
 

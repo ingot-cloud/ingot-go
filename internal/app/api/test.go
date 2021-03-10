@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/ingot-cloud/ingot-go/internal/app/core/security/user"
 	coreIngot "github.com/ingot-cloud/ingot-go/pkg/framework/core/web/ingot"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/ingot"
@@ -20,7 +21,8 @@ func (t *Test) Apply(app *coreIngot.Router) {
 func (t *Test) test(ctx *gin.Context) (interface{}, error) {
 	auth := ingot.GetAuthentication(ctx)
 
-	log.Infof("auth=%v", auth)
+	ingotUser, ok := auth.GetPrincipal().(*user.IngotUser)
+	log.Infof("ok=%t, auth=%v", ok, ingotUser)
 
 	var result struct {
 		Test string

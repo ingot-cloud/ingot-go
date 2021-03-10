@@ -21,6 +21,7 @@ var CustomSecurityAll = wire.NewSet(
 	ResourceServerAdapter,
 	PermitURLMatcher,
 	IngotTokenEnhancer,
+	IngotUserAuthenticationConverter,
 )
 
 // SecurityClientDetailsService 服务实现
@@ -31,6 +32,9 @@ var SecurityUserDetailsService = wire.Struct(new(service.UserDetails), "*")
 
 // IngotTokenEnhancer token增强
 var IngotTokenEnhancer = wire.Struct(new(token.IngotEnhancer), "*")
+
+// IngotUserAuthenticationConverter 自定义
+var IngotUserAuthenticationConverter = wire.Struct(new(token.IngotUserAuthenticationConverter), "*")
 
 // ResourceServerAdapter 自定义适配器
 func ResourceServerAdapter(tokenExtractor authentication.TokenExtractor, resourceManager securityAuth.ResourceManager, ignore utils.RequestMatcher) *config.ResourceServerAdapter {

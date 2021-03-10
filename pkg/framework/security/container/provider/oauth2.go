@@ -29,7 +29,10 @@ func TokenStore(converter *store.JwtAccessTokenConverter, injector container.Sec
 }
 
 // JwtAccessTokenConverter 实例
-func JwtAccessTokenConverter(config config.OAuth2, tokenConverter token.AccessTokenConverter) *store.JwtAccessTokenConverter {
+func JwtAccessTokenConverter(config config.OAuth2, tokenConverter token.AccessTokenConverter, injector container.SecurityInjector) *store.JwtAccessTokenConverter {
+	if injector.GetJwtAccessTokenConverter() != nil {
+		return injector.GetJwtAccessTokenConverter()
+	}
 	return preset.JwtAccessTokenConverter(config, tokenConverter)
 }
 

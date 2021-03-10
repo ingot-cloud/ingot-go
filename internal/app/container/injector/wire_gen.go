@@ -189,14 +189,13 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 	resourceServerAdapter := provider.ResourceServerAdapter(tokenExtractor, resourceManager, requestMatcher)
 	ingotEnhancer := &token.IngotEnhancer{}
 	appContainer := &container3.AppContainer{
-		NilSecurityInjector:     nilSecurityInjector,
-		DefaultPre:              defaultPre,
-		SecurityConfig:          security,
-		ClientDetailsService:    clientDetails,
-		UserDetailsService:      userDetails,
-		ResourceServerAdapter:   resourceServerAdapter,
-		IngotEnhancer:           ingotEnhancer,
-		JwtAccessTokenConverter: jwtAccessTokenConverter,
+		NilSecurityInjector:   nilSecurityInjector,
+		DefaultPre:            defaultPre,
+		SecurityConfig:        security,
+		ClientDetailsService:  clientDetails,
+		UserDetailsService:    userDetails,
+		ResourceServerAdapter: resourceServerAdapter,
+		IngotEnhancer:         ingotEnhancer,
 	}
 	return appContainer, func() {
 		cleanup2()
@@ -281,7 +280,7 @@ func BuildContainer(config2 *config.Config, options *config.Options, securityInj
 	}
 	userAuthenticationConverter := provider2.UserAuthenticationConverter(securityInjector)
 	accessTokenConverter := provider2.AccessTokenConverter(oAuth2, userAuthenticationConverter, securityInjector)
-	jwtAccessTokenConverter := provider2.JwtAccessTokenConverter(oAuth2, accessTokenConverter)
+	jwtAccessTokenConverter := provider2.JwtAccessTokenConverter(oAuth2, accessTokenConverter, securityInjector)
 	store := provider2.TokenStore(jwtAccessTokenConverter, securityInjector)
 	oAuth2Container := &container.OAuth2Container{
 		Config:                      oAuth2,
