@@ -7,6 +7,9 @@ import (
 // ID ID类型
 type ID int64
 
+// Zero 0
+const Zero ID = 0
+
 // UnmarshalJSON 字符串转为int64  json.Unmarshaler interface
 func (id *ID) UnmarshalJSON(data []byte) error {
 	if string(data) == "" {
@@ -29,4 +32,29 @@ func (id ID) MarshalJSON() ([]byte, error) {
 
 func (id ID) String() string {
 	return strconv.FormatInt(int64(id), 10)
+}
+
+// NewIDFrom 实例化
+func NewIDFrom(id interface{}) ID {
+	switch value := id.(type) {
+	case ID:
+		return value
+	case string:
+		return NewIDFromString(value)
+	case int:
+		return ID(value)
+	case int64:
+		return ID(value)
+	}
+
+	return Zero
+}
+
+// NewIDFromString 实例ID
+func NewIDFromString(id string) ID {
+	i, err := strconv.Atoi(id)
+	if err != nil {
+		return Zero
+	}
+	return ID(i)
 }
