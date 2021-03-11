@@ -112,14 +112,13 @@ func BuildContainerInjector(config3 *config.Config, options *config.Options) (co
 	jwtAccessTokenConverter := preset.JwtAccessTokenConverter(oAuth2, accessTokenConverter)
 	store := preset.TokenStore(jwtAccessTokenConverter)
 	oAuth2Container := &container.OAuth2Container{
-		Config:                      oAuth2,
 		TokenStore:                  store,
 		JwtAccessTokenConverter:     jwtAccessTokenConverter,
 		AccessTokenConverter:        accessTokenConverter,
 		UserAuthenticationConverter: userAuthenticationConverter,
 	}
 	resourceServerTokenServices := preset.ResourceServerTokenServices(store)
-	resourceManager := preset.ResourceAuthenticationManager(oAuth2Container, resourceServerTokenServices)
+	resourceManager := preset.ResourceAuthenticationManager(oAuth2, resourceServerTokenServices)
 	tokenExtractor := preset.TokenExtractor()
 	resourceServerConfigurer := preset.ResourceServerConfigurer(tokenExtractor, resourceManager)
 	resourceServerContainer := &container.ResourceServerContainer{
@@ -286,14 +285,13 @@ func BuildContainer(config3 *config.Config, options *config.Options, securityInj
 	jwtAccessTokenConverter := provider2.JwtAccessTokenConverter(oAuth2, accessTokenConverter, securityInjector)
 	store := provider2.TokenStore(jwtAccessTokenConverter, securityInjector)
 	oAuth2Container := &container.OAuth2Container{
-		Config:                      oAuth2,
 		TokenStore:                  store,
 		JwtAccessTokenConverter:     jwtAccessTokenConverter,
 		AccessTokenConverter:        accessTokenConverter,
 		UserAuthenticationConverter: userAuthenticationConverter,
 	}
 	resourceServerTokenServices := provider2.ResourceServerTokenServices(store, securityInjector)
-	resourceManager := provider2.ResourceAuthenticationManager(oAuth2Container, resourceServerTokenServices, securityInjector)
+	resourceManager := provider2.ResourceAuthenticationManager(oAuth2, resourceServerTokenServices, securityInjector)
 	tokenExtractor := provider2.TokenExtractor(securityInjector)
 	resourceServerConfigurer := provider2.ResourceServerConfigurer(tokenExtractor, resourceManager, securityInjector)
 	resourceServerContainer := &container.ResourceServerContainer{

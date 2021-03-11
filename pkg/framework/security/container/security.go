@@ -1,14 +1,5 @@
 package container
 
-// SecurityContainer 容器汇总
-type SecurityContainer interface {
-	GetCommonContainer() *CommonContainer
-	GetOAuth2Container() *OAuth2Container
-	GetResourceServerContainer() *ResourceServerContainer
-	GetAuthorizationServerContainer() *AuthorizationServerContainer
-	GetAuthProvidersContainer() *AuthProvidersContainer
-}
-
 // SecurityContainerImpl 接口实现
 type SecurityContainerImpl struct {
 	CommonContainer              *CommonContainer

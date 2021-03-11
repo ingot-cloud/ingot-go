@@ -7,6 +7,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/preset"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/authentication"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 )
 
@@ -22,14 +23,14 @@ var ResourceServerContainerFields = wire.NewSet(
 )
 
 // ResourceAuthenticationManager 资源服务器中使用的认证管理器
-func ResourceAuthenticationManager(container *container.OAuth2Container, tokenService token.ResourceServerTokenServices, injector container.SecurityInjector) coreAuth.ResourceManager {
+func ResourceAuthenticationManager(oauthConfig config.OAuth2, tokenService token.ResourceServerTokenServices, injector container.SecurityInjector) coreAuth.ResourceManager {
 	if !injector.EnableResourceServer() {
 		return nil
 	}
 	if injector.GetResourceAuthenticationManager() != nil {
 		return injector.GetResourceAuthenticationManager()
 	}
-	return preset.ResourceAuthenticationManager(container, tokenService)
+	return preset.ResourceAuthenticationManager(oauthConfig, tokenService)
 }
 
 // ResourceServerConfigurer 资源服务器配置

@@ -19,10 +19,7 @@ import (
 var SecurityInjector = wire.NewSet(
 	wire.Struct(new(config.IngotSecurityInjector), "*"),
 	wire.Bind(new(securityContainer.SecurityInjector), new(*config.IngotSecurityInjector)),
-)
 
-// CustomSecurityAll 自定义
-var CustomSecurityAll = wire.NewSet(
 	SecurityClientDetailsService,
 	SecurityUserDetailsService,
 	ResourceServerAdapter,
