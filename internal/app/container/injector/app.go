@@ -23,7 +23,7 @@ func BuildContainerInjector(config *config.Config, options *config.Options) (sec
 	wire.Build(
 		provider.AllSet,
 		provider.AllFactory,
-		provider.AppContainer,
+		provider.SecurityInjector,
 		provider.CustomSecurityAll,
 
 		preset.All,

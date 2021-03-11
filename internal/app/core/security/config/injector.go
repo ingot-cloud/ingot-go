@@ -1,8 +1,7 @@
-package container
+package config
 
 import (
 	appConfig "github.com/ingot-cloud/ingot-go/internal/app/config"
-	"github.com/ingot-cloud/ingot-go/internal/app/core/security/config"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/security/service"
 	appToken "github.com/ingot-cloud/ingot-go/internal/app/core/security/token"
 	bootContainer "github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
@@ -14,8 +13,8 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/store"
 )
 
-// AppContainer app容器
-type AppContainer struct {
+// IngotSecurityInjector 安全注入
+type IngotSecurityInjector struct {
 	*container.NilSecurityInjector
 	*bootContainer.DefaultPre
 
@@ -26,7 +25,7 @@ type AppContainer struct {
 	SecurityConfig                   appConfig.Security
 	ClientDetailsService             *service.ClientDetails
 	UserDetailsService               *service.UserDetails
-	ResourceServerAdapter            *config.ResourceServerAdapter
+	ResourceServerAdapter            *ResourceServerAdapter
 	IngotEnhancer                    *appToken.IngotEnhancer
 	IngotUserAuthenticationConverter *appToken.IngotUserAuthenticationConverter
 }
@@ -34,37 +33,37 @@ type AppContainer struct {
 // --- 自定义安全配置 ---
 
 // EnableAuthorizationServer 是否开启授权服务
-func (a *AppContainer) EnableAuthorizationServer() bool {
+func (a *IngotSecurityInjector) EnableAuthorizationServer() bool {
 	return a.SecurityConfig.EnableAuthorizationServer
 }
 
 // EnableResourceServer 是否开启资源服务
-func (a *AppContainer) EnableResourceServer() bool {
+func (a *IngotSecurityInjector) EnableResourceServer() bool {
 	return a.SecurityConfig.EnableResourceServer
 }
 
 // GetResourceServerConfigurer 自定义资源服务配置
-func (a *AppContainer) GetResourceServerConfigurer() security.ResourceServerConfigurer {
+func (a *IngotSecurityInjector) GetResourceServerConfigurer() security.ResourceServerConfigurer {
 	return a.ResourceServerAdapter
 }
 
 // GetUserDetailsService 获取自定义值
-func (a *AppContainer) GetUserDetailsService() userdetails.Service {
+func (a *IngotSecurityInjector) GetUserDetailsService() userdetails.Service {
 	return a.UserDetailsService
 }
 
 // GetClientDetailsService 获取自定义值
-func (a *AppContainer) GetClientDetailsService() clientdetails.Service {
+func (a *IngotSecurityInjector) GetClientDetailsService() clientdetails.Service {
 	return a.ClientDetailsService
 }
 
 // GetUserAuthenticationConverter 自定义
-func (a *AppContainer) GetUserAuthenticationConverter() token.UserAuthenticationConverter {
+func (a *IngotSecurityInjector) GetUserAuthenticationConverter() token.UserAuthenticationConverter {
 	return a.IngotUserAuthenticationConverter
 }
 
 // GetTokenEnhancer 自定义token增强
-func (a *AppContainer) GetTokenEnhancer() token.Enhancer {
+func (a *IngotSecurityInjector) GetTokenEnhancer() token.Enhancer {
 	chain := token.NewEnhancerChain()
 	var enhancers []token.Enhancer
 	enhancers = append(enhancers, a.IngotEnhancer)

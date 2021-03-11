@@ -8,10 +8,17 @@ import (
 	"github.com/ingot-cloud/ingot-go/internal/app/core/security/token"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/utils/pathmatcher"
 	securityAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
+	securityContainer "github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/ingot"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/configurer"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/utils"
+)
+
+// SecurityInjector 注入器
+var SecurityInjector = wire.NewSet(
+	wire.Struct(new(config.IngotSecurityInjector), "*"),
+	wire.Bind(new(securityContainer.SecurityInjector), new(*config.IngotSecurityInjector)),
 )
 
 // CustomSecurityAll 自定义

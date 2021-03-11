@@ -8,10 +8,10 @@ package injector
 import (
 	"github.com/ingot-cloud/ingot-go/internal/app/api"
 	"github.com/ingot-cloud/ingot-go/internal/app/config"
-	container3 "github.com/ingot-cloud/ingot-go/internal/app/container"
 	"github.com/ingot-cloud/ingot-go/internal/app/container/provider"
 	"github.com/ingot-cloud/ingot-go/internal/app/container/provider/factory"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/http"
+	config2 "github.com/ingot-cloud/ingot-go/internal/app/core/security/config"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/security/service"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/security/token"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"
@@ -33,13 +33,13 @@ func BuildConfiguration(options *config.Options) (*config.Config, error) {
 	return configConfig, nil
 }
 
-func BuildContainerInjector(config2 *config.Config, options *config.Options) (container.SecurityInjector, func(), error) {
+func BuildContainerInjector(config3 *config.Config, options *config.Options) (container.SecurityInjector, func(), error) {
 	nilSecurityInjector := &container.NilSecurityInjector{}
-	httpConfig, err := factory.HTTPConfig(config2)
+	httpConfig, err := factory.HTTPConfig(config3)
 	if err != nil {
 		return nil, nil, err
 	}
-	db, cleanup, err := factory.NewGorm(config2)
+	db, cleanup, err := factory.NewGorm(config3)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -73,7 +73,7 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 		cleanup()
 		return nil, nil, err
 	}
-	security, err := factory.SecurityConfig(config2)
+	security, err := factory.SecurityConfig(config3)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -101,7 +101,7 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 		UserDetailsService:     userdetailsService,
 		ClientDetailsService:   clientdetailsService,
 	}
-	oAuth2, err := factory.OAuth2Config(config2)
+	oAuth2, err := factory.OAuth2Config(config3)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -188,27 +188,30 @@ func BuildContainerInjector(config2 *config.Config, options *config.Options) (co
 	requestMatcher := provider.PermitURLMatcher(security)
 	resourceServerAdapter := provider.ResourceServerAdapter(tokenExtractor, resourceManager, requestMatcher)
 	ingotEnhancer := &token.IngotEnhancer{}
-	appContainer := &container3.AppContainer{
-		NilSecurityInjector:   nilSecurityInjector,
-		DefaultPre:            defaultPre,
-		SecurityConfig:        security,
-		ClientDetailsService:  clientDetails,
-		UserDetailsService:    userDetails,
-		ResourceServerAdapter: resourceServerAdapter,
-		IngotEnhancer:         ingotEnhancer,
+	ingotUserAuthenticationConverter := &token.IngotUserAuthenticationConverter{}
+	ingotSecurityInjector := &config2.IngotSecurityInjector{
+		NilSecurityInjector:              nilSecurityInjector,
+		DefaultPre:                       defaultPre,
+		JwtAccessTokenConverter:          jwtAccessTokenConverter,
+		SecurityConfig:                   security,
+		ClientDetailsService:             clientDetails,
+		UserDetailsService:               userDetails,
+		ResourceServerAdapter:            resourceServerAdapter,
+		IngotEnhancer:                    ingotEnhancer,
+		IngotUserAuthenticationConverter: ingotUserAuthenticationConverter,
 	}
-	return appContainer, func() {
+	return ingotSecurityInjector, func() {
 		cleanup2()
 		cleanup()
 	}, nil
 }
 
-func BuildContainer(config2 *config.Config, options *config.Options, securityInjector container.SecurityInjector) (container2.Container, func(), error) {
-	httpConfig, err := factory.HTTPConfig(config2)
+func BuildContainer(config3 *config.Config, options *config.Options, securityInjector container.SecurityInjector) (container2.Container, func(), error) {
+	httpConfig, err := factory.HTTPConfig(config3)
 	if err != nil {
 		return nil, nil, err
 	}
-	db, cleanup, err := factory.NewGorm(config2)
+	db, cleanup, err := factory.NewGorm(config3)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -242,7 +245,7 @@ func BuildContainer(config2 *config.Config, options *config.Options, securityInj
 		cleanup()
 		return nil, nil, err
 	}
-	security, err := factory.SecurityConfig(config2)
+	security, err := factory.SecurityConfig(config3)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -272,7 +275,7 @@ func BuildContainer(config2 *config.Config, options *config.Options, securityInj
 		UserDetailsService:     userdetailsService,
 		ClientDetailsService:   clientdetailsService,
 	}
-	oAuth2, err := factory.OAuth2Config(config2)
+	oAuth2, err := factory.OAuth2Config(config3)
 	if err != nil {
 		cleanup2()
 		cleanup()
