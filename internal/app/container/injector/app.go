@@ -10,7 +10,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
 
 	securityContainer "github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
-	securityProvider "github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/post"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/pre"
 )
 
@@ -35,7 +35,7 @@ func BuildContainer(config *config.Config, options *config.Options, combine secu
 		provider.AllSet,
 		provider.AllFactory,
 
-		securityProvider.All,
+		post.All,
 
 		container.BootContainer,
 	)

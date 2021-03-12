@@ -27,6 +27,10 @@ func DoPre(injector container.SecurityInjector, sc container.SecurityContainer) 
 	return sc
 }
 
+func DoPost(injector container.SecurityInjector) {
+
+}
+
 func doChangeContainer(sc interface{}) {
 	value := reflect.Indirect(reflect.ValueOf(sc))
 	targetType := value.Type()

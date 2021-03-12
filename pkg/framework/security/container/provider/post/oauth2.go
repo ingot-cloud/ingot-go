@@ -1,4 +1,4 @@
-package provider
+package post
 
 import (
 	"github.com/google/wire"

@@ -1,35 +1,11 @@
-package provider
+package process
 
 import (
 	"reflect"
 
-	"github.com/google/wire"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/core/utils"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
-
-	coreUtils "github.com/ingot-cloud/ingot-go/pkg/framework/core/utils"
-)
-
-// All 所有实例
-var All = wire.NewSet(
-	CommonContainerFields,
-	CommonContainer,
-	OAuth2ContainerFields,
-	OAuth2Container,
-	AuthorizationServerContainerFields,
-	AuthorizationServerContainer,
-	ResourceServerContainerFields,
-	ResourceServerContainer,
-	AuthProvidersContainer,
-	AuthProvidersContainerFields,
-	SecurityContainer,
-	PrintInjectInstance,
-)
-
-// SecurityContainer 安全容器
-var SecurityContainer = wire.NewSet(
-	wire.Struct(new(container.SecurityContainerImpl), "*"),
-	wire.Bind(new(container.SecurityContainer), new(*container.SecurityContainerImpl)),
 )
 
 // PrintInjectInstance 打印注入
@@ -65,7 +41,7 @@ func printContainerChild(c interface{}) {
 	for i := 0; i < len; i++ {
 		sf := targetType.Field(i)
 		field := value.FieldByName(sf.Name)
-		log.Infof("字段名: %s, %s", sf.Name, coreUtils.GetType(field.Interface()))
+		log.Infof("字段名: %s, %s", sf.Name, utils.GetType(field.Interface()))
 	}
 	log.Infof("<------- 容器 %s 注入字段打印结束", targetType.Name())
 }
