@@ -19,7 +19,7 @@ func BuildConfiguration(options *config.Options) (*config.Config, error) {
 	return nil, nil
 }
 
-func BuildContainerCombine(config *config.Config, options *config.Options) (securityContainer.SecurityContainerCombine, func(), error) {
+func BuildContainerPre(config *config.Config, options *config.Options) (securityContainer.SecurityContainerCombine, func(), error) {
 	wire.Build(
 		provider.AllSet,
 		provider.AllFactory,
@@ -30,7 +30,7 @@ func BuildContainerCombine(config *config.Config, options *config.Options) (secu
 	return nil, nil, nil
 }
 
-func BuildContainer(config *config.Config, options *config.Options, combine securityContainer.SecurityContainerCombine) (container.Container, func(), error) {
+func BuildContainerPost(config *config.Config, options *config.Options, combine securityContainer.SecurityContainerCombine) (container.Container, func(), error) {
 	wire.Build(
 		provider.AllSet,
 		provider.AllFactory,

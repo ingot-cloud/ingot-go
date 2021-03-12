@@ -34,7 +34,7 @@ func BuildConfiguration(options *config.Options) (*config.Config, error) {
 	return configConfig, nil
 }
 
-func BuildContainerCombine(config3 *config.Config, options *config.Options) (container.SecurityContainerCombine, func(), error) {
+func BuildContainerPre(config3 *config.Config, options *config.Options) (container.SecurityContainerCombine, func(), error) {
 	webSecurityConfigurersImpl := &pre.WebSecurityConfigurersImpl{}
 	encoder := pre.PasswordEncoder()
 	userCache := pre.UserCache()
@@ -161,7 +161,7 @@ func BuildContainerCombine(config3 *config.Config, options *config.Options) (con
 	}, nil
 }
 
-func BuildContainer(config3 *config.Config, options *config.Options, combine container.SecurityContainerCombine) (container2.Container, func(), error) {
+func BuildContainerPost(config3 *config.Config, options *config.Options, combine container.SecurityContainerCombine) (container2.Container, func(), error) {
 	httpConfig, err := factory.HTTPConfig(config3)
 	if err != nil {
 		return nil, nil, err
