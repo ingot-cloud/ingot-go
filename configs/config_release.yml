@@ -73,8 +73,6 @@ redis:
   ssl: false
 
 security:
-  enableResourceServer: true
-  enableAuthorizationServer: true
   permitUrls:
     - "/api/auth/login"
   oauth2:
@@ -85,8 +83,10 @@ security:
       # 签名key
       signingKey: 'ingot-security'
     resourceServer:
+      enable: true
       resourceID: ""
     authorizationServer:
+      enable: true
       supportRefreshToken: true
       reuseRefreshToken: true
 
