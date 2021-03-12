@@ -5,6 +5,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	coreAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/pre"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 )
@@ -30,7 +31,8 @@ func ResourceAuthenticationManager(sc container.SecurityContainerCombine) coreAu
 	if !enableResourceServer(sc) {
 		return nil
 	}
-	return sc.GetResourceServerContainer().AuthenticationManager
+	config := sc.GetOAuth2Container().OAuth2Config
+	return pre.ResourceAuthenticationManager(config, sc.GetResourceServerContainer().ResourceServerTokenServices)
 }
 
 // ResourceServerConfigurer 资源服务器配置
@@ -38,7 +40,7 @@ func ResourceServerConfigurer(sc container.SecurityContainerCombine) security.Re
 	if !enableResourceServer(sc) {
 		return nil
 	}
-	return sc.GetResourceServerContainer().ResourceServerConfigurer
+	return pre.ResourceServerConfigurer(sc.GetResourceServerContainer().TokenExtractor, sc.GetAuthorizationServerContainer().AuthenticationManager)
 }
 
 // ResourceServerTokenServices 资源服务器 token 服务
@@ -46,7 +48,7 @@ func ResourceServerTokenServices(sc container.SecurityContainerCombine) token.Re
 	if !enableResourceServer(sc) {
 		return nil
 	}
-	return sc.GetResourceServerContainer().ResourceServerTokenServices
+	return pre.ResourceServerTokenServices(sc.GetOAuth2Container().TokenStore)
 }
 
 // TokenExtractor TokenExtrator接口默认实现
@@ -54,5 +56,5 @@ func TokenExtractor(sc container.SecurityContainerCombine) authentication.TokenE
 	if !enableResourceServer(sc) {
 		return nil
 	}
-	return sc.GetResourceServerContainer().TokenExtractor
+	return pre.TokenExtractor()
 }

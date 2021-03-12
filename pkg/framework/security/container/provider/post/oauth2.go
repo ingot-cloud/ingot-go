@@ -3,6 +3,7 @@ package post
 import (
 	"github.com/google/wire"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/pre"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/store"
 )
@@ -20,20 +21,20 @@ var OAuth2ContainerFields = wire.NewSet(
 
 // TokenStore 实例
 func TokenStore(sc container.SecurityContainerCombine) token.Store {
-	return sc.GetOAuth2Container().TokenStore
+	return pre.TokenStore(sc.GetOAuth2Container().JwtAccessTokenConverter)
 }
 
 // JwtAccessTokenConverter 实例
 func JwtAccessTokenConverter(sc container.SecurityContainerCombine) *store.JwtAccessTokenConverter {
-	return sc.GetOAuth2Container().JwtAccessTokenConverter
+	return pre.JwtAccessTokenConverter(sc.GetOAuth2Container().OAuth2Config, sc.GetOAuth2Container().AccessTokenConverter)
 }
 
 // AccessTokenConverter token转换器
 func AccessTokenConverter(sc container.SecurityContainerCombine) token.AccessTokenConverter {
-	return sc.GetOAuth2Container().AccessTokenConverter
+	return pre.AccessTokenConverter(sc.GetOAuth2Container().OAuth2Config, sc.GetOAuth2Container().UserAuthenticationConverter)
 }
 
 // UserAuthenticationConverter 默认实现
 func UserAuthenticationConverter(sc container.SecurityContainerCombine) token.UserAuthenticationConverter {
-	return sc.GetOAuth2Container().UserAuthenticationConverter
+	return pre.UserAuthenticationConverter()
 }

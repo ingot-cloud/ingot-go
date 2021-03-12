@@ -5,6 +5,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/pre"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/endpoint"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/granter"
@@ -36,7 +37,7 @@ func AuthorizationAuthenticationManager(sc container.SecurityContainerCombine) a
 	if !enableAuthorizationServer(sc) {
 		return nil
 	}
-	return sc.GetAuthorizationServerContainer().AuthenticationManager
+	return pre.AuthorizationAuthenticationManager(sc.GetAuthProvidersContainer())
 }
 
 // AuthorizationServerConfigurer 授权服务器配置
@@ -44,7 +45,7 @@ func AuthorizationServerConfigurer(sc container.SecurityContainerCombine) securi
 	if !enableAuthorizationServer(sc) {
 		return nil
 	}
-	return sc.GetAuthorizationServerContainer().AuthorizationServerConfigurer
+	return pre.AuthorizationServerConfigurer(sc.GetAuthorizationServerContainer().AuthenticationManager)
 }
 
 // AuthorizationServerTokenServices 授权服务器 token 服务
@@ -52,7 +53,12 @@ func AuthorizationServerTokenServices(sc container.SecurityContainerCombine) tok
 	if !enableAuthorizationServer(sc) {
 		return nil
 	}
-	return sc.GetAuthorizationServerContainer().AuthorizationServerTokenServices
+	config := sc.GetOAuth2Container().OAuth2Config
+	tokenStore := sc.GetOAuth2Container().TokenStore
+	common := sc.GetCommonContainer()
+	enhancer := sc.GetAuthorizationServerContainer().TokenEnhancer
+	manager := sc.GetAuthorizationServerContainer().AuthenticationManager
+	return pre.AuthorizationServerTokenServices(config, tokenStore, common, enhancer, manager)
 }
 
 // ConsumerTokenServices 令牌撤销
@@ -60,7 +66,7 @@ func ConsumerTokenServices(sc container.SecurityContainerCombine) token.Consumer
 	if !enableAuthorizationServer(sc) {
 		return nil
 	}
-	return sc.GetAuthorizationServerContainer().ConsumerTokenServices
+	return pre.ConsumerTokenServices(sc.GetOAuth2Container().TokenStore)
 }
 
 // TokenEndpoint 端点
@@ -68,7 +74,7 @@ func TokenEndpoint(sc container.SecurityContainerCombine) *endpoint.TokenEndpoin
 	if !enableAuthorizationServer(sc) {
 		return nil
 	}
-	return sc.GetAuthorizationServerContainer().TokenEndpoint
+	return pre.TokenEndpoint(sc.GetAuthorizationServerContainer().TokenGranter, sc.GetCommonContainer())
 }
 
 // TokenEndpointHTTPConfigurer 端点配置
@@ -76,7 +82,7 @@ func TokenEndpointHTTPConfigurer(sc container.SecurityContainerCombine) endpoint
 	if !enableAuthorizationServer(sc) {
 		return nil
 	}
-	return sc.GetAuthorizationServerContainer().TokenEndpointHTTPConfigurer
+	return pre.TokenEndpointHTTPConfigurer(sc.GetAuthorizationServerContainer().TokenEndpoint)
 }
 
 // TokenEnhancer token增强，默认使用增强链
@@ -84,7 +90,7 @@ func TokenEnhancer(sc container.SecurityContainerCombine) token.Enhancer {
 	if !enableAuthorizationServer(sc) {
 		return nil
 	}
-	return sc.GetAuthorizationServerContainer().TokenEnhancer
+	return pre.TokenEnhancer(sc.GetOAuth2Container())
 }
 
 // TokenGranter token 授权
@@ -92,7 +98,7 @@ func TokenGranter(sc container.SecurityContainerCombine) token.Granter {
 	if !enableAuthorizationServer(sc) {
 		return nil
 	}
-	return sc.GetAuthorizationServerContainer().TokenGranter
+	return pre.TokenGranter(sc.GetAuthorizationServerContainer().PasswordTokenGranter)
 }
 
 // PasswordTokenGranter 密码模式授权
@@ -100,5 +106,6 @@ func PasswordTokenGranter(sc container.SecurityContainerCombine) *granter.Passwo
 	if !enableAuthorizationServer(sc) {
 		return nil
 	}
-	return sc.GetAuthorizationServerContainer().PasswordTokenGranter
+	authServerContainer := sc.GetAuthorizationServerContainer()
+	return pre.PasswordTokenGranter(authServerContainer.AuthorizationServerTokenServices, authServerContainer.AuthenticationManager)
 }
