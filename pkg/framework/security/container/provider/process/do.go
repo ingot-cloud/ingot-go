@@ -56,12 +56,16 @@ func paddingInjectFields(injector container.SecurityInjector) {
 	len := inType.NumField()
 
 	var field reflect.StructField
+	var injectTag string
 	for i := 0; i < len; i++ {
 		field = inType.Field(i)
-		injectFields = append(injectFields, &InjectField{
-			Value: inValue.FieldByName(field.Name),
-			Type:  field.Type,
-		})
+		injectTag = field.Tag.Get("inject")
+		if injectTag == "true" {
+			injectFields = append(injectFields, &InjectField{
+				Value: inValue.FieldByName(field.Name),
+				Type:  field.Type,
+			})
+		}
 	}
 
 }

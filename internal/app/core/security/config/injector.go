@@ -21,11 +21,11 @@ type IngotSecurityInjector struct {
 
 	// app中的实例
 	SecurityConfig                   appConfig.Security
-	ClientDetailsService             *service.ClientDetails
-	UserDetailsService               *service.UserDetails
-	ResourceServerAdapter            *ResourceServerAdapter
-	IngotEnhancer                    *appToken.IngotEnhancer
-	IngotUserAuthenticationConverter *appToken.IngotUserAuthenticationConverter
+	ClientDetailsService             *service.ClientDetails                     `inject:"true"`
+	UserDetailsService               *service.UserDetails                       `inject:"true"`
+	ResourceServerAdapter            *ResourceServerAdapter                     `inject:"true"`
+	IngotEnhancer                    *appToken.IngotEnhancer                    `inject:"true"`
+	IngotUserAuthenticationConverter *appToken.IngotUserAuthenticationConverter `inject:"true"`
 }
 
 // --- 自定义安全配置 ---
