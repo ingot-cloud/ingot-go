@@ -33,3 +33,19 @@ func (s *SecurityContainerImpl) GetAuthorizationServerContainer() *Authorization
 func (s *SecurityContainerImpl) GetAuthProvidersContainer() *AuthProvidersContainer {
 	return s.AuthProvidersContainer
 }
+
+// SecurityContainerProxyImpl 默认实现
+type SecurityContainerProxyImpl struct {
+	SecurityContainer SecurityContainer
+	SecurityInjector  SecurityInjector
+}
+
+// GetSecurityContainer 获取安全容器
+func (p *SecurityContainerProxyImpl) GetSecurityContainer() SecurityContainer {
+	return p.SecurityContainer
+}
+
+// GetSecurityInjector 获取注入器
+func (p *SecurityContainerProxyImpl) GetSecurityInjector() SecurityInjector {
+	return p.SecurityInjector
+}

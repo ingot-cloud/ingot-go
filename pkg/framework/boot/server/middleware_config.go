@@ -14,7 +14,8 @@ func enableDefaultMiddleware(engine *gin.Engine) {
 }
 
 func enableSecurityMiddleware(engine *gin.Engine, boot bootContainer.Container) {
-	enableAuthorization := boot.GetSecurityInjector().EnableAuthorizationServer()
-	enableResource := boot.GetSecurityInjector().EnableResourceServer()
+	oauth2Config := boot.GetSecurityContainer().GetOAuth2Container().OAuth2Config
+	enableAuthorization := oauth2Config.AuthorizationServer.Enable
+	enableResource := oauth2Config.ResourceServer.Enable
 	config.EnableWebSecurity(enableAuthorization, enableResource, boot.GetSecurityContainer(), engine)
 }

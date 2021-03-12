@@ -23,11 +23,6 @@ func (c *DefaultPre) GetHTTPConfigurer() api.HTTPConfigurer {
 	return c.HTTPConfigurer
 }
 
-// GetSecurityInjector 安全注入
-func (c *DefaultPre) GetSecurityInjector() container.SecurityInjector {
-	return nil
-}
-
 // GetSecurityContainer default
 func (c *DefaultPre) GetSecurityContainer() container.SecurityContainer {
 	return c.SecurityContainer

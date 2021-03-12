@@ -28,6 +28,5 @@ var BootContainer = wire.NewSet(
 type Container interface {
 	GetHTTPConfig() config.HTTPConfig
 	GetHTTPConfigurer() api.HTTPConfigurer
-	GetSecurityInjector() container.SecurityInjector
 	GetSecurityContainer() container.SecurityContainer
 }

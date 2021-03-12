@@ -10,7 +10,6 @@ import (
 type DefaultContainer struct {
 	HTTPConfig         config.HTTPConfig
 	HTTPConfigurer     api.HTTPConfigurer
-	SecurityInjector   container.SecurityInjector
 	SecurityContainer  container.SecurityContainer
 	DebugPrintInjector container.PrintSecurityInjector
 }
@@ -23,11 +22,6 @@ func (c *DefaultContainer) GetHTTPConfig() config.HTTPConfig {
 // GetHTTPConfigurer default
 func (c *DefaultContainer) GetHTTPConfigurer() api.HTTPConfigurer {
 	return c.HTTPConfigurer
-}
-
-// GetSecurityInjector 安全注入
-func (c *DefaultContainer) GetSecurityInjector() container.SecurityInjector {
-	return c.SecurityInjector
 }
 
 // GetSecurityContainer default

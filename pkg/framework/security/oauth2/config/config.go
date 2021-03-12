@@ -17,11 +17,13 @@ type Jwt struct {
 
 // ResourceServer 资源服务器配置
 type ResourceServer struct {
+	Enable     bool   `yaml:"enable"`
 	ResourceID string `yaml:"resourceID"`
 }
 
 // AuthorizationServer 授权服务器配置
 type AuthorizationServer struct {
+	Enable bool `yaml:"enable"`
 	// 是否支持RefreshToken
 	SupportRefreshToken bool `yaml:"supportRefreshToken"`
 	// 是否重复使用RefreshToken

@@ -16,7 +16,19 @@ import (
 // PrintSecurityInjector 打印注入
 type PrintSecurityInjector interface{}
 
-// SecurityContainer 容器汇总
+// SecurityContainerProxy 安全容器代理
+type SecurityContainerProxy interface {
+	GetSecurityContainer() SecurityContainer
+	GetSecurityInjector() SecurityInjector
+}
+
+// SecurityContainerCombine 结合后的安全容器
+// 将 SecurityContainer 中的实例替换为 SecurityInjector 中非nil实例
+type SecurityContainerCombine interface {
+	SecurityContainer
+}
+
+// SecurityContainer 安全容器实例
 type SecurityContainer interface {
 	GetCommonContainer() *CommonContainer
 	GetOAuth2Container() *OAuth2Container
@@ -27,11 +39,6 @@ type SecurityContainer interface {
 
 // SecurityInjector 注入器
 type SecurityInjector interface {
-	// 是否开启授权服务
-	EnableAuthorizationServer() bool
-	// 是否开启资源服务
-	EnableResourceServer() bool
-
 	// Common
 	GetWebSecurityConfigurers() security.WebSecurityConfigurers
 	GetPasswordEncoder() password.Encoder

@@ -3,8 +3,6 @@ package provider
 import (
 	"github.com/google/wire"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/preset"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/store"
 )
@@ -21,33 +19,21 @@ var OAuth2ContainerFields = wire.NewSet(
 )
 
 // TokenStore 实例
-func TokenStore(converter *store.JwtAccessTokenConverter, injector container.SecurityInjector) token.Store {
-	if injector.GetTokenStore() != nil {
-		return injector.GetTokenStore()
-	}
-	return preset.TokenStore(converter)
+func TokenStore(sc container.SecurityContainerCombine) token.Store {
+	return sc.GetOAuth2Container().TokenStore
 }
 
 // JwtAccessTokenConverter 实例
-func JwtAccessTokenConverter(config config.OAuth2, tokenConverter token.AccessTokenConverter, injector container.SecurityInjector) *store.JwtAccessTokenConverter {
-	if injector.GetJwtAccessTokenConverter() != nil {
-		return injector.GetJwtAccessTokenConverter()
-	}
-	return preset.JwtAccessTokenConverter(config, tokenConverter)
+func JwtAccessTokenConverter(sc container.SecurityContainerCombine) *store.JwtAccessTokenConverter {
+	return sc.GetOAuth2Container().JwtAccessTokenConverter
 }
 
 // AccessTokenConverter token转换器
-func AccessTokenConverter(config config.OAuth2, userConverter token.UserAuthenticationConverter, injector container.SecurityInjector) token.AccessTokenConverter {
-	if injector.GetAccessTokenConverter() != nil {
-		return injector.GetAccessTokenConverter()
-	}
-	return preset.AccessTokenConverter(config, userConverter)
+func AccessTokenConverter(sc container.SecurityContainerCombine) token.AccessTokenConverter {
+	return sc.GetOAuth2Container().AccessTokenConverter
 }
 
 // UserAuthenticationConverter 默认实现
-func UserAuthenticationConverter(injector container.SecurityInjector) token.UserAuthenticationConverter {
-	if injector.GetUserAuthenticationConverter() != nil {
-		return injector.GetUserAuthenticationConverter()
-	}
-	return preset.UserAuthenticationConverter()
+func UserAuthenticationConverter(sc container.SecurityContainerCombine) token.UserAuthenticationConverter {
+	return sc.GetOAuth2Container().UserAuthenticationConverter
 }

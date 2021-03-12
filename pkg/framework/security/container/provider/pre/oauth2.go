@@ -1,4 +1,4 @@
-package preset
+package pre
 
 import (
 	"github.com/dgrijalva/jwt-go"

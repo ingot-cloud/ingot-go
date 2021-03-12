@@ -5,12 +5,15 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/preset"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/endpoint"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/granter"
 )
+
+func enableAuthorizationServer(sc container.SecurityContainerCombine) bool {
+	oauth2Container := sc.GetOAuth2Container()
+	return oauth2Container.OAuth2Config.AuthorizationServer.Enable
+}
 
 // AuthorizationServerContainer 授权服务器容器
 var AuthorizationServerContainer = wire.NewSet(wire.Struct(new(container.AuthorizationServerContainer), "*"))
@@ -29,101 +32,73 @@ var AuthorizationServerContainerFields = wire.NewSet(
 )
 
 // AuthorizationAuthenticationManager 授权服务器中的认证管理器
-func AuthorizationAuthenticationManager(providerContainer *container.AuthProvidersContainer, injector container.SecurityInjector) authentication.AuthorizationManager {
-	if !injector.EnableAuthorizationServer() {
+func AuthorizationAuthenticationManager(sc container.SecurityContainerCombine) authentication.AuthorizationManager {
+	if !enableAuthorizationServer(sc) {
 		return nil
 	}
-	if injector.GetAuthorizationAuthenticationManager() != nil {
-		return injector.GetAuthorizationAuthenticationManager()
-	}
-	return preset.AuthorizationAuthenticationManager(providerContainer)
+	return sc.GetAuthorizationServerContainer().AuthenticationManager
 }
 
 // AuthorizationServerConfigurer 授权服务器配置
-func AuthorizationServerConfigurer(manager authentication.AuthorizationManager, injector container.SecurityInjector) security.AuthorizationServerConfigurer {
-	if !injector.EnableAuthorizationServer() {
+func AuthorizationServerConfigurer(sc container.SecurityContainerCombine) security.AuthorizationServerConfigurer {
+	if !enableAuthorizationServer(sc) {
 		return nil
 	}
-	if injector.GetAuthorizationServerConfigurer() != nil {
-		return injector.GetAuthorizationServerConfigurer()
-	}
-	return preset.AuthorizationServerConfigurer(manager)
+	return sc.GetAuthorizationServerContainer().AuthorizationServerConfigurer
 }
 
 // AuthorizationServerTokenServices 授权服务器 token 服务
-func AuthorizationServerTokenServices(config config.OAuth2, tokenStore token.Store, common *container.CommonContainer, enhancer token.Enhancer, manager authentication.AuthorizationManager, injector container.SecurityInjector) token.AuthorizationServerTokenServices {
-	if !injector.EnableAuthorizationServer() {
+func AuthorizationServerTokenServices(sc container.SecurityContainerCombine) token.AuthorizationServerTokenServices {
+	if !enableAuthorizationServer(sc) {
 		return nil
 	}
-	if injector.GetAuthorizationServerTokenServices() != nil {
-		return injector.GetAuthorizationServerTokenServices()
-	}
-	return preset.AuthorizationServerTokenServices(config, tokenStore, common, enhancer, manager)
+	return sc.GetAuthorizationServerContainer().AuthorizationServerTokenServices
 }
 
 // ConsumerTokenServices 令牌撤销
-func ConsumerTokenServices(tokenStore token.Store, injector container.SecurityInjector) token.ConsumerTokenServices {
-	if !injector.EnableAuthorizationServer() {
+func ConsumerTokenServices(sc container.SecurityContainerCombine) token.ConsumerTokenServices {
+	if !enableAuthorizationServer(sc) {
 		return nil
 	}
-	if injector.GetConsumerTokenServices() != nil {
-		return injector.GetConsumerTokenServices()
-	}
-	return preset.ConsumerTokenServices(tokenStore)
+	return sc.GetAuthorizationServerContainer().ConsumerTokenServices
 }
 
 // TokenEndpoint 端点
-func TokenEndpoint(granter token.Granter, common *container.CommonContainer, injector container.SecurityInjector) *endpoint.TokenEndpoint {
-	if !injector.EnableAuthorizationServer() {
+func TokenEndpoint(sc container.SecurityContainerCombine) *endpoint.TokenEndpoint {
+	if !enableAuthorizationServer(sc) {
 		return nil
 	}
-	if injector.GetTokenEndpoint() != nil {
-		return injector.GetTokenEndpoint()
-	}
-	return preset.TokenEndpoint(granter, common)
+	return sc.GetAuthorizationServerContainer().TokenEndpoint
 }
 
 // TokenEndpointHTTPConfigurer 端点配置
-func TokenEndpointHTTPConfigurer(tokenEndpoint *endpoint.TokenEndpoint, injector container.SecurityInjector) endpoint.OAuth2HTTPConfigurer {
-	if !injector.EnableAuthorizationServer() {
+func TokenEndpointHTTPConfigurer(sc container.SecurityContainerCombine) endpoint.OAuth2HTTPConfigurer {
+	if !enableAuthorizationServer(sc) {
 		return nil
 	}
-	if injector.GetTokenEndpointHTTPConfigurer() != nil {
-		return injector.GetTokenEndpointHTTPConfigurer()
-	}
-
-	return preset.TokenEndpointHTTPConfigurer(tokenEndpoint)
+	return sc.GetAuthorizationServerContainer().TokenEndpointHTTPConfigurer
 }
 
 // TokenEnhancer token增强，默认使用增强链
-func TokenEnhancer(oauth2Container *container.OAuth2Container, injector container.SecurityInjector) token.Enhancer {
-	if !injector.EnableAuthorizationServer() {
+func TokenEnhancer(sc container.SecurityContainerCombine) token.Enhancer {
+	if !enableAuthorizationServer(sc) {
 		return nil
 	}
-	if injector.GetTokenEnhancer() != nil {
-		return injector.GetTokenEnhancer()
-	}
-	return preset.TokenEnhancer(oauth2Container)
+	return sc.GetAuthorizationServerContainer().TokenEnhancer
 }
 
 // TokenGranter token 授权
-func TokenGranter(password *granter.PasswordTokenGranter, injector container.SecurityInjector) token.Granter {
-	if !injector.EnableAuthorizationServer() {
+func TokenGranter(sc container.SecurityContainerCombine) token.Granter {
+	if !enableAuthorizationServer(sc) {
 		return nil
 	}
-	if injector.GetTokenGranter() != nil {
-		return injector.GetTokenGranter()
-	}
-	return preset.TokenGranter(password)
+	return sc.GetAuthorizationServerContainer().TokenGranter
 }
 
 // PasswordTokenGranter 密码模式授权
-func PasswordTokenGranter(tokenServices token.AuthorizationServerTokenServices, manager authentication.AuthorizationManager, injector container.SecurityInjector) *granter.PasswordTokenGranter {
-	if !injector.EnableAuthorizationServer() {
+func PasswordTokenGranter(sc container.SecurityContainerCombine) *granter.PasswordTokenGranter {
+	if !enableAuthorizationServer(sc) {
 		return nil
 	}
-	if injector.GetPasswordTokenGranter() != nil {
-		return injector.GetPasswordTokenGranter()
-	}
-	return preset.PasswordTokenGranter(tokenServices, manager)
+	return sc.GetAuthorizationServerContainer().PasswordTokenGranter
 }

@@ -5,11 +5,14 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	coreAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/preset"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/authentication"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 )
+
+func enableResourceServer(sc container.SecurityContainerCombine) bool {
+	oauth2Container := sc.GetOAuth2Container()
+	return oauth2Container.OAuth2Config.ResourceServer.Enable
+}
 
 // ResourceServerContainer 资源服务器容器
 var ResourceServerContainer = wire.NewSet(wire.Struct(new(container.ResourceServerContainer), "*"))
@@ -23,45 +26,33 @@ var ResourceServerContainerFields = wire.NewSet(
 )
 
 // ResourceAuthenticationManager 资源服务器中使用的认证管理器
-func ResourceAuthenticationManager(oauthConfig config.OAuth2, tokenService token.ResourceServerTokenServices, injector container.SecurityInjector) coreAuth.ResourceManager {
-	if !injector.EnableResourceServer() {
+func ResourceAuthenticationManager(sc container.SecurityContainerCombine) coreAuth.ResourceManager {
+	if !enableResourceServer(sc) {
 		return nil
 	}
-	if injector.GetResourceAuthenticationManager() != nil {
-		return injector.GetResourceAuthenticationManager()
-	}
-	return preset.ResourceAuthenticationManager(oauthConfig, tokenService)
+	return sc.GetResourceServerContainer().AuthenticationManager
 }
 
 // ResourceServerConfigurer 资源服务器配置
-func ResourceServerConfigurer(tokenExtractor authentication.TokenExtractor, authenticationManager coreAuth.ResourceManager, injector container.SecurityInjector) security.ResourceServerConfigurer {
-	if !injector.EnableResourceServer() {
+func ResourceServerConfigurer(sc container.SecurityContainerCombine) security.ResourceServerConfigurer {
+	if !enableResourceServer(sc) {
 		return nil
 	}
-	if injector.GetResourceServerConfigurer() != nil {
-		return injector.GetResourceServerConfigurer()
-	}
-	return preset.ResourceServerConfigurer(tokenExtractor, authenticationManager)
+	return sc.GetResourceServerContainer().ResourceServerConfigurer
 }
 
 // ResourceServerTokenServices 资源服务器 token 服务
-func ResourceServerTokenServices(tokenStore token.Store, injector container.SecurityInjector) token.ResourceServerTokenServices {
-	if !injector.EnableResourceServer() {
+func ResourceServerTokenServices(sc container.SecurityContainerCombine) token.ResourceServerTokenServices {
+	if !enableResourceServer(sc) {
 		return nil
 	}
-	if injector.GetResourceServerTokenServices() != nil {
-		return injector.GetResourceServerTokenServices()
-	}
-	return preset.ResourceServerTokenServices(tokenStore)
+	return sc.GetResourceServerContainer().ResourceServerTokenServices
 }
 
 // TokenExtractor TokenExtrator接口默认实现
-func TokenExtractor(injector container.SecurityInjector) authentication.TokenExtractor {
-	if !injector.EnableResourceServer() {
+func TokenExtractor(sc container.SecurityContainerCombine) authentication.TokenExtractor {
+	if !enableResourceServer(sc) {
 		return nil
 	}
-	if injector.GetTokenExtractor() != nil {
-		return injector.GetTokenExtractor()
-	}
-	return preset.TokenExtractor()
+	return sc.GetResourceServerContainer().TokenExtractor
 }

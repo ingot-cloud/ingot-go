@@ -1,4 +1,4 @@
-package preset
+package pre
 
 import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"

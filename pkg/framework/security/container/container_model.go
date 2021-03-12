@@ -6,6 +6,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/crypto/password"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/authentication"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/endpoint"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
@@ -26,6 +27,7 @@ type CommonContainer struct {
 
 // OAuth2Container OAuth2 容器
 type OAuth2Container struct {
+	OAuth2Config                config.OAuth2
 	TokenStore                  token.Store
 	JwtAccessTokenConverter     *store.JwtAccessTokenConverter
 	AccessTokenConverter        token.AccessTokenConverter

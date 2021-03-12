@@ -17,16 +17,6 @@ import (
 type NilSecurityInjector struct {
 }
 
-// EnableAuthorizationServer 是否开启授权服务
-func (*NilSecurityInjector) EnableAuthorizationServer() bool {
-	return false
-}
-
-// EnableResourceServer 是否开启资源服务
-func (*NilSecurityInjector) EnableResourceServer() bool {
-	return false
-}
-
 // GetWebSecurityConfigurers 获取自定义值
 func (*NilSecurityInjector) GetWebSecurityConfigurers() security.WebSecurityConfigurers {
 	return nil
