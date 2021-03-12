@@ -151,11 +151,11 @@ func BuildContainerCombine(config3 *config.Config, options *config.Options) (con
 		IngotEnhancer:                    ingotEnhancer,
 		IngotUserAuthenticationConverter: ingotUserAuthenticationConverter,
 	}
-	securityContainerProxyImpl := &container.SecurityContainerProxyImpl{
+	securityContainerPreProxyImpl := &container.SecurityContainerPreProxyImpl{
 		SecurityContainer: securityContainerImpl,
 		SecurityInjector:  ingotSecurityInjector,
 	}
-	securityContainerCombine := pre.InjectCustomInstance(securityContainerProxyImpl)
+	securityContainerCombine := pre.InjectCustomInstance(securityContainerPreProxyImpl)
 	return securityContainerCombine, func() {
 		cleanup()
 	}, nil
@@ -290,11 +290,41 @@ func BuildContainer(config3 *config.Config, options *config.Options, combine con
 		AuthorizationServerContainer: authorizationServerContainer,
 		AuthProvidersContainer:       authProvidersContainer,
 	}
-	printSecurityInjector := process.PrintInjectInstance(securityContainerImpl)
+	nilSecurityInjector := &container.NilSecurityInjector{}
+	oauthClientDetails := &dao2.OauthClientDetails{
+		DB: db,
+	}
+	clientDetails := &service.ClientDetails{
+		OauthClientDetailsDao: oauthClientDetails,
+	}
+	userDetail := &impl.UserDetail{}
+	userDetails := &service.UserDetails{
+		UserDetailService: userDetail,
+	}
+	requestMatcher := provider.PermitURLMatcher(security)
+	resourceServerAdapter := provider.ResourceServerAdapter(tokenExtractor, resourceManager, requestMatcher)
+	ingotEnhancer := &token.IngotEnhancer{}
+	ingotUserAuthenticationConverter := &token.IngotUserAuthenticationConverter{}
+	ingotSecurityInjector := &config2.IngotSecurityInjector{
+		NilSecurityInjector:              nilSecurityInjector,
+		JwtAccessTokenConverter:          jwtAccessTokenConverter,
+		SecurityConfig:                   security,
+		ClientDetailsService:             clientDetails,
+		UserDetailsService:               userDetails,
+		ResourceServerAdapter:            resourceServerAdapter,
+		IngotEnhancer:                    ingotEnhancer,
+		IngotUserAuthenticationConverter: ingotUserAuthenticationConverter,
+	}
+	securityContainerPostProxyImpl := &container.SecurityContainerPostProxyImpl{
+		SecurityContainer: securityContainerImpl,
+		SecurityInjector:  ingotSecurityInjector,
+	}
+	securityContainer := post.InjectCustomInstance(securityContainerPostProxyImpl)
+	printSecurityInjector := process.PrintInjectInstance(securityContainer)
 	defaultContainer := &container2.DefaultContainer{
 		HTTPConfig:         httpConfig,
 		HTTPConfigurer:     apiConfig,
-		SecurityContainer:  securityContainerImpl,
+		SecurityContainer:  securityContainer,
 		DebugPrintInjector: printSecurityInjector,
 	}
 	return defaultContainer, func() {

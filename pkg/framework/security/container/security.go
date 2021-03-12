@@ -34,18 +34,34 @@ func (s *SecurityContainerImpl) GetAuthProvidersContainer() *AuthProvidersContai
 	return s.AuthProvidersContainer
 }
 
-// SecurityContainerProxyImpl 默认实现
-type SecurityContainerProxyImpl struct {
-	SecurityContainer SecurityContainer
+// SecurityContainerPreProxyImpl 默认实现
+type SecurityContainerPreProxyImpl struct {
+	SecurityContainer SecurityContainerPre
 	SecurityInjector  SecurityInjector
 }
 
 // GetSecurityContainer 获取安全容器
-func (p *SecurityContainerProxyImpl) GetSecurityContainer() SecurityContainer {
+func (p *SecurityContainerPreProxyImpl) GetSecurityContainer() SecurityContainerPre {
 	return p.SecurityContainer
 }
 
 // GetSecurityInjector 获取注入器
-func (p *SecurityContainerProxyImpl) GetSecurityInjector() SecurityInjector {
+func (p *SecurityContainerPreProxyImpl) GetSecurityInjector() SecurityInjector {
+	return p.SecurityInjector
+}
+
+// SecurityContainerPostProxyImpl 默认实现
+type SecurityContainerPostProxyImpl struct {
+	SecurityContainer SecurityContainerPost
+	SecurityInjector  SecurityInjector
+}
+
+// GetSecurityContainer 获取安全容器
+func (p *SecurityContainerPostProxyImpl) GetSecurityContainer() SecurityContainerPost {
+	return p.SecurityContainer
+}
+
+// GetSecurityInjector 获取注入器
+func (p *SecurityContainerPostProxyImpl) GetSecurityInjector() SecurityInjector {
 	return p.SecurityInjector
 }

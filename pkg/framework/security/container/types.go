@@ -16,9 +16,14 @@ import (
 // PrintSecurityInjector 打印注入
 type PrintSecurityInjector interface{}
 
-// SecurityContainerProxy 安全容器代理
-type SecurityContainerProxy interface {
-	GetSecurityContainer() SecurityContainer
+// SecurityContainerPre 前置安全容器
+type SecurityContainerPre interface {
+	SecurityContainer
+}
+
+// SecurityContainerPreProxy 安全容器前置代理
+type SecurityContainerPreProxy interface {
+	GetSecurityContainer() SecurityContainerPre
 	GetSecurityInjector() SecurityInjector
 }
 
@@ -26,6 +31,17 @@ type SecurityContainerProxy interface {
 // 将 SecurityContainer 中的实例替换为 SecurityInjector 中非nil实例
 type SecurityContainerCombine interface {
 	SecurityContainer
+}
+
+// SecurityContainerPost 后置安全容器
+type SecurityContainerPost interface {
+	SecurityContainer
+}
+
+// SecurityContainerPostProxy 安全容器后置代理
+type SecurityContainerPostProxy interface {
+	GetSecurityContainer() SecurityContainerPost
+	GetSecurityInjector() SecurityInjector
 }
 
 // SecurityContainer 安全容器实例

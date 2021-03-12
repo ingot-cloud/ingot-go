@@ -18,23 +18,24 @@ var All = wire.NewSet(
 	ResourceServerContainer,
 	AuthProvidersContainer,
 	AuthProvidersContainerFields,
-	Security,
-	InjectCustomInstance,
+	SecurityPre,
 )
 
 // Security 安全容器
-var Security = wire.NewSet(
+var SecurityPre = wire.NewSet(
 	wire.NewSet(wire.Struct(new(container.NilSecurityInjector), "*")),
 
 	wire.Struct(new(container.SecurityContainerImpl), "*"),
-	wire.Bind(new(container.SecurityContainer), new(*container.SecurityContainerImpl)),
+	wire.Bind(new(container.SecurityContainerPre), new(*container.SecurityContainerImpl)),
 
-	wire.Struct(new(container.SecurityContainerProxyImpl), "*"),
-	wire.Bind(new(container.SecurityContainerProxy), new(*container.SecurityContainerProxyImpl)),
+	wire.Struct(new(container.SecurityContainerPreProxyImpl), "*"),
+	wire.Bind(new(container.SecurityContainerPreProxy), new(*container.SecurityContainerPreProxyImpl)),
+
+	InjectCustomInstance,
 )
 
 // InjectCustomInstance 注入自定义实例
-func InjectCustomInstance(proxy container.SecurityContainerProxy) container.SecurityContainerCombine {
+func InjectCustomInstance(proxy container.SecurityContainerPreProxy) container.SecurityContainerCombine {
 	injector := proxy.GetSecurityInjector()
 	sc := proxy.GetSecurityContainer()
 	return process.DoPre(injector, sc)

@@ -15,8 +15,9 @@ type InjectField struct {
 
 var injectFields []*InjectField
 
-func DoPre(injector container.SecurityInjector, sc container.SecurityContainer) container.SecurityContainerCombine {
+func DoPre(injector container.SecurityInjector, sc container.SecurityContainerPre) container.SecurityContainerCombine {
 	log.Debug(">>>>>> DoPre 开始执行")
+	injectFields = nil
 	startNanosecond := time.Now().Nanosecond()
 	// 填充需要替换的自定义实现
 	paddingInjectFields(injector)
@@ -27,8 +28,17 @@ func DoPre(injector container.SecurityInjector, sc container.SecurityContainer) 
 	return sc
 }
 
-func DoPost(injector container.SecurityInjector) {
+func DoPost(injector container.SecurityInjector, sc container.SecurityContainerPost) container.SecurityContainer {
+	log.Debug(">>>>>> DoPost 开始执行")
+	injectFields = nil
+	startNanosecond := time.Now().Nanosecond()
+	// 填充需要替换的自定义实现
+	paddingInjectFields(injector)
 
+	doChangeContainer(sc)
+
+	log.Debugf(">>>>>> DoPost 执行结束，用时%d毫秒", (time.Now().Nanosecond()-startNanosecond)/1e6)
+	return sc
 }
 
 func doChangeContainer(sc interface{}) {

@@ -18,12 +18,26 @@ var All = wire.NewSet(
 	ResourceServerContainer,
 	AuthProvidersContainer,
 	AuthProvidersContainerFields,
-	SecurityContainer,
+	SecurityPost,
 	process.PrintInjectInstance,
 )
 
-// SecurityContainer 安全容器
-var SecurityContainer = wire.NewSet(
+// SecurityPost 安全容器
+var SecurityPost = wire.NewSet(
+	wire.NewSet(wire.Struct(new(container.NilSecurityInjector), "*")),
+
 	wire.Struct(new(container.SecurityContainerImpl), "*"),
-	wire.Bind(new(container.SecurityContainer), new(*container.SecurityContainerImpl)),
+	wire.Bind(new(container.SecurityContainerPost), new(*container.SecurityContainerImpl)),
+
+	wire.Struct(new(container.SecurityContainerPostProxyImpl), "*"),
+	wire.Bind(new(container.SecurityContainerPostProxy), new(*container.SecurityContainerPostProxyImpl)),
+
+	InjectCustomInstance,
 )
+
+// InjectCustomInstance 注入自定义实例
+func InjectCustomInstance(proxy container.SecurityContainerPostProxy) container.SecurityContainer {
+	injector := proxy.GetSecurityInjector()
+	sc := proxy.GetSecurityContainer()
+	return process.DoPost(injector, sc)
+}

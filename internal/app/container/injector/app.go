@@ -34,6 +34,7 @@ func BuildContainer(config *config.Config, options *config.Options, combine secu
 	wire.Build(
 		provider.AllSet,
 		provider.AllFactory,
+		provider.SecurityInjector,
 
 		post.All,
 
