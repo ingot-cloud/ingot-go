@@ -11,7 +11,7 @@ import (
 
 	securityContainer "github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	securityProvider "github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/preset"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/pre"
 )
 
 func BuildConfiguration(options *config.Options) (*config.Config, error) {
@@ -19,20 +19,18 @@ func BuildConfiguration(options *config.Options) (*config.Config, error) {
 	return nil, nil
 }
 
-func BuildContainerInjector(config *config.Config, options *config.Options) (securityContainer.SecurityInjector, func(), error) {
+func BuildContainerCombine(config *config.Config, options *config.Options) (securityContainer.SecurityContainerCombine, func(), error) {
 	wire.Build(
 		provider.AllSet,
 		provider.AllFactory,
 		provider.SecurityInjector,
 
-		preset.All,
-
-		container.BootContainerPre,
+		pre.All,
 	)
 	return nil, nil, nil
 }
 
-func BuildContainer(config *config.Config, options *config.Options, securityInjector securityContainer.SecurityInjector) (container.Container, func(), error) {
+func BuildContainer(config *config.Config, options *config.Options, combine securityContainer.SecurityContainerCombine) (container.Container, func(), error) {
 	wire.Build(
 		provider.AllSet,
 		provider.AllFactory,

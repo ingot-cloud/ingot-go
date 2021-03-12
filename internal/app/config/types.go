@@ -58,8 +58,6 @@ type Redis struct {
 
 // Security config
 type Security struct {
-	EnableResourceServer      bool                `yaml:"enableResourceServer"`
-	EnableAuthorizationServer bool                `yaml:"enableAuthorizationServer"`
-	PermitURLs                []string            `yaml:"permitUrls"`
-	OAuth2                    oauth2Config.OAuth2 `yaml:"oauth2"`
+	PermitURLs []string            `yaml:"permitUrls"`
+	OAuth2     oauth2Config.OAuth2 `yaml:"oauth2"`
 }

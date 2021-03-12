@@ -34,10 +34,10 @@ func initContainer(ctx context.Context, options *config.Options) (bootContainer.
 		return nil, nil, err
 	}
 
-	containerInjector, appCleanup, err := injector.BuildContainerInjector(config, options)
+	containerCombine, appCleanup, err := injector.BuildContainerCombine(config, options)
 
 	// boot 容器
-	container, containerCleanupFunc, err := injector.BuildContainer(config, options, containerInjector)
+	container, containerCleanupFunc, err := injector.BuildContainer(config, options, containerCombine)
 	if err != nil {
 		return nil, nil, err
 	}
