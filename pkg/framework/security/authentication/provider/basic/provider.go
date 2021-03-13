@@ -15,7 +15,7 @@ type AuthenticationProvider struct {
 }
 
 // NewProvider 实例化
-func NewProvider(encoder password.Encoder, service clientdetails.Service, cache userdetails.UserCache, preChecker userdetails.Checker, postChecker userdetails.Checker) *AuthenticationProvider {
+func NewProvider(encoder password.Encoder, service clientdetails.Service, cache userdetails.UserCache, preChecker userdetails.PreChecker, postChecker userdetails.PostChecker) *AuthenticationProvider {
 	return &AuthenticationProvider{
 		AuthenticationProvider: &dao.AuthenticationProvider{
 			PasswordEncoder:          encoder,

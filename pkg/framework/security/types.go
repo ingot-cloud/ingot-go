@@ -42,9 +42,11 @@ type WebSecurityConfigurers interface {
 // ResourceServerConfigurer 资源服务器配置
 type ResourceServerConfigurer interface {
 	WebSecurityConfigurer
+	Resource()
 }
 
 // AuthorizationServerConfigurer 授权服务器配置
 type AuthorizationServerConfigurer interface {
 	WebSecurityConfigurer
+	Authorization()
 }

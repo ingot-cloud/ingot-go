@@ -18,7 +18,7 @@ type AuthenticationProvider struct {
 }
 
 // NewProvider 实例化
-func NewProvider(encoder password.Encoder, service userdetails.Service, cache userdetails.UserCache, preChecker userdetails.Checker, postChecker userdetails.Checker) *AuthenticationProvider {
+func NewProvider(encoder password.Encoder, service userdetails.Service, cache userdetails.UserCache, preChecker userdetails.PreChecker, postChecker userdetails.PostChecker) *AuthenticationProvider {
 	return &AuthenticationProvider{
 		PasswordEncoder:          encoder,
 		UserDetailsService:       service,

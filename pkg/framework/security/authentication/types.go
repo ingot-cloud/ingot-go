@@ -11,11 +11,13 @@ type Manager interface {
 // ResourceManager 资源认证管理器
 type ResourceManager interface {
 	Manager
+	Resource()
 }
 
 // AuthorizationManager 授权认证管理器
 type AuthorizationManager interface {
 	Manager
+	Authorization()
 }
 
 // Provider 身份验证提供者

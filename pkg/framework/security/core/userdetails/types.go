@@ -35,11 +35,13 @@ type Checker interface {
 // PreChecker 前置检查器
 type PreChecker interface {
 	Checker
+	Pre()
 }
 
 // PostChecker 后置检查器
 type PostChecker interface {
 	Checker
+	Post()
 }
 
 // UserCache 用户缓存接口

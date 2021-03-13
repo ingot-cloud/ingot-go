@@ -31,6 +31,8 @@ func NewResourceServerConfigurer(tokenExtractor authentication.TokenExtractor, a
 	return instance
 }
 
+func (*ResourceServerConfigurerAdapter) Resource() {}
+
 // HTTPConfigure 配置
 func (a *ResourceServerConfigurerAdapter) HTTPConfigure(http security.HTTPSecurityBuilder) error {
 	http.RequestMatcher(a.RequestMatcher)

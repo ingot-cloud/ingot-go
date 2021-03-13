@@ -19,6 +19,8 @@ func NewProviderManager(providers Providers) *ProviderManager {
 	}
 }
 
+func (*ProviderManager) Authorization() {}
+
 // Authenticate 对 Authentication 进行身份验证，验证成功后返回完全填充的Authentication
 func (m *ProviderManager) Authenticate(auth core.Authentication) (core.Authentication, error) {
 

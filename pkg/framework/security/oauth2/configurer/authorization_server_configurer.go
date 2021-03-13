@@ -2,8 +2,8 @@ package configurer
 
 import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	coreAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
+	securityAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/ingot"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/endpoint"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/config"
@@ -15,7 +15,7 @@ import (
 type AuthorizationServerConfigurerAdapter struct {
 	*config.WebSecurityConfigurerAdapter
 
-	authenticationManager authentication.Manager
+	authenticationManager securityAuth.Manager
 }
 
 // NewAuthorizationServerConfigurer 实例化
@@ -26,6 +26,8 @@ func NewAuthorizationServerConfigurer(authenticationManager coreAuth.Manager) se
 	instance.WebSecurityConfigurerAdapter = config.NewWebSecurityConfigurerAdapter(instance)
 	return instance
 }
+
+func (*AuthorizationServerConfigurerAdapter) Authorization() {}
 
 // HTTPConfigure 配置
 func (a *AuthorizationServerConfigurerAdapter) HTTPConfigure(http security.HTTPSecurityBuilder) error {

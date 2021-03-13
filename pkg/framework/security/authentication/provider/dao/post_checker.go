@@ -14,6 +14,8 @@ func NewPostChecker() *DefaultPostAuthenticationChecks {
 	return &DefaultPostAuthenticationChecks{}
 }
 
+func (*DefaultPostAuthenticationChecks) Post() {}
+
 // Check 检测方法
 func (*DefaultPostAuthenticationChecks) Check(user userdetails.UserDetails) error {
 	if !user.IsCredentialsNonExpired() {

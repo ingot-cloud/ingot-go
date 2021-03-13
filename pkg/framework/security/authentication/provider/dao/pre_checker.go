@@ -14,6 +14,8 @@ func NewPreChecker() *DefaultPreAuthenticationChecks {
 	return &DefaultPreAuthenticationChecks{}
 }
 
+func (*DefaultPreAuthenticationChecks) Pre() {}
+
 // Check 检测方法
 func (*DefaultPreAuthenticationChecks) Check(user userdetails.UserDetails) error {
 	if !user.IsAccountNonLocked() {

@@ -22,6 +22,8 @@ func NewOAuth2AuthenticationManager(tokenService token.ResourceServerTokenServic
 	}
 }
 
+func (*OAuth2AuthenticationManager) Resource() {}
+
 // Authenticate 对 Authentication 进行身份验证，验证成功后返回完全填充的Authentication
 func (manager *OAuth2AuthenticationManager) Authenticate(auth core.Authentication) (core.Authentication, error) {
 	if auth == nil {

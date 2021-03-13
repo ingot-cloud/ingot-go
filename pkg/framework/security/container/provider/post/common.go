@@ -4,7 +4,6 @@ import (
 	"github.com/google/wire"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/pre"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/crypto/password"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
@@ -42,30 +41,30 @@ func (web *WebSecurityConfigurersImpl) Get() []security.WebSecurityConfigurer {
 
 // PasswordEncoder encoder
 func PasswordEncoder(sc container.SecurityContainerCombine) password.Encoder {
-	return pre.PasswordEncoder()
+	return sc.GetCommonContainer().PasswordEncoder
 }
 
 // UserCache 用户缓存
 func UserCache(sc container.SecurityContainerCombine) userdetails.UserCache {
-	return pre.UserCache()
+	return sc.GetCommonContainer().UserCache
 }
 
 // PreChecker 前置检查器
 func PreChecker(sc container.SecurityContainerCombine) userdetails.PreChecker {
-	return pre.PreChecker()
+	return sc.GetCommonContainer().PreChecker
 }
 
 // PostChecker 后置检查器
 func PostChecker(sc container.SecurityContainerCombine) userdetails.PostChecker {
-	return pre.PostChecker()
+	return sc.GetCommonContainer().PostChecker
 }
 
 // UserDetailsService 用户详情服务
 func UserDetailsService(sc container.SecurityContainerCombine) userdetails.Service {
-	return pre.UserDetailsService()
+	return sc.GetCommonContainer().UserDetailsService
 }
 
 // ClientDetailsService 客户端详情服务
 func ClientDetailsService(sc container.SecurityContainerCombine) clientdetails.Service {
-	return pre.ClientDetailsService()
+	return sc.GetCommonContainer().ClientDetailsService
 }
