@@ -236,10 +236,10 @@ func BuildContainerPost(config3 *config.Config, options *config.Options, combine
 		cleanup()
 		return nil, nil, err
 	}
-	store := post.TokenStore(combine)
-	jwtAccessTokenConverter := post.JwtAccessTokenConverter(combine)
-	accessTokenConverter := post.AccessTokenConverter(combine)
 	userAuthenticationConverter := post.UserAuthenticationConverter(combine)
+	accessTokenConverter := post.AccessTokenConverter(oAuth2, userAuthenticationConverter)
+	jwtAccessTokenConverter := post.JwtAccessTokenConverter(oAuth2, accessTokenConverter)
+	store := post.TokenStore(jwtAccessTokenConverter)
 	oAuth2Container := &container.OAuth2Container{
 		OAuth2Config:                oAuth2,
 		TokenStore:                  store,
@@ -247,25 +247,40 @@ func BuildContainerPost(config3 *config.Config, options *config.Options, combine
 		AccessTokenConverter:        accessTokenConverter,
 		UserAuthenticationConverter: userAuthenticationConverter,
 	}
-	resourceManager := post.ResourceAuthenticationManager(combine)
-	resourceServerConfigurer := post.ResourceServerConfigurer(combine)
-	resourceServerTokenServices := post.ResourceServerTokenServices(combine)
+	resourceServerTokenServices := post.ResourceServerTokenServices(store, combine)
+	resourceManager := post.ResourceAuthenticationManager(oAuth2, resourceServerTokenServices, combine)
 	tokenExtractor := post.TokenExtractor(combine)
+	resourceServerConfigurer := post.ResourceServerConfigurer(tokenExtractor, resourceManager, combine)
 	resourceServerContainer := &container.ResourceServerContainer{
 		AuthenticationManager:       resourceManager,
 		ResourceServerConfigurer:    resourceServerConfigurer,
 		ResourceServerTokenServices: resourceServerTokenServices,
 		TokenExtractor:              tokenExtractor,
 	}
-	authorizationManager := post.AuthorizationAuthenticationManager(combine)
-	authorizationServerConfigurer := post.AuthorizationServerConfigurer(combine)
-	authorizationServerTokenServices := post.AuthorizationServerTokenServices(combine)
-	consumerTokenServices := post.ConsumerTokenServices(combine)
-	tokenEndpoint := post.TokenEndpoint(combine)
-	oAuth2HTTPConfigurer := post.TokenEndpointHTTPConfigurer(combine)
-	enhancer := post.TokenEnhancer(combine)
-	granter := post.TokenGranter(combine)
-	passwordTokenGranter := post.PasswordTokenGranter(combine)
+	authenticationProvider := post.BasicAuthenticationProvider(commonContainer)
+	daoAuthenticationProvider := &dao.AuthenticationProvider{
+		PasswordEncoder:          encoder,
+		UserDetailsService:       userdetailsService,
+		UserCache:                userCache,
+		PreAuthenticationChecks:  preChecker,
+		PostAuthenticationChecks: postChecker,
+	}
+	providersImpl := &post.ProvidersImpl{
+		Basic: authenticationProvider,
+		Dao:   daoAuthenticationProvider,
+	}
+	authProvidersContainer := &container.AuthProvidersContainer{
+		Providers: providersImpl,
+	}
+	authorizationManager := post.AuthorizationAuthenticationManager(authProvidersContainer, combine)
+	authorizationServerConfigurer := post.AuthorizationServerConfigurer(authorizationManager, combine)
+	enhancer := post.TokenEnhancer(oAuth2Container, combine)
+	authorizationServerTokenServices := post.AuthorizationServerTokenServices(oAuth2, store, commonContainer, enhancer, authorizationManager, combine)
+	consumerTokenServices := post.ConsumerTokenServices(store, combine)
+	passwordTokenGranter := post.PasswordTokenGranter(authorizationServerTokenServices, authorizationManager, combine)
+	granter := post.TokenGranter(passwordTokenGranter, combine)
+	tokenEndpoint := post.TokenEndpoint(granter, commonContainer, combine)
+	oAuth2HTTPConfigurer := post.TokenEndpointHTTPConfigurer(tokenEndpoint, combine)
 	authorizationServerContainer := &container.AuthorizationServerContainer{
 		AuthenticationManager:            authorizationManager,
 		AuthorizationServerConfigurer:    authorizationServerConfigurer,
@@ -276,12 +291,6 @@ func BuildContainerPost(config3 *config.Config, options *config.Options, combine
 		TokenEnhancer:                    enhancer,
 		TokenGranter:                     granter,
 		PasswordTokenGranter:             passwordTokenGranter,
-	}
-	providersImpl := &post.ProvidersImpl{
-		SC: combine,
-	}
-	authProvidersContainer := &container.AuthProvidersContainer{
-		Providers: providersImpl,
 	}
 	securityContainerImpl := &container.SecurityContainerImpl{
 		CommonContainer:              commonContainer,
