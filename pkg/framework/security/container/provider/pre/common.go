@@ -5,6 +5,7 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication/provider/dao"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/null"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails/cache"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/crypto/factory"
@@ -64,10 +65,10 @@ func PostChecker() userdetails.PostChecker {
 
 // UserDetailsService 用户详情服务
 func UserDetailsService() userdetails.Service {
-	return NilUserDetailsService()
+	return null.UserDetailsService()
 }
 
 // ClientDetailsService 客户端详情服务
 func ClientDetailsService() clientdetails.Service {
-	return NilClientDetails()
+	return null.ClientDetails()
 }
