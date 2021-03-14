@@ -14,10 +14,9 @@ import (
 	config2 "github.com/ingot-cloud/ingot-go/internal/app/core/security/config"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/security/service"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/security/token"
-	dao2 "github.com/ingot-cloud/ingot-go/internal/app/model/dao"
+	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"
 	"github.com/ingot-cloud/ingot-go/internal/app/service/impl"
 	container2 "github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication/provider/dao"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/post"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/pre"
@@ -77,13 +76,7 @@ func BuildContainerPre(config3 *config.Config, options *config.Options) (contain
 		TokenExtractor:              tokenExtractor,
 	}
 	authenticationProvider := pre.BasicAuthenticationProvider(commonContainer)
-	daoAuthenticationProvider := &dao.AuthenticationProvider{
-		PasswordEncoder:          encoder,
-		UserDetailsService:       userdetailsService,
-		UserCache:                userCache,
-		PreAuthenticationChecks:  preChecker,
-		PostAuthenticationChecks: postChecker,
-	}
+	daoAuthenticationProvider := pre.DaoAuthenticationProvider(commonContainer)
 	providersImpl := &pre.ProvidersImpl{
 		Basic: authenticationProvider,
 		Dao:   daoAuthenticationProvider,
@@ -127,7 +120,7 @@ func BuildContainerPre(config3 *config.Config, options *config.Options) (contain
 	if err != nil {
 		return nil, nil, err
 	}
-	oauthClientDetails := &dao2.OauthClientDetails{
+	oauthClientDetails := &dao.OauthClientDetails{
 		DB: db,
 	}
 	clientDetails := &service.ClientDetails{
@@ -169,19 +162,19 @@ func BuildContainerPost(config3 *config.Config, options *config.Options, combine
 	if err != nil {
 		return nil, nil, err
 	}
-	role := &dao2.Role{
+	role := &dao.Role{
 		DB: db,
 	}
-	roleAuthority := &dao2.RoleAuthority{
+	roleAuthority := &dao.RoleAuthority{
 		DB: db,
 	}
-	authority := &dao2.Authority{
+	authority := &dao.Authority{
 		DB: db,
 	}
-	user := &dao2.User{
+	user := &dao.User{
 		DB: db,
 	}
-	roleUser := &dao2.RoleUser{
+	roleUser := &dao.RoleUser{
 		DB: db,
 	}
 	permission := &impl.Permission{
@@ -257,13 +250,7 @@ func BuildContainerPost(config3 *config.Config, options *config.Options, combine
 		TokenExtractor:              tokenExtractor,
 	}
 	authenticationProvider := post.BasicAuthenticationProvider(commonContainer)
-	daoAuthenticationProvider := &dao.AuthenticationProvider{
-		PasswordEncoder:          encoder,
-		UserDetailsService:       userdetailsService,
-		UserCache:                userCache,
-		PreAuthenticationChecks:  preChecker,
-		PostAuthenticationChecks: postChecker,
-	}
+	daoAuthenticationProvider := post.DaoAuthenticationProvider(commonContainer)
 	providersImpl := &post.ProvidersImpl{
 		Basic: authenticationProvider,
 		Dao:   daoAuthenticationProvider,
@@ -299,7 +286,7 @@ func BuildContainerPost(config3 *config.Config, options *config.Options, combine
 		AuthProvidersContainer:       authProvidersContainer,
 	}
 	nilSecurityInjector := &container.NilSecurityInjector{}
-	oauthClientDetails := &dao2.OauthClientDetails{
+	oauthClientDetails := &dao.OauthClientDetails{
 		DB: db,
 	}
 	clientDetails := &service.ClientDetails{
