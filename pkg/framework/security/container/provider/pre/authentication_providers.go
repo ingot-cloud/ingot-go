@@ -40,7 +40,9 @@ func (p *ProvidersImpl) Get() []coreAuth.Provider {
 }
 
 // DaoAuthenticationProvider UsernamePasswordAuthenticationToken 认证提供者
-var DaoAuthenticationProvider = wire.NewSet(wire.Struct(new(dao.AuthenticationProvider), "*"))
+func DaoAuthenticationProvider(common *container.CommonContainer) *dao.AuthenticationProvider {
+	return dao.NewProvider(common.PasswordEncoder, common.UserDetailsService, common.UserCache, common.PreChecker, common.PostChecker)
+}
 
 // BasicAuthenticationProvider 认证提供者，其中注入了 ClientDetailsUserDetailsService
 func BasicAuthenticationProvider(common *container.CommonContainer) *basic.AuthenticationProvider {
