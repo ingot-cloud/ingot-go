@@ -10,10 +10,10 @@ import (
 )
 
 // CommonContainer 容器
-var CommonContainer = wire.NewSet(wire.Struct(new(container.CommonContainer), "*"))
+var CommonContainer = wire.NewSet(
+	wire.Struct(new(container.CommonContainer), "*"),
 
-// CommonContainerFields 容器所有字段
-var CommonContainerFields = wire.NewSet(
+	// Fields
 	PasswordEncoder,
 	UserCache,
 	PreChecker,

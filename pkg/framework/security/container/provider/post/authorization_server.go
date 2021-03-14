@@ -22,10 +22,10 @@ func enableAuthorizationServerWithConfig(oc config.OAuth2) bool {
 }
 
 // AuthorizationServerContainer 授权服务器容器
-var AuthorizationServerContainer = wire.NewSet(wire.Struct(new(container.AuthorizationServerContainer), "*"))
+var AuthorizationServerContainer = wire.NewSet(
+	wire.Struct(new(container.AuthorizationServerContainer), "*"),
 
-// AuthorizationServerContainerFields 授权服务器容器所有字段
-var AuthorizationServerContainerFields = wire.NewSet(
+	// Fields
 	AuthorizationAuthenticationManager,
 	AuthorizationServerConfigurer,
 	AuthorizationServerTokenServices,

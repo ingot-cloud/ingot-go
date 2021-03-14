@@ -17,10 +17,10 @@ func enableResourceServer(sc container.SecurityContainerCombine) bool {
 }
 
 // ResourceServerContainer 资源服务器容器
-var ResourceServerContainer = wire.NewSet(wire.Struct(new(container.ResourceServerContainer), "*"))
+var ResourceServerContainer = wire.NewSet(
+	wire.Struct(new(container.ResourceServerContainer), "*"),
 
-// ResourceServerContainerFields 资源服务器容器中所有字段
-var ResourceServerContainerFields = wire.NewSet(
+	// Fields
 	ResourceAuthenticationManager,
 	ResourceServerConfigurer,
 	ResourceServerTokenServices,
