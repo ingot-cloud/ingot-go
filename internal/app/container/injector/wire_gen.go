@@ -139,16 +139,15 @@ func BuildContainerPre(config3 *config.Config, options *config.Options) (contain
 	}
 	requestMatcher := provider.PermitURLMatcher(security)
 	resourceServerAdapter := provider.ResourceServerAdapter(tokenExtractor, resourceManager, requestMatcher)
-	ingotEnhancer := &token.IngotEnhancer{}
+	ingotEnhancerChain := provider.IngotEnhancerChain(jwtAccessTokenConverter)
 	ingotUserAuthenticationConverter := &token.IngotUserAuthenticationConverter{}
 	ingotSecurityInjector := &config2.IngotSecurityInjector{
 		NilSecurityInjector:              nilSecurityInjector,
-		JwtAccessTokenConverter:          jwtAccessTokenConverter,
 		SecurityConfig:                   security,
 		ClientDetailsService:             clientDetails,
 		UserDetailsService:               userDetails,
 		ResourceServerAdapter:            resourceServerAdapter,
-		IngotEnhancer:                    ingotEnhancer,
+		IngotEnhancerChain:               ingotEnhancerChain,
 		IngotUserAuthenticationConverter: ingotUserAuthenticationConverter,
 	}
 	securityContainerPreProxyImpl := &container.SecurityContainerPreProxyImpl{
@@ -312,16 +311,15 @@ func BuildContainerPost(config3 *config.Config, options *config.Options, combine
 	}
 	requestMatcher := provider.PermitURLMatcher(security)
 	resourceServerAdapter := provider.ResourceServerAdapter(tokenExtractor, resourceManager, requestMatcher)
-	ingotEnhancer := &token.IngotEnhancer{}
+	ingotEnhancerChain := provider.IngotEnhancerChain(jwtAccessTokenConverter)
 	ingotUserAuthenticationConverter := &token.IngotUserAuthenticationConverter{}
 	ingotSecurityInjector := &config2.IngotSecurityInjector{
 		NilSecurityInjector:              nilSecurityInjector,
-		JwtAccessTokenConverter:          jwtAccessTokenConverter,
 		SecurityConfig:                   security,
 		ClientDetailsService:             clientDetails,
 		UserDetailsService:               userDetails,
 		ResourceServerAdapter:            resourceServerAdapter,
-		IngotEnhancer:                    ingotEnhancer,
+		IngotEnhancerChain:               ingotEnhancerChain,
 		IngotUserAuthenticationConverter: ingotUserAuthenticationConverter,
 	}
 	securityContainerPostProxyImpl := &container.SecurityContainerPostProxyImpl{

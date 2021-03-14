@@ -9,22 +9,18 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/store"
 )
 
 // IngotSecurityInjector 安全注入
 type IngotSecurityInjector struct {
 	*container.NilSecurityInjector
 
-	// 容器中的实例
-	JwtAccessTokenConverter *store.JwtAccessTokenConverter
-
 	// app中的实例
 	SecurityConfig                   appConfig.Security
 	ClientDetailsService             *service.ClientDetails                     `inject:"true"`
 	UserDetailsService               *service.UserDetails                       `inject:"true"`
 	ResourceServerAdapter            *ResourceServerAdapter                     `inject:"true"`
-	IngotEnhancer                    *appToken.IngotEnhancer                    `inject:"true"`
+	IngotEnhancerChain               *appToken.IngotEnhancerChain               `inject:"true"`
 	IngotUserAuthenticationConverter *appToken.IngotUserAuthenticationConverter `inject:"true"`
 }
 
@@ -52,11 +48,5 @@ func (a *IngotSecurityInjector) GetUserAuthenticationConverter() token.UserAuthe
 
 // GetTokenEnhancer 自定义token增强
 func (a *IngotSecurityInjector) GetTokenEnhancer() token.Enhancer {
-	chain := token.NewEnhancerChain()
-	var enhancers []token.Enhancer
-	enhancers = append(enhancers, a.IngotEnhancer)
-	// 默认追加 jwt enhancer
-	enhancers = append(enhancers, a.JwtAccessTokenConverter)
-	chain.SetTokenEnhancers(enhancers)
-	return chain
+	return a.IngotEnhancerChain
 }

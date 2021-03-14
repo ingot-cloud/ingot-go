@@ -5,7 +5,25 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/constants"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/store"
 )
+
+type IngotEnhancerChain struct {
+	*token.EnhancerChain
+}
+
+func NewIngotEnhancerChain(jwt *store.JwtAccessTokenConverter) *IngotEnhancerChain {
+	chain := token.NewEnhancerChain()
+	var enhancers []token.Enhancer
+	enhancers = append(enhancers, &IngotEnhancer{})
+	// 默认追加 jwt enhancer
+	enhancers = append(enhancers, jwt)
+	chain.SetTokenEnhancers(enhancers)
+
+	return &IngotEnhancerChain{
+		EnhancerChain: chain,
+	}
+}
 
 // IngotEnhancer 自定义增强
 type IngotEnhancer struct {
