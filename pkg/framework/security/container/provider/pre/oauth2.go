@@ -11,10 +11,10 @@ import (
 )
 
 // OAuth2Container OAuth2容器
-var OAuth2Container = wire.NewSet(wire.Struct(new(container.OAuth2Container), "*"))
+var OAuth2Container = wire.NewSet(
+	wire.Struct(new(container.OAuth2Container), "*"),
 
-// OAuth2ContainerFields OAuth2容器所有字段
-var OAuth2ContainerFields = wire.NewSet(
+	// Fields
 	TokenStore,
 	JwtAccessTokenConverter,
 	AccessTokenConverter,

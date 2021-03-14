@@ -8,16 +8,11 @@ import (
 
 // All 所有实例
 var All = wire.NewSet(
-	CommonContainerFields,
 	CommonContainer,
-	OAuth2ContainerFields,
 	OAuth2Container,
-	AuthorizationServerContainerFields,
 	AuthorizationServerContainer,
-	ResourceServerContainerFields,
 	ResourceServerContainer,
 	AuthProvidersContainer,
-	AuthProvidersContainerFields,
 	SecurityPre,
 )
 

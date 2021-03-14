@@ -9,10 +9,10 @@ import (
 )
 
 // AuthProvidersContainer 容器
-var AuthProvidersContainer = wire.NewSet(wire.Struct(new(container.AuthProvidersContainer), "*"))
+var AuthProvidersContainer = wire.NewSet(
+	wire.Struct(new(container.AuthProvidersContainer), "*"),
 
-// AuthProvidersContainerFields 所有provider
-var AuthProvidersContainerFields = wire.NewSet(
+	// Fields
 	DaoAuthenticationProvider,
 	BasicAuthenticationProvider,
 	wire.Struct(new(ProvidersImpl), "Basic", "Dao"),
