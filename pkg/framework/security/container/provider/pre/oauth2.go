@@ -2,23 +2,10 @@ package pre
 
 import (
 	"github.com/dgrijalva/jwt-go"
-	"github.com/google/wire"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/errors"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/store"
-)
-
-// OAuth2Container OAuth2容器
-var OAuth2Container = wire.NewSet(
-	wire.Struct(new(container.OAuth2Container), "*"),
-
-	// Fields
-	TokenStore,
-	JwtAccessTokenConverter,
-	AccessTokenConverter,
-	UserAuthenticationConverter,
 )
 
 // TokenStore 实例

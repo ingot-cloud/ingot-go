@@ -1,31 +1,14 @@
 package pre
 
 import (
-	"github.com/google/wire"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication/provider/dao"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/null"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails/cache"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/crypto/factory"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/crypto/password"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
-)
-
-// CommonContainer 容器
-var CommonContainer = wire.NewSet(
-	wire.Struct(new(container.CommonContainer), "*"),
-
-	// Fields
-	PasswordEncoder,
-	UserCache,
-	PreChecker,
-	PostChecker,
-	UserDetailsService,
-	ClientDetailsService,
-	wire.Struct(new(WebSecurityConfigurersImpl)),
-	wire.Bind(new(security.WebSecurityConfigurers), new(*WebSecurityConfigurersImpl)),
 )
 
 // WebSecurityConfigurersImpl 接口实现

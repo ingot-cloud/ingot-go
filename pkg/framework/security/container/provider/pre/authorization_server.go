@@ -1,7 +1,6 @@
 package pre
 
 import (
-	"github.com/google/wire"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
@@ -11,22 +10,6 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/endpoint"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/granter"
-)
-
-// AuthorizationServerContainer 授权服务器容器
-var AuthorizationServerContainer = wire.NewSet(
-	wire.Struct(new(container.AuthorizationServerContainer), "*"),
-
-	// Fields
-	AuthorizationAuthenticationManager,
-	AuthorizationServerConfigurer,
-	AuthorizationServerTokenServices,
-	ConsumerTokenServices,
-	TokenEndpoint,
-	TokenEndpointHTTPConfigurer,
-	TokenEnhancer,
-	TokenGranter,
-	PasswordTokenGranter,
 )
 
 // AuthorizationAuthenticationManager 授权服务器中的认证管理器

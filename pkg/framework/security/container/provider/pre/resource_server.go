@@ -1,25 +1,12 @@
 package pre
 
 import (
-	"github.com/google/wire"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	coreAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/configurer"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
-)
-
-// ResourceServerContainer 资源服务器容器
-var ResourceServerContainer = wire.NewSet(
-	wire.Struct(new(container.ResourceServerContainer), "*"),
-
-	// Fields
-	ResourceAuthenticationManager,
-	ResourceServerConfigurer,
-	ResourceServerTokenServices,
-	TokenExtractor,
 )
 
 // ResourceAuthenticationManager 资源服务器中使用的认证管理器

@@ -1,22 +1,10 @@
 package pre
 
 import (
-	"github.com/google/wire"
 	coreAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication/provider/basic"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication/provider/dao"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
-)
-
-// AuthProvidersContainer 容器
-var AuthProvidersContainer = wire.NewSet(
-	wire.Struct(new(container.AuthProvidersContainer), "*"),
-
-	// Fields
-	DaoAuthenticationProvider,
-	BasicAuthenticationProvider,
-	wire.Struct(new(ProvidersImpl), "Basic", "Dao"),
-	wire.Bind(new(coreAuth.Providers), new(*ProvidersImpl)),
 )
 
 // ProvidersImpl 接口实现
