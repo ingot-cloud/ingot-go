@@ -3,6 +3,8 @@ package container
 import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	coreAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication/provider/basic"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication/provider/dao"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/crypto/password"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/authentication"
@@ -58,4 +60,6 @@ type AuthorizationServerContainer struct {
 // AuthProvidersContainer 认证提供者容器
 type AuthProvidersContainer struct {
 	Providers coreAuth.Providers
+	Basic     *basic.AuthenticationProvider
+	Dao       *dao.AuthenticationProvider
 }
