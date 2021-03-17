@@ -212,7 +212,7 @@ func (set *ProviderSet) AddBinding(b *IfaceBinding) {
 	set.Bindings = append(set.Bindings, b)
 }
 
-// Parse 解析 Injector 获取所有需要重新构建的类型
+// Parse 解析容器，填充容器中所有类型和实例映射表，解析 Injector 获取所有需要重新构建的类型
 // 判断标准如下：
 // 	  在自定义接口实现数组中，如果存在自定义实现A和B，且A深度依赖B，那么此依赖链上的所有实例均需要重新构建，
 //    并且如果B也依赖了其他自定义实现，那么B也需要重新构建，以此类推，直到依赖的对象为默认构建的对象。
