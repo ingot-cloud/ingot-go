@@ -1,9 +1,9 @@
-package pre
+package provider
 
 import (
+	securityContainer "github.com/ingot-cloud/ingot-go/pkg/framework/container/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/config"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/configurer"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
@@ -13,7 +13,7 @@ import (
 )
 
 // AuthorizationAuthenticationManager 授权服务器中的认证管理器
-func AuthorizationAuthenticationManager(pc *container.AuthProvidersContainer) authentication.AuthorizationManager {
+func AuthorizationAuthenticationManager(pc *securityContainer.AuthProvidersContainer) authentication.AuthorizationManager {
 	return authentication.NewProviderManager(pc.Providers)
 }
 
@@ -23,7 +23,7 @@ func AuthorizationServerConfigurer(manager authentication.AuthorizationManager) 
 }
 
 // AuthorizationServerTokenServices 授权服务器 token 服务
-func AuthorizationServerTokenServices(config config.OAuth2, tokenStore token.Store, common *container.CommonContainer, enhancer token.Enhancer, manager authentication.AuthorizationManager) token.AuthorizationServerTokenServices {
+func AuthorizationServerTokenServices(config config.OAuth2, tokenStore token.Store, common *securityContainer.CommonContainer, enhancer token.Enhancer, manager authentication.AuthorizationManager) token.AuthorizationServerTokenServices {
 	tokenServices := token.NewDefaultTokenServices(tokenStore)
 	tokenServices.ReuseRefreshToken = config.AuthorizationServer.ReuseRefreshToken
 	tokenServices.SupportRefreshToken = config.AuthorizationServer.SupportRefreshToken
@@ -43,7 +43,7 @@ func ConsumerTokenServices(tokenStore token.Store) token.ConsumerTokenServices {
 }
 
 // TokenEndpoint 端点
-func TokenEndpoint(granter token.Granter, common *container.CommonContainer) *endpoint.TokenEndpoint {
+func TokenEndpoint(granter token.Granter, common *securityContainer.CommonContainer) *endpoint.TokenEndpoint {
 	return endpoint.NewTokenEndpoint(granter, common.ClientDetailsService)
 }
 
@@ -53,7 +53,7 @@ func TokenEndpointHTTPConfigurer(tokenEndpoint *endpoint.TokenEndpoint) endpoint
 }
 
 // TokenEnhancer token增强，默认使用增强链
-func TokenEnhancer(oauth2Container *container.OAuth2Container) token.Enhancer {
+func TokenEnhancer(oauth2Container *securityContainer.OAuth2Container) token.Enhancer {
 	chain := token.NewEnhancerChain()
 	var enhancers []token.Enhancer
 	// 默认追加 jwt enhancer

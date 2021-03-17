@@ -1,9 +1,9 @@
-package pre
+package provider
 
 import (
+	"github.com/ingot-cloud/ingot-go/pkg/framework/container/security/provider/null"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication/provider/dao"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/null"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails/cache"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/crypto/factory"

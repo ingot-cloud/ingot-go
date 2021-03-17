@@ -5,8 +5,8 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/server"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 )
 

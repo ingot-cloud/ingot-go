@@ -2,13 +2,13 @@ package config
 
 import (
 	"github.com/gin-gonic/gin"
+	securityContainer "github.com/ingot-cloud/ingot-go/pkg/framework/container/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/ingot"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 )
 
 // EnableWebSecurity 开启安全认证
-func EnableWebSecurity(enableAuthorization, enableResource bool, securityContainer container.SecurityContainer, engine *gin.Engine) {
+func EnableWebSecurity(enableAuthorization, enableResource bool, securityContainer securityContainer.SecurityContainer, engine *gin.Engine) {
 	webConfigurers := securityContainer.GetCommonContainer().WebSecurityConfigurers
 	// 开启资源服务，增加 OAuth2 安全配置
 	if enableResource {
@@ -32,7 +32,7 @@ func EnableWebSecurity(enableAuthorization, enableResource bool, securityContain
 }
 
 // enableOAuth2Endpoint 开启端点
-func enableOAuth2Endpoint(securityContainer container.SecurityContainer, engine *gin.Engine) {
+func enableOAuth2Endpoint(securityContainer securityContainer.SecurityContainer, engine *gin.Engine) {
 	ingotRouter := ingot.NewRouter(engine.Group(""))
 	oauthConfig := securityContainer.GetAuthorizationServerContainer().TokenEndpointHTTPConfigurer
 	oauthConfig.Configure(ingotRouter)

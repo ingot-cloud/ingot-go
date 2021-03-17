@@ -3,13 +3,9 @@ package di
 import (
 	"reflect"
 
+	"github.com/ingot-cloud/ingot-go/pkg/framework/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 )
-
-// 构建提供者构建方法集合
-// 通过wire构建injector和container，解析拿到所有实例，先将injector中自定义的实例替换到container中相应类型
-// 然后依次判断container中替换后的实例是否依赖（深判断）了刚刚自定义的实例，如果依赖了，那么使用新的实例逐一构建并且替换之前的值
 
 // NewSet 实例化数据集
 func NewSet(items ...interface{}) *ProviderSet {
@@ -21,6 +17,13 @@ func NewSet(items ...interface{}) *ProviderSet {
 			set.AddProvider(v)
 		case *IfaceBinding:
 			set.AddBinding(v)
+		case *ProviderSet:
+			for _, p := range v.Providers {
+				set.AddProvider(p)
+			}
+			for _, b := range v.Bindings {
+				set.AddBinding(b)
+			}
 		}
 	}
 
@@ -196,6 +199,8 @@ type ProviderSet struct {
 	Providers []*Provider
 
 	// 自定义绑定关系
+	// todo 该关系暂时没有用到，因为在执行Parse方法的时候传入了SecurityContainer
+	// 并且根据该容器填充了类型实例映射表，所以暂时没用到自定义类型关系
 	Bindings []*IfaceBinding
 
 	// 构建类型和对应实例映射
@@ -212,13 +217,18 @@ func (set *ProviderSet) AddBinding(b *IfaceBinding) {
 	set.Bindings = append(set.Bindings, b)
 }
 
-// Parse 解析容器，填充容器中所有类型和实例映射表，解析 Injector 获取所有需要重新构建的类型
+// Parse 执行操作如下：
+// 1. 解析容器，填充容器中所有类型和实例映射表
+// 2. 解析 Injector 获取所有需要重新构建的类型
 // 判断标准如下：
 // 	  在自定义接口实现数组中，如果存在自定义实现A和B，且A深度依赖B，那么此依赖链上的所有实例均需要重新构建，
 //    并且如果B也依赖了其他自定义实现，那么B也需要重新构建，以此类推，直到依赖的对象为默认构建的对象。
-func (set *ProviderSet) Parse(cj []*Injector, c container.SecurityContainer) {
+// 3. 将需要重构的类型和自定义的注入类型一起判断，生成依赖关系树，并从叶子节点逐一重新构建（根据依赖关系）
+// 4. 用重新构建好的实例替换Container容器中之前的实例，并且返回新的Container
+func (set *ProviderSet) Parse(cj []*Injector, c container.Container) container.Container {
+
 	// 填充当前类型实例映射
-	set.paddingTypeInstance(c)
+	set.paddingTypeInstanceWithContainer(c)
 
 	// 收集需要重新构建的类型
 	rebuildMap := make(map[*Provider]int)
@@ -229,11 +239,37 @@ func (set *ProviderSet) Parse(cj []*Injector, c container.SecurityContainer) {
 
 	for p := range rebuildMap {
 		log.Errorf("需要重新构建的实例，类型：%s", p.GetBuildType())
+		for _, in := range cj {
+			if p.GetBuildType().Kind() == reflect.Interface && in.Type.Implements(p.GetBuildType()) {
+				log.Errorf("自定义类型 %s 实现了接口 %s", in.Type, p.GetBuildType())
+			}
+		}
+	}
+
+	// todo
+
+	return c
+}
+
+// 填充Container中的子容器
+func (set *ProviderSet) paddingTypeInstanceWithContainer(con container.Container) {
+	containerValue := reflect.Indirect(reflect.ValueOf(con))
+	containerType := containerValue.Type()
+	fieldLen := containerType.NumField()
+
+	var field reflect.StructField
+	var tag string
+	for i := 0; i < fieldLen; i++ {
+		field = containerType.Field(i)
+		tag = field.Tag.Get("container")
+		if tag == "true" {
+			set.paddingTypeInstance(containerValue.Field(i).Interface())
+		}
 	}
 }
 
 // 填充类型实例映射表
-func (set *ProviderSet) paddingTypeInstance(c container.SecurityContainer) {
+func (set *ProviderSet) paddingTypeInstance(con interface{}) {
 	set.TypeInstance = make(map[reflect.Type]reflect.Value)
 
 	paddingChild := func(con interface{}) {
@@ -251,7 +287,7 @@ func (set *ProviderSet) paddingTypeInstance(c container.SecurityContainer) {
 		}
 	}
 
-	containerValue := reflect.Indirect(reflect.ValueOf(c))
+	containerValue := reflect.Indirect(reflect.ValueOf(con))
 	containerType := containerValue.Type()
 	fieldLen := containerType.NumField()
 	for i := 0; i < fieldLen; i++ {
@@ -259,6 +295,7 @@ func (set *ProviderSet) paddingTypeInstance(c container.SecurityContainer) {
 	}
 }
 
+// 构建需要重新创建的实例
 func (set *ProviderSet) mergeRebuild(rebuildMap map[*Provider]int, t reflect.Type, isImplIface bool) {
 	providers := set.getDependsOn(t, isImplIface)
 	if len(providers) != 0 {

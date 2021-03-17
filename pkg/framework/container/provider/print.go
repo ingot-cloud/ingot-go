@@ -1,26 +1,37 @@
-package process
+package provider
 
 import (
 	"reflect"
 
+	"github.com/ingot-cloud/ingot-go/pkg/framework/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/utils"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 )
 
 // PrintInjectInstance 打印注入
-func PrintInjectInstance(sc container.SecurityContainer) container.PrintSecurityInjector {
+func PrintInjectInstance(con container.ContainerPrint) container.Container {
 	log.Debug("===========================================")
-	log.Debug("== 开始打印 SecurityContainer 中所有注入实例 ==")
+	log.Debug("====== 开始打印 Container 中所有注入实例 ======")
 	log.Debug("===========================================")
 
-	printContainer(sc)
+	containerValue := reflect.Indirect(reflect.ValueOf(con))
+	containerType := containerValue.Type()
+	fieldLen := containerType.NumField()
+
+	var field reflect.StructField
+	var tag string
+	for i := 0; i < fieldLen; i++ {
+		field = containerType.Field(i)
+		tag = field.Tag.Get("container")
+		if tag == "true" {
+			printContainer(containerValue.Field(i).Interface())
+		}
+	}
 
 	log.Debug("===========================================")
-	log.Debug("== 结束打印 SecurityContainer 中所有注入实例 ==")
+	log.Debug("====== 结束打印 Container 中所有注入实例 ======")
 	log.Debug("===========================================")
-	var result struct{}
-	return &result
+	return con
 }
 
 func printContainer(c interface{}) {

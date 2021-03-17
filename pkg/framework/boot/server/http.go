@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/config"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/api"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/ingot"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"

@@ -1,10 +1,10 @@
-package pre
+package provider
 
 import (
+	securityContainer "github.com/ingot-cloud/ingot-go/pkg/framework/container/security"
 	coreAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication/provider/basic"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication/provider/dao"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 )
 
 // ProvidersImpl 接口实现
@@ -28,11 +28,11 @@ func (p *ProvidersImpl) Get() []coreAuth.Provider {
 }
 
 // DaoAuthenticationProvider UsernamePasswordAuthenticationToken 认证提供者
-func DaoAuthenticationProvider(common *container.CommonContainer) *dao.AuthenticationProvider {
+func DaoAuthenticationProvider(common *securityContainer.CommonContainer) *dao.AuthenticationProvider {
 	return dao.NewProvider(common.PasswordEncoder, common.UserDetailsService, common.UserCache, common.PreChecker, common.PostChecker)
 }
 
 // BasicAuthenticationProvider 认证提供者，其中注入了 ClientDetailsUserDetailsService
-func BasicAuthenticationProvider(common *container.CommonContainer) *basic.AuthenticationProvider {
+func BasicAuthenticationProvider(common *securityContainer.CommonContainer) *basic.AuthenticationProvider {
 	return basic.NewProvider(common.PasswordEncoder, common.ClientDetailsService, common.UserCache, common.PreChecker, common.PostChecker)
 }

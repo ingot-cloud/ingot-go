@@ -3,7 +3,7 @@ package boot
 import (
 	"context"
 
-	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/container"
 )
 
 // Run 运行服务

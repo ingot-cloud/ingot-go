@@ -1,4 +1,4 @@
-package pre
+package provider
 
 import (
 	"github.com/dgrijalva/jwt-go"

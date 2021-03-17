@@ -4,8 +4,9 @@ import (
 	"reflect"
 	"time"
 
+	"github.com/ingot-cloud/ingot-go/pkg/framework/container/di"
+	securityContainer "github.com/ingot-cloud/ingot-go/pkg/framework/container/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 )
 
 type InjectField struct {
@@ -15,7 +16,7 @@ type InjectField struct {
 
 var injectFields []*InjectField
 
-func DoPre(injector container.SecurityInjector, sc container.SecurityContainerPre) container.SecurityContainerCombine {
+func DoPre(injector securityContainer.SecurityInjector, sc securityContainer.SecurityContainerPre) securityContainer.SecurityContainerCombine {
 	log.Debug(">>>>>> DoPre 开始执行")
 	injectFields = nil
 	startNanosecond := time.Now().Nanosecond()
@@ -24,11 +25,22 @@ func DoPre(injector container.SecurityInjector, sc container.SecurityContainerPr
 
 	doChangeContainer(sc)
 
+	var rebuildArray []*di.Injector
+	for _, item := range injectFields {
+		rebuildArray = append(rebuildArray, &di.Injector{
+			Type:  item.Type,
+			Value: item.Value,
+		})
+	}
+
+	log.Errorf("rebuildArray len = %d", len(rebuildArray))
+	// ProviderSet.Parse(rebuildArray, sc)
+
 	log.Debugf(">>>>>> DoPre 执行结束，用时%d毫秒", (time.Now().Nanosecond()-startNanosecond)/1e6)
 	return sc
 }
 
-func DoPost(injector container.SecurityInjector, sc container.SecurityContainerPost) container.SecurityContainer {
+func DoPost(injector securityContainer.SecurityInjector, sc securityContainer.SecurityContainerPost) securityContainer.SecurityContainer {
 	log.Debug(">>>>>> DoPost 开始执行")
 	injectFields = nil
 	startNanosecond := time.Now().Nanosecond()
@@ -58,26 +70,6 @@ func doChangeChild(c interface{}) {
 	for i := 0; i < len; i++ {
 		changeField(t.Field(i), value)
 	}
-}
-
-func paddingInjectFields(injector container.SecurityInjector) {
-	inValue := reflect.Indirect(reflect.ValueOf(injector))
-	inType := inValue.Type()
-	len := inType.NumField()
-
-	var field reflect.StructField
-	var injectTag string
-	for i := 0; i < len; i++ {
-		field = inType.Field(i)
-		injectTag = field.Tag.Get("inject")
-		if injectTag == "true" {
-			injectFields = append(injectFields, &InjectField{
-				Value: inValue.FieldByName(field.Name),
-				Type:  field.Type,
-			})
-		}
-	}
-
 }
 
 func changeField(field reflect.StructField, target reflect.Value) {
