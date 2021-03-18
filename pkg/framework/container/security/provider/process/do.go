@@ -72,6 +72,26 @@ func doChangeChild(c interface{}) {
 	}
 }
 
+func paddingInjectFields(injector securityContainer.SecurityInjector) {
+	inValue := reflect.Indirect(reflect.ValueOf(injector))
+	inType := inValue.Type()
+	len := inType.NumField()
+
+	var field reflect.StructField
+	var injectTag string
+	for i := 0; i < len; i++ {
+		field = inType.Field(i)
+		injectTag = field.Tag.Get("inject")
+		if injectTag == "true" {
+			injectFields = append(injectFields, &InjectField{
+				Value: inValue.FieldByName(field.Name),
+				Type:  field.Type,
+			})
+		}
+	}
+
+}
+
 func changeField(field reflect.StructField, target reflect.Value) {
 	fieldName := field.Name
 	fieldValue := target.FieldByName(fieldName)

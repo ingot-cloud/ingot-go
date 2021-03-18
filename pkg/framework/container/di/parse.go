@@ -93,11 +93,17 @@ func Func(target interface{}) *Provider {
 		})
 	}
 
+	returnType := t.Out(0)
+	var ifaceType reflect.Type
+	if returnType.Kind() == reflect.Interface {
+		ifaceType = returnType
+	}
 	return &Provider{
-		Type:     t,
-		IsStruct: false,
-		Return:   t.Out(0),
-		Args:     args,
+		Type:      t,
+		IsStruct:  false,
+		Return:    returnType,
+		Args:      args,
+		IfaceType: ifaceType,
 	}
 }
 
@@ -122,10 +128,31 @@ type Provider struct {
 
 	// 构建所需要的参数
 	Args []*ProviderParams
+
+	// 构建类型实现的接口类型
+	IfaceType reflect.Type
 }
 
-// GetBuildType 获取构建类型
+// ChangeWith 将当前 provider 中的值替换为目标 provider中的值
+// 并且GetBuildType返回的类型保持不变
+func (p *Provider) ChangeWith(target *Provider) {
+	p.IfaceType = p.GetBuildType()
+	p.Type = target.Type
+	p.IsStruct = target.IsStruct
+	p.Return = target.Return
+	p.Args = target.Args
+}
+
+// GetBuildType 获取构建类型，如果实现了相关接口，那么返回接口类型
 func (p *Provider) GetBuildType() reflect.Type {
+	if p.IfaceType != nil {
+		return p.IfaceType
+	}
+	return p.GetRowBuildType()
+}
+
+// GetRowBuildType 获取原始构建的类型
+func (p *Provider) GetRowBuildType() reflect.Type {
 	if p.IsStruct {
 		return p.Type
 	}
@@ -189,8 +216,11 @@ type Injector struct {
 type InjectorNode struct {
 	*Injector
 
-	//
+	// 依赖该节点的类型
 	Parent []*Injector
+
+	// 该节点依赖的类型
+	Children []*Injector
 }
 
 // ProviderSet 提供者集合
@@ -199,8 +229,6 @@ type ProviderSet struct {
 	Providers []*Provider
 
 	// 自定义绑定关系
-	// todo 该关系暂时没有用到，因为在执行Parse方法的时候传入了SecurityContainer
-	// 并且根据该容器填充了类型实例映射表，所以暂时没用到自定义类型关系
 	Bindings []*IfaceBinding
 
 	// 构建类型和对应实例映射
@@ -227,6 +255,9 @@ func (set *ProviderSet) AddBinding(b *IfaceBinding) {
 // 4. 用重新构建好的实例替换Container容器中之前的实例，并且返回新的Container
 func (set *ProviderSet) Parse(cj []*Injector, c container.Container) container.Container {
 
+	// 刷新 provider
+	set.refreshProvider()
+
 	// 填充当前类型实例映射
 	set.paddingTypeInstanceWithContainer(c)
 
@@ -237,18 +268,48 @@ func (set *ProviderSet) Parse(cj []*Injector, c container.Container) container.C
 		set.mergeRebuild(rebuildMap, in.Type, true)
 	}
 
+	// 判断自定义实例中是否实现了需要重构的接口
+	// 如果实现了，那么在重新构建该接口的时候，使用自定义实例进行构建
+	replaceMap := make(map[reflect.Type]int)
 	for p := range rebuildMap {
 		log.Errorf("需要重新构建的实例，类型：%s", p.GetBuildType())
 		for _, in := range cj {
 			if p.GetBuildType().Kind() == reflect.Interface && in.Type.Implements(p.GetBuildType()) {
 				log.Errorf("自定义类型 %s 实现了接口 %s", in.Type, p.GetBuildType())
+				p.ChangeWith(set.getProvider(in.Type))
+				replaceMap[in.Type] = 1
 			}
 		}
+	}
+
+	// 合并自定义注入类型到需要重构的类型map中
+	for _, j := range cj {
+		if _, ok := replaceMap[j.Type]; ok {
+			continue
+		}
+		rebuildMap[set.getProvider(j.Type)] = 1
+	}
+
+	for p := range rebuildMap {
+
+		log.Errorf("-----需要重新构建的实例2，类型：%s, 构建类型: %s", p.GetBuildType(), p.Type)
 	}
 
 	// todo
 
 	return c
+}
+
+// 刷新provider，如果provider构建的实例为结构体，那么在bindings中查询是否存在的接口绑定类型
+// 如果存在那么将provider中的IfaceType进行赋值
+func (set *ProviderSet) refreshProvider() {
+	for _, p := range set.Providers {
+		for _, b := range set.Bindings {
+			if b.Provider == p.Type {
+				p.IfaceType = b.Iface
+			}
+		}
+	}
 }
 
 // 填充Container中的子容器
@@ -266,6 +327,15 @@ func (set *ProviderSet) paddingTypeInstanceWithContainer(con container.Container
 			set.paddingTypeInstance(containerValue.Field(i).Interface())
 		}
 	}
+
+	log.Debugf("[----------- 开始打印填充的类型实例映射表 -----------]")
+	var logFields log.Fields = map[string]interface{}{}
+	for t, v := range set.TypeInstance {
+		logFields["type"] = t
+		logFields["value"] = v.Type()
+		log.WithFields(logFields).Debug("填充数据映射表类型")
+	}
+	log.Debugf("[----------- 结束打印填充的类型实例映射表 -----------]")
 }
 
 // 填充类型实例映射表
@@ -278,10 +348,8 @@ func (set *ProviderSet) paddingTypeInstance(con interface{}) {
 		t := value.Type()
 		set.TypeInstance[t] = originValue
 
-		log.Errorf("padding type: %s, value: %s", reflect.TypeOf(con), value.Interface())
 		len := t.NumField()
 		for i := 0; i < len; i++ {
-			log.Errorf("padding type: %s, value: %s", t.Field(i).Type, reflect.ValueOf(value.Field(i).Interface()).Type())
 			// value.Field(i) 获取的 reflect.Value 为接口，需要获取具体值然后在拿到对应的 reflect.Value
 			set.TypeInstance[t.Field(i).Type] = reflect.ValueOf(value.Field(i).Interface())
 		}
@@ -316,6 +384,17 @@ func (set *ProviderSet) getDependsOn(t reflect.Type, isImplIface bool) []*Provid
 		}
 	}
 	return result
+}
+
+func (set *ProviderSet) getProvider(t reflect.Type) *Provider {
+	t2 := indirect(t)
+	for _, p := range set.Providers {
+		// 原始构建类型或者实现类型等于指定类型
+		if p.GetRowBuildType() == t || p.GetRowBuildType() == t2 || p.GetBuildType() == t || p.GetBuildType() == t2 {
+			return p
+		}
+	}
+	return nil
 }
 
 func indirect(t reflect.Type) reflect.Type {
