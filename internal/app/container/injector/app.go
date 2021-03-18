@@ -7,11 +7,10 @@ import (
 	"github.com/google/wire"
 	"github.com/ingot-cloud/ingot-go/internal/app/config"
 	"github.com/ingot-cloud/ingot-go/internal/app/container/provider"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/container"
 
-	securityContainer "github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/post"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/pre"
+	bootContainerProvider "github.com/ingot-cloud/ingot-go/pkg/framework/container/provider"
+	securityContainerProvider "github.com/ingot-cloud/ingot-go/pkg/framework/container/security/provider"
 )
 
 func BuildConfiguration(options *config.Options) (*config.Config, error) {
@@ -19,26 +18,15 @@ func BuildConfiguration(options *config.Options) (*config.Config, error) {
 	return nil, nil
 }
 
-func BuildContainerPre(config *config.Config, options *config.Options) (securityContainer.SecurityContainerCombine, func(), error) {
+func BuildContainer(config *config.Config, options *config.Options) (container.Container, func(), error) {
 	wire.Build(
 		provider.AllSet,
 		provider.AllFactory,
 		provider.SecurityInjector,
 
-		pre.All,
-	)
-	return nil, nil, nil
-}
+		securityContainerProvider.All,
 
-func BuildContainerPost(config *config.Config, options *config.Options, combine securityContainer.SecurityContainerCombine) (container.Container, func(), error) {
-	wire.Build(
-		provider.AllSet,
-		provider.AllFactory,
-		provider.SecurityInjector,
-
-		post.All,
-
-		container.BootContainer,
+		bootContainerProvider.BootContainer,
 	)
 	return nil, nil, nil
 }

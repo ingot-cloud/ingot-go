@@ -16,11 +16,10 @@ import (
 	"github.com/ingot-cloud/ingot-go/internal/app/core/security/token"
 	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"
 	"github.com/ingot-cloud/ingot-go/internal/app/service/impl"
-	container2 "github.com/ingot-cloud/ingot-go/pkg/framework/boot/container"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/post"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/pre"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/container/provider/process"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/container"
+	provider3 "github.com/ingot-cloud/ingot-go/pkg/framework/container/provider"
+	container2 "github.com/ingot-cloud/ingot-go/pkg/framework/container/security"
+	provider2 "github.com/ingot-cloud/ingot-go/pkg/framework/container/security/provider"
 )
 
 // Injectors from app.go:
@@ -33,127 +32,7 @@ func BuildConfiguration(options *config.Options) (*config.Config, error) {
 	return configConfig, nil
 }
 
-func BuildContainerPre(config3 *config.Config, options *config.Options) (container.SecurityContainerCombine, func(), error) {
-	webSecurityConfigurersImpl := &pre.WebSecurityConfigurersImpl{}
-	encoder := pre.PasswordEncoder()
-	userCache := pre.UserCache()
-	preChecker := pre.PreChecker()
-	postChecker := pre.PostChecker()
-	userdetailsService := pre.UserDetailsService()
-	clientdetailsService := pre.ClientDetailsService()
-	commonContainer := &container.CommonContainer{
-		WebSecurityConfigurers: webSecurityConfigurersImpl,
-		PasswordEncoder:        encoder,
-		UserCache:              userCache,
-		PreChecker:             preChecker,
-		PostChecker:            postChecker,
-		UserDetailsService:     userdetailsService,
-		ClientDetailsService:   clientdetailsService,
-	}
-	oAuth2, err := factory.OAuth2Config(config3)
-	if err != nil {
-		return nil, nil, err
-	}
-	userAuthenticationConverter := pre.UserAuthenticationConverter()
-	accessTokenConverter := pre.AccessTokenConverter(oAuth2, userAuthenticationConverter)
-	jwtAccessTokenConverter := pre.JwtAccessTokenConverter(oAuth2, accessTokenConverter)
-	store := pre.TokenStore(jwtAccessTokenConverter)
-	oAuth2Container := &container.OAuth2Container{
-		OAuth2Config:                oAuth2,
-		TokenStore:                  store,
-		JwtAccessTokenConverter:     jwtAccessTokenConverter,
-		AccessTokenConverter:        accessTokenConverter,
-		UserAuthenticationConverter: userAuthenticationConverter,
-	}
-	resourceServerTokenServices := pre.ResourceServerTokenServices(store)
-	resourceManager := pre.ResourceAuthenticationManager(oAuth2, resourceServerTokenServices)
-	tokenExtractor := pre.TokenExtractor()
-	resourceServerConfigurer := pre.ResourceServerConfigurer(tokenExtractor, resourceManager)
-	resourceServerContainer := &container.ResourceServerContainer{
-		AuthenticationManager:       resourceManager,
-		ResourceServerConfigurer:    resourceServerConfigurer,
-		ResourceServerTokenServices: resourceServerTokenServices,
-		TokenExtractor:              tokenExtractor,
-	}
-	authenticationProvider := pre.BasicAuthenticationProvider(commonContainer)
-	daoAuthenticationProvider := pre.DaoAuthenticationProvider(commonContainer)
-	providersImpl := &pre.ProvidersImpl{
-		Basic: authenticationProvider,
-		Dao:   daoAuthenticationProvider,
-	}
-	authProvidersContainer := &container.AuthProvidersContainer{
-		Providers: providersImpl,
-	}
-	authorizationManager := pre.AuthorizationAuthenticationManager(authProvidersContainer)
-	authorizationServerConfigurer := pre.AuthorizationServerConfigurer(authorizationManager)
-	enhancer := pre.TokenEnhancer(oAuth2Container)
-	authorizationServerTokenServices := pre.AuthorizationServerTokenServices(oAuth2, store, commonContainer, enhancer, authorizationManager)
-	consumerTokenServices := pre.ConsumerTokenServices(store)
-	passwordTokenGranter := pre.PasswordTokenGranter(authorizationServerTokenServices, authorizationManager)
-	granter := pre.TokenGranter(passwordTokenGranter)
-	tokenEndpoint := pre.TokenEndpoint(granter, commonContainer)
-	oAuth2HTTPConfigurer := pre.TokenEndpointHTTPConfigurer(tokenEndpoint)
-	authorizationServerContainer := &container.AuthorizationServerContainer{
-		AuthenticationManager:            authorizationManager,
-		AuthorizationServerConfigurer:    authorizationServerConfigurer,
-		AuthorizationServerTokenServices: authorizationServerTokenServices,
-		ConsumerTokenServices:            consumerTokenServices,
-		TokenEndpoint:                    tokenEndpoint,
-		TokenEndpointHTTPConfigurer:      oAuth2HTTPConfigurer,
-		TokenEnhancer:                    enhancer,
-		TokenGranter:                     granter,
-		PasswordTokenGranter:             passwordTokenGranter,
-	}
-	securityContainerImpl := &container.SecurityContainerImpl{
-		CommonContainer:              commonContainer,
-		OAuth2Container:              oAuth2Container,
-		ResourceServerContainer:      resourceServerContainer,
-		AuthorizationServerContainer: authorizationServerContainer,
-		AuthProvidersContainer:       authProvidersContainer,
-	}
-	nilSecurityInjector := &container.NilSecurityInjector{}
-	security, err := factory.SecurityConfig(config3)
-	if err != nil {
-		return nil, nil, err
-	}
-	db, cleanup, err := factory.NewGorm(config3)
-	if err != nil {
-		return nil, nil, err
-	}
-	oauthClientDetails := &dao.OauthClientDetails{
-		DB: db,
-	}
-	clientDetails := &service.ClientDetails{
-		OauthClientDetailsDao: oauthClientDetails,
-	}
-	userDetail := &impl.UserDetail{}
-	userDetails := &service.UserDetails{
-		UserDetailService: userDetail,
-	}
-	requestMatcher := provider.PermitURLMatcher(security)
-	resourceServerAdapter := provider.ResourceServerAdapter(tokenExtractor, resourceManager, requestMatcher)
-	ingotEnhancerChain := provider.IngotEnhancerChain(jwtAccessTokenConverter)
-	ingotUserAuthenticationConverter := &token.IngotUserAuthenticationConverter{}
-	ingotSecurityInjector := &config2.IngotSecurityInjector{
-		NilSecurityInjector:              nilSecurityInjector,
-		SecurityConfig:                   security,
-		ClientDetailsService:             clientDetails,
-		UserDetailsService:               userDetails,
-		ResourceServerAdapter:            resourceServerAdapter,
-		IngotEnhancerChain:               ingotEnhancerChain,
-		IngotUserAuthenticationConverter: ingotUserAuthenticationConverter,
-	}
-	securityContainerPreProxyImpl := &container.SecurityContainerPreProxyImpl{
-		SecurityContainer: securityContainerImpl,
-		SecurityInjector:  ingotSecurityInjector,
-	}
-	securityContainerCombine := pre.InjectCustomInstance(securityContainerPreProxyImpl)
-	return securityContainerCombine, func() {
-		cleanup()
-	}, nil
-}
-
-func BuildContainerPost(config3 *config.Config, options *config.Options, combine container.SecurityContainerCombine) (container2.Container, func(), error) {
+func BuildContainer(config3 *config.Config, options *config.Options) (container.Container, func(), error) {
 	httpConfig, err := factory.HTTPConfig(config3)
 	if err != nil {
 		return nil, nil, err
@@ -204,16 +83,14 @@ func BuildContainerPost(config3 *config.Config, options *config.Options, combine
 		SecurityConfig: security,
 		TestAPI:        test,
 	}
-	webSecurityConfigurersImpl := &post.WebSecurityConfigurersImpl{
-		SC: combine,
-	}
-	encoder := post.PasswordEncoder(combine)
-	userCache := post.UserCache(combine)
-	preChecker := post.PreChecker(combine)
-	postChecker := post.PostChecker(combine)
-	userdetailsService := post.UserDetailsService(combine)
-	clientdetailsService := post.ClientDetailsService(combine)
-	commonContainer := &container.CommonContainer{
+	webSecurityConfigurersImpl := &provider2.WebSecurityConfigurersImpl{}
+	encoder := provider2.PasswordEncoder()
+	userCache := provider2.UserCache()
+	preChecker := provider2.PreChecker()
+	postChecker := provider2.PostChecker()
+	userdetailsService := provider2.UserDetailsService()
+	clientdetailsService := provider2.ClientDetailsService()
+	commonContainer := &container2.CommonContainer{
 		WebSecurityConfigurers: webSecurityConfigurersImpl,
 		PasswordEncoder:        encoder,
 		UserCache:              userCache,
@@ -228,46 +105,48 @@ func BuildContainerPost(config3 *config.Config, options *config.Options, combine
 		cleanup()
 		return nil, nil, err
 	}
-	userAuthenticationConverter := post.UserAuthenticationConverter(combine)
-	accessTokenConverter := post.AccessTokenConverter(oAuth2, userAuthenticationConverter)
-	jwtAccessTokenConverter := post.JwtAccessTokenConverter(oAuth2, accessTokenConverter)
-	store := post.TokenStore(jwtAccessTokenConverter)
-	oAuth2Container := &container.OAuth2Container{
+	userAuthenticationConverter := provider2.UserAuthenticationConverter()
+	accessTokenConverter := provider2.AccessTokenConverter(oAuth2, userAuthenticationConverter)
+	jwtAccessTokenConverter := provider2.JwtAccessTokenConverter(oAuth2, accessTokenConverter)
+	store := provider2.TokenStore(jwtAccessTokenConverter)
+	oAuth2Container := &container2.OAuth2Container{
 		OAuth2Config:                oAuth2,
 		TokenStore:                  store,
 		JwtAccessTokenConverter:     jwtAccessTokenConverter,
 		AccessTokenConverter:        accessTokenConverter,
 		UserAuthenticationConverter: userAuthenticationConverter,
 	}
-	resourceServerTokenServices := post.ResourceServerTokenServices(store, combine)
-	resourceManager := post.ResourceAuthenticationManager(oAuth2, resourceServerTokenServices, combine)
-	tokenExtractor := post.TokenExtractor(combine)
-	resourceServerConfigurer := post.ResourceServerConfigurer(tokenExtractor, resourceManager, combine)
-	resourceServerContainer := &container.ResourceServerContainer{
+	resourceServerTokenServices := provider2.ResourceServerTokenServices(store)
+	resourceManager := provider2.ResourceAuthenticationManager(oAuth2, resourceServerTokenServices)
+	tokenExtractor := provider2.TokenExtractor()
+	resourceServerConfigurer := provider2.ResourceServerConfigurer(tokenExtractor, resourceManager)
+	resourceServerContainer := &container2.ResourceServerContainer{
 		AuthenticationManager:       resourceManager,
 		ResourceServerConfigurer:    resourceServerConfigurer,
 		ResourceServerTokenServices: resourceServerTokenServices,
 		TokenExtractor:              tokenExtractor,
 	}
-	authenticationProvider := post.BasicAuthenticationProvider(commonContainer)
-	daoAuthenticationProvider := post.DaoAuthenticationProvider(commonContainer)
-	providersImpl := &post.ProvidersImpl{
+	authenticationProvider := provider2.BasicAuthenticationProvider(commonContainer)
+	daoAuthenticationProvider := provider2.DaoAuthenticationProvider(commonContainer)
+	providersImpl := &provider2.ProvidersImpl{
 		Basic: authenticationProvider,
 		Dao:   daoAuthenticationProvider,
 	}
-	authProvidersContainer := &container.AuthProvidersContainer{
+	authProvidersContainer := &container2.AuthProvidersContainer{
 		Providers: providersImpl,
+		Basic:     authenticationProvider,
+		Dao:       daoAuthenticationProvider,
 	}
-	authorizationManager := post.AuthorizationAuthenticationManager(authProvidersContainer, combine)
-	authorizationServerConfigurer := post.AuthorizationServerConfigurer(authorizationManager, combine)
-	enhancer := post.TokenEnhancer(oAuth2Container, combine)
-	authorizationServerTokenServices := post.AuthorizationServerTokenServices(oAuth2, store, commonContainer, enhancer, authorizationManager, combine)
-	consumerTokenServices := post.ConsumerTokenServices(store, combine)
-	passwordTokenGranter := post.PasswordTokenGranter(authorizationServerTokenServices, authorizationManager, combine)
-	granter := post.TokenGranter(passwordTokenGranter, combine)
-	tokenEndpoint := post.TokenEndpoint(granter, commonContainer, combine)
-	oAuth2HTTPConfigurer := post.TokenEndpointHTTPConfigurer(tokenEndpoint, combine)
-	authorizationServerContainer := &container.AuthorizationServerContainer{
+	authorizationManager := provider2.AuthorizationAuthenticationManager(authProvidersContainer)
+	authorizationServerConfigurer := provider2.AuthorizationServerConfigurer(authorizationManager)
+	enhancer := provider2.TokenEnhancer(oAuth2Container)
+	authorizationServerTokenServices := provider2.AuthorizationServerTokenServices(oAuth2, store, commonContainer, enhancer, authorizationManager)
+	consumerTokenServices := provider2.ConsumerTokenServices(store)
+	passwordTokenGranter := provider2.PasswordTokenGranter(authorizationServerTokenServices, authorizationManager)
+	granter := provider2.TokenGranter(passwordTokenGranter)
+	tokenEndpoint := provider2.TokenEndpoint(granter, commonContainer)
+	oAuth2HTTPConfigurer := provider2.TokenEndpointHTTPConfigurer(tokenEndpoint)
+	authorizationServerContainer := &container2.AuthorizationServerContainer{
 		AuthenticationManager:            authorizationManager,
 		AuthorizationServerConfigurer:    authorizationServerConfigurer,
 		AuthorizationServerTokenServices: authorizationServerTokenServices,
@@ -278,14 +157,14 @@ func BuildContainerPost(config3 *config.Config, options *config.Options, combine
 		TokenGranter:                     granter,
 		PasswordTokenGranter:             passwordTokenGranter,
 	}
-	securityContainerImpl := &container.SecurityContainerImpl{
+	securityContainerImpl := &container2.SecurityContainerImpl{
 		CommonContainer:              commonContainer,
 		OAuth2Container:              oAuth2Container,
 		ResourceServerContainer:      resourceServerContainer,
 		AuthorizationServerContainer: authorizationServerContainer,
 		AuthProvidersContainer:       authProvidersContainer,
 	}
-	nilSecurityInjector := &container.NilSecurityInjector{}
+	defaultContainerInjector := &container.DefaultContainerInjector{}
 	oauthClientDetails := &dao.OauthClientDetails{
 		DB: db,
 	}
@@ -300,8 +179,8 @@ func BuildContainerPost(config3 *config.Config, options *config.Options, combine
 	resourceServerAdapter := provider.ResourceServerAdapter(tokenExtractor, resourceManager, requestMatcher)
 	ingotEnhancerChain := provider.IngotEnhancerChain(jwtAccessTokenConverter)
 	ingotUserAuthenticationConverter := &token.IngotUserAuthenticationConverter{}
-	ingotSecurityInjector := &config2.IngotSecurityInjector{
-		NilSecurityInjector:              nilSecurityInjector,
+	ingotContainerInjector := &config2.IngotContainerInjector{
+		DefaultContainerInjector:         defaultContainerInjector,
 		SecurityConfig:                   security,
 		ClientDetailsService:             clientDetails,
 		UserDetailsService:               userDetails,
@@ -309,19 +188,16 @@ func BuildContainerPost(config3 *config.Config, options *config.Options, combine
 		IngotEnhancerChain:               ingotEnhancerChain,
 		IngotUserAuthenticationConverter: ingotUserAuthenticationConverter,
 	}
-	securityContainerPostProxyImpl := &container.SecurityContainerPostProxyImpl{
+	defaultContainerPre := &container.DefaultContainerPre{
+		HTTPConfig:        httpConfig,
+		HTTPConfigurer:    apiConfig,
 		SecurityContainer: securityContainerImpl,
-		SecurityInjector:  ingotSecurityInjector,
+		ContainerInjector: ingotContainerInjector,
 	}
-	securityContainer := post.InjectCustomInstance(securityContainerPostProxyImpl)
-	printSecurityInjector := process.PrintInjectInstance(securityContainer)
-	defaultContainer := &container2.DefaultContainer{
-		HTTPConfig:         httpConfig,
-		HTTPConfigurer:     apiConfig,
-		SecurityContainer:  securityContainer,
-		DebugPrintInjector: printSecurityInjector,
-	}
-	return defaultContainer, func() {
+	providerSet := provider.DIProviderSet()
+	containerPrint := provider3.BuildContainerProcess(defaultContainerPre, providerSet)
+	containerContainer := provider3.PrintInjectInstance(containerPrint)
+	return containerContainer, func() {
 		cleanup2()
 		cleanup()
 	}, nil

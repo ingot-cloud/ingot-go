@@ -6,20 +6,25 @@ import (
 	"github.com/ingot-cloud/ingot-go/internal/app/core/security/config"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/security/service"
 	"github.com/ingot-cloud/ingot-go/internal/app/core/security/token"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/container"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/container/di"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/container/security/provider"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/utils/pathmatcher"
 	securityAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
-	securityContainer "github.com/ingot-cloud/ingot-go/pkg/framework/security/container"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/ingot"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/authentication"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/configurer"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
+	oauthToken "github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/store"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/utils"
 )
 
 // SecurityInjector 注入器
 var SecurityInjector = wire.NewSet(
-	wire.Struct(new(config.IngotSecurityInjector), "*"),
-	wire.Bind(new(securityContainer.SecurityInjector), new(*config.IngotSecurityInjector)),
+	wire.Struct(new(config.IngotContainerInjector), "*"),
+	wire.Bind(new(container.ContainerInjector), new(*config.IngotContainerInjector)),
 
 	SecurityClientDetailsService,
 	SecurityUserDetailsService,
@@ -27,6 +32,8 @@ var SecurityInjector = wire.NewSet(
 	PermitURLMatcher,
 	IngotEnhancerChain,
 	IngotUserAuthenticationConverter,
+
+	DIProviderSet,
 )
 
 // SecurityClientDetailsService 服务实现
@@ -64,4 +71,19 @@ func PermitURLMatcher(securityConfig appConfig.Security) utils.RequestMatcher {
 
 		return true
 	}
+}
+
+func DIProviderSet() *di.ProviderSet {
+	return di.NewSet(
+		provider.ProviderSet,
+
+		di.Struct(new(service.UserDetails)),
+		di.Bind(new(userdetails.Service), new(service.UserDetails)),
+		di.Struct(new(service.ClientDetails)),
+		di.Bind(new(clientdetails.Service), new(service.ClientDetails)),
+		di.Struct(new(token.IngotUserAuthenticationConverter)),
+		di.Bind(new(oauthToken.UserAuthenticationConverter), new(token.IngotUserAuthenticationConverter)),
+		di.Func(ResourceServerAdapter),
+		di.Func(IngotEnhancerChain),
+	)
 }
