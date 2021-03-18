@@ -253,7 +253,8 @@ func (set *ProviderSet) AddBinding(b *IfaceBinding) {
 //    并且如果B也依赖了其他自定义实现，那么B也需要重新构建，以此类推，直到依赖的对象为默认构建的对象。
 // 3. 将需要重构的类型和自定义的注入类型一起判断，生成依赖关系树，并从叶子节点逐一重新构建（根据依赖关系）
 // 4. 用重新构建好的实例替换Container容器中之前的实例，并且返回新的Container
-func (set *ProviderSet) Parse(cj []*Injector, c container.Container) container.Container {
+func (set *ProviderSet) Parse(injector container.ContainerInjector, c container.Container) container.Container {
+	cj := paddingInjectFields(injector)
 
 	// 刷新 provider
 	set.refreshProvider()
@@ -291,11 +292,10 @@ func (set *ProviderSet) Parse(cj []*Injector, c container.Container) container.C
 	}
 
 	for p := range rebuildMap {
-
-		log.Errorf("-----需要重新构建的实例2，类型：%s, 构建类型: %s", p.GetBuildType(), p.Type)
+		log.Errorf("-----需要重新构建的实例2，类型：%s, 需要参数: %d", p.GetBuildType(), len(p.Args))
 	}
 
-	// todo
+	// todo 第4步
 
 	return c
 }
@@ -402,4 +402,27 @@ func indirect(t reflect.Type) reflect.Type {
 		return t.Elem()
 	}
 	return t
+}
+
+func paddingInjectFields(injector interface{}) []*Injector {
+	var injectFields []*Injector
+
+	inValue := reflect.Indirect(reflect.ValueOf(injector))
+	inType := inValue.Type()
+	len := inType.NumField()
+
+	var field reflect.StructField
+	var injectTag string
+	for i := 0; i < len; i++ {
+		field = inType.Field(i)
+		injectTag = field.Tag.Get("inject")
+		if injectTag == "true" {
+			injectFields = append(injectFields, &Injector{
+				Value: inValue.FieldByName(field.Name),
+				Type:  field.Type,
+			})
+		}
+	}
+
+	return injectFields
 }

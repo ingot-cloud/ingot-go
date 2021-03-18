@@ -70,23 +70,9 @@ var All = wire.NewSet(
 	/* AuthProvidersContainer end */
 
 	// 容器相关
-	wire.NewSet(wire.Struct(new(securityContainer.NilSecurityInjector), "*")),
-
 	wire.Struct(new(securityContainer.SecurityContainerImpl), "*"),
 	wire.Bind(new(securityContainer.SecurityContainer), new(*securityContainer.SecurityContainerImpl)),
-
-	// wire.Struct(new(container.SecurityContainerPreProxyImpl), "*"),
-	// wire.Bind(new(container.SecurityContainerPreProxy), new(*container.SecurityContainerPreProxyImpl)),
-
-	// InjectCustomInstance,
 )
-
-// InjectCustomInstance 注入自定义实例
-// func InjectCustomInstance(proxy container.SecurityContainerPreProxy) container.SecurityContainerCombine {
-// 	injector := proxy.GetSecurityInjector()
-// 	sc := proxy.GetSecurityContainer()
-// 	return process.DoPre(injector, sc)
-// }
 
 var ProviderSet = di.NewSet(
 	/* CommonContainer start */

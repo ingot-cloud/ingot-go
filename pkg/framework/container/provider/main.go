@@ -12,7 +12,6 @@ var BootContainer = wire.NewSet(
 	wire.Bind(new(container.ContainerPre), new(*container.DefaultContainerPre)),
 
 	wire.Struct(new(container.DefaultContainerInjector), "*"),
-	wire.Bind(new(container.ContainerInjector), new(*container.DefaultContainerInjector)),
 
 	BuildContainerProcess,
 

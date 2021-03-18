@@ -1,9 +1,12 @@
 package container
 
 import (
+	"reflect"
+
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/config"
 	securityContainer "github.com/ingot-cloud/ingot-go/pkg/framework/container/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/api"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 )
 
 // DefaultContainer 默认容器
@@ -58,10 +61,19 @@ func (c *DefaultContainerPre) GetSecurityContainer() securityContainer.SecurityC
 
 // DefaultContainerInjector 默认容器注入实现
 type DefaultContainerInjector struct {
-	SecurityInjector securityContainer.SecurityInjector
 }
 
 // GetSecurityInjector 获取安全注入
-func (ij *DefaultContainerInjector) GetSecurityInjector() securityContainer.SecurityInjector {
-	return ij.SecurityInjector
+func (ij *DefaultContainerInjector) GetValue(in ContainerInjector, t reflect.Type) reflect.Value {
+	value := reflect.ValueOf(in).Elem()
+	targetType := value.Type()
+
+	num := targetType.NumField()
+	for i := 0; i < num; i++ {
+		log.Errorf("GetValue type: %s, for: %s", t, targetType.Field(i))
+		if targetType.Field(i).Type == t {
+			return value.Field(i)
+		}
+	}
+	return reflect.Value{}
 }

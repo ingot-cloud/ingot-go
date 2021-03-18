@@ -1,49 +1,5 @@
 package container
 
-import (
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
-	coreAuth "github.com/ingot-cloud/ingot-go/pkg/framework/security/authentication"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/crypto/password"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/authentication"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/clientdetails"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/endpoint"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/granter"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/provider/token/store"
-)
-
-// PrintSecurityInjector 打印注入
-type PrintSecurityInjector interface{}
-
-// SecurityContainerPre 前置安全容器
-type SecurityContainerPre interface {
-	SecurityContainer
-}
-
-// SecurityContainerPreProxy 安全容器前置代理
-type SecurityContainerPreProxy interface {
-	GetSecurityContainer() SecurityContainerPre
-	GetSecurityInjector() SecurityInjector
-}
-
-// SecurityContainerCombine 结合后的安全容器
-// 将 SecurityContainer 中的实例替换为 SecurityInjector 中非nil实例
-type SecurityContainerCombine interface {
-	SecurityContainer
-}
-
-// SecurityContainerPost 后置安全容器
-type SecurityContainerPost interface {
-	SecurityContainer
-}
-
-// SecurityContainerPostProxy 安全容器后置代理
-type SecurityContainerPostProxy interface {
-	GetSecurityContainer() SecurityContainerPost
-	GetSecurityInjector() SecurityInjector
-}
-
 // SecurityContainer 安全容器实例
 type SecurityContainer interface {
 	GetCommonContainer() *CommonContainer
@@ -51,42 +7,4 @@ type SecurityContainer interface {
 	GetResourceServerContainer() *ResourceServerContainer
 	GetAuthorizationServerContainer() *AuthorizationServerContainer
 	GetAuthProvidersContainer() *AuthProvidersContainer
-}
-
-// SecurityInjector 注入器
-type SecurityInjector interface {
-	// Common
-	GetWebSecurityConfigurers() security.WebSecurityConfigurers
-	GetPasswordEncoder() password.Encoder
-	GetUserCache() userdetails.UserCache
-	GetPreChecker() userdetails.PreChecker
-	GetPostChecker() userdetails.PostChecker
-	GetUserDetailsService() userdetails.Service
-	GetClientDetailsService() clientdetails.Service
-
-	// OAuth2Container
-	GetTokenStore() token.Store
-	GetAccessTokenConverter() token.AccessTokenConverter
-	GetUserAuthenticationConverter() token.UserAuthenticationConverter
-	GetJwtAccessTokenConverter() *store.JwtAccessTokenConverter
-
-	// ResourceServerContainer
-	GetResourceAuthenticationManager() coreAuth.Manager
-	GetResourceServerConfigurer() security.ResourceServerConfigurer
-	GetResourceServerTokenServices() token.ResourceServerTokenServices
-	GetTokenExtractor() authentication.TokenExtractor
-
-	// AuthorizationServerContainer
-	GetAuthorizationAuthenticationManager() coreAuth.Manager
-	GetAuthorizationServerConfigurer() security.AuthorizationServerConfigurer
-	GetAuthorizationServerTokenServices() token.AuthorizationServerTokenServices
-	GetConsumerTokenServices() token.ConsumerTokenServices
-	GetTokenEndpoint() *endpoint.TokenEndpoint
-	GetTokenEndpointHTTPConfigurer() endpoint.OAuth2HTTPConfigurer
-	GetTokenEnhancer() token.Enhancer
-	GetTokenGranter() token.Granter
-	GetPasswordTokenGranter() *granter.PasswordTokenGranter
-
-	// AuthProvidersContainer
-	GetProviders() coreAuth.Providers
 }

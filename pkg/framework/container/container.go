@@ -2,6 +2,7 @@ package container
 
 import (
 	"context"
+	"reflect"
 
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/config"
 	securityContainer "github.com/ingot-cloud/ingot-go/pkg/framework/container/security"
@@ -31,5 +32,6 @@ type Container interface {
 
 // ContainerInjector 容器注入器
 type ContainerInjector interface {
-	GetSecurityInjector() securityContainer.SecurityInjector
+	// 根据类型获取值
+	GetValue(ContainerInjector, reflect.Type) reflect.Value
 }
