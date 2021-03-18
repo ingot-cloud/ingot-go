@@ -6,7 +6,6 @@ import (
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/config"
 	securityContainer "github.com/ingot-cloud/ingot-go/pkg/framework/container/security"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/web/api"
-	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 )
 
 // DefaultContainer 默认容器
@@ -70,7 +69,6 @@ func (ij *DefaultContainerInjector) GetValue(in ContainerInjector, t reflect.Typ
 
 	num := targetType.NumField()
 	for i := 0; i < num; i++ {
-		log.Errorf("GetValue type: %s, for: %s", t, targetType.Field(i))
 		if targetType.Field(i).Type == t {
 			return value.Field(i)
 		}

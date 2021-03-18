@@ -1,20 +1,25 @@
 package config
 
 import (
-	appConfig "github.com/ingot-cloud/ingot-go/internal/app/config"
-	"github.com/ingot-cloud/ingot-go/internal/app/core/security/service"
+	securityService "github.com/ingot-cloud/ingot-go/internal/app/core/security/service"
 	appToken "github.com/ingot-cloud/ingot-go/internal/app/core/security/token"
+	"github.com/ingot-cloud/ingot-go/internal/app/model/dao"
+	"github.com/ingot-cloud/ingot-go/internal/app/service"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/container"
+	"github.com/ingot-cloud/ingot-go/pkg/framework/security/web/utils"
 )
 
 // IngotContainerInjector 安全注入
 type IngotContainerInjector struct {
 	*container.DefaultContainerInjector
 
-	// app中的实例
-	SecurityConfig                   appConfig.Security
-	ClientDetailsService             *service.ClientDetails                     `inject:"true"`
-	UserDetailsService               *service.UserDetails                       `inject:"true"`
+	// 此处注入的实例可以通过GetValue方法获取
+	OauthClientDetailsDao *dao.OauthClientDetails
+	UserDetailService     service.UserDetail
+	Ignore                utils.RequestMatcher
+
+	ClientDetailsService             *securityService.ClientDetails             `inject:"true"`
+	UserDetailsService               *securityService.UserDetails               `inject:"true"`
 	ResourceServerAdapter            *ResourceServerAdapter                     `inject:"true"`
 	IngotEnhancerChain               *appToken.IngotEnhancerChain               `inject:"true"`
 	IngotUserAuthenticationConverter *appToken.IngotUserAuthenticationConverter `inject:"true"`

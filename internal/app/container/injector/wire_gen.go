@@ -168,20 +168,22 @@ func BuildContainer(config3 *config.Config, options *config.Options) (container.
 	oauthClientDetails := &dao.OauthClientDetails{
 		DB: db,
 	}
+	userDetail := &impl.UserDetail{}
+	requestMatcher := provider.PermitURLMatcher(security)
 	clientDetails := &service.ClientDetails{
 		OauthClientDetailsDao: oauthClientDetails,
 	}
-	userDetail := &impl.UserDetail{}
 	userDetails := &service.UserDetails{
 		UserDetailService: userDetail,
 	}
-	requestMatcher := provider.PermitURLMatcher(security)
 	resourceServerAdapter := provider.ResourceServerAdapter(tokenExtractor, resourceManager, requestMatcher)
 	ingotEnhancerChain := provider.IngotEnhancerChain(jwtAccessTokenConverter)
 	ingotUserAuthenticationConverter := &token.IngotUserAuthenticationConverter{}
 	ingotContainerInjector := &config2.IngotContainerInjector{
 		DefaultContainerInjector:         defaultContainerInjector,
-		SecurityConfig:                   security,
+		OauthClientDetailsDao:            oauthClientDetails,
+		UserDetailService:                userDetail,
+		Ignore:                           requestMatcher,
 		ClientDetailsService:             clientDetails,
 		UserDetailsService:               userDetails,
 		ResourceServerAdapter:            resourceServerAdapter,
