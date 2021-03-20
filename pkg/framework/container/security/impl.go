@@ -2,11 +2,11 @@ package container
 
 // SecurityContainerImpl 接口实现
 type SecurityContainerImpl struct {
-	CommonContainer              *CommonContainer
-	OAuth2Container              *OAuth2Container
-	ResourceServerContainer      *ResourceServerContainer
-	AuthorizationServerContainer *AuthorizationServerContainer
-	AuthProvidersContainer       *AuthProvidersContainer
+	CommonContainer              *CommonContainer              `container:"true"`
+	OAuth2Container              *OAuth2Container              `container:"true"`
+	ResourceServerContainer      *ResourceServerContainer      `container:"true"`
+	AuthorizationServerContainer *AuthorizationServerContainer `container:"true"`
+	AuthProvidersContainer       *AuthProvidersContainer       `container:"true"`
 }
 
 // GetCommonContainer 获取容器

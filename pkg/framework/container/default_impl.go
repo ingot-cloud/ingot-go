@@ -63,15 +63,15 @@ type DefaultContainerInjector struct {
 }
 
 // GetSecurityInjector 获取安全注入
-func (ij *DefaultContainerInjector) GetValue(in ContainerInjector, t reflect.Type) reflect.Value {
+func (ij *DefaultContainerInjector) GetValue(in ContainerInjector, t reflect.Type) (reflect.Value, bool) {
 	value := reflect.ValueOf(in).Elem()
 	targetType := value.Type()
 
 	num := targetType.NumField()
 	for i := 0; i < num; i++ {
 		if targetType.Field(i).Type == t {
-			return value.Field(i)
+			return value.Field(i), true
 		}
 	}
-	return reflect.Value{}
+	return reflect.Value{}, false
 }

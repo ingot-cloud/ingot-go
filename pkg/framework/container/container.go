@@ -33,5 +33,5 @@ type Container interface {
 // ContainerInjector 容器注入器
 type ContainerInjector interface {
 	// 根据类型获取值
-	GetValue(ContainerInjector, reflect.Type) reflect.Value
+	GetValue(ContainerInjector, reflect.Type) (reflect.Value, bool)
 }
