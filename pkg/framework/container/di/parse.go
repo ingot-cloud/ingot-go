@@ -192,7 +192,12 @@ func (p *Provider) New(args []reflect.Value) reflect.Value {
 	if len(args) != p.Type.NumIn() {
 		panic(fmt.Sprintf("类型%s入参数量不匹配，in: %d, require: %d", p.Type, len(args), p.Type.NumIn()))
 	}
-	return p.FuncValue.Call(args)[0]
+	log.Errorf("类型%s调用New方法，传入参数: %v", p.GetBuildType(), args)
+	for _, param := range p.Args {
+		log.Errorf("---------%s", param.Type)
+	}
+	p.FuncValue.Call(args)
+	return reflect.Value{}
 }
 
 // DependsOn 是否依赖指定类型
@@ -381,13 +386,12 @@ func (set *ProviderSet) rebuild(rebuild map[*Provider]int, injector container.Co
 		if len(rebuildArray) == 0 {
 			break
 		}
-		count := 0
 		for index, p := range rebuildArray {
 			if !argsContainsRebuildType(p, rebuildArray) {
 				args := getArgs(p)
-				// obj := p.New(args)
-				log.Errorf("构建新实例：%s, len=%d", p.GetBuildType(), len(args))
-				// log.Errorf("新构建的对象，类型: %s, %d, %v", p.GetBuildType(), len(args), obj.Type().PkgPath())
+				log.Errorf("新构建的对象，类型: %s, 需要参数：%d，获取到的参数：%d", p.GetBuildType(), len(p.Args), len(args))
+				p.New(args)
+				// log.Errorf("构建新实例：%s, len=%d", p.GetBuildType(), len(args))
 				// 更新TypeInstance映射表
 				// set.TypeInstance[indirect(p.GetBuildType())] = obj
 				// toBeUsedInjector = append(toBeUsedInjector, &Injector{
@@ -395,22 +399,22 @@ func (set *ProviderSet) rebuild(rebuild map[*Provider]int, injector container.Co
 				// 	Value: obj,
 				// })
 
-				// delete(rebuild, p)
-				tmp := index - count
-				end := tmp + 1
+				// todo 需要修改数组算法，arr减去实例后，还存在值，并没有减去
+
+				end := index + 1
 				if end >= len(rebuildArray) {
 					end = len(rebuildArray) - 1
 				}
-				if tmp == end {
-					rebuildArray = (rebuildArray)[:tmp]
+				if index == end {
+					rebuildArray = (rebuildArray)[:index]
 				} else {
-					rebuildArray = append(rebuildArray[:tmp], rebuildArray[end:]...)
+					rebuildArray = append(rebuildArray[:index], rebuildArray[end:]...)
 				}
-				count++
 
-				exist, ii := testFunc(p, rebuildArray)
+				exist, _ := testFunc(p, rebuildArray)
 
-				log.Errorf("删除后是否还有 %s, %t, i=%d, ii=%d", p.GetBuildType(), exist, index, ii)
+				log.Errorf("删除后是否还有 %s, %t", p.GetBuildType(), exist)
+				break
 			}
 		}
 
