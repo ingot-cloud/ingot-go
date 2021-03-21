@@ -161,6 +161,7 @@ func (p *Provider) ChangeWith(target *Provider) {
 	p.IsStruct = target.IsStruct
 	p.Return = target.Return
 	p.Args = target.Args
+	p.FuncValue = target.FuncValue
 }
 
 // GetBuildType 获取构建类型，如果实现了相关接口，那么返回接口类型
@@ -192,12 +193,8 @@ func (p *Provider) New(args []reflect.Value) reflect.Value {
 	if len(args) != p.Type.NumIn() {
 		panic(fmt.Sprintf("类型%s入参数量不匹配，in: %d, require: %d", p.Type, len(args), p.Type.NumIn()))
 	}
-	log.Errorf("类型%s调用New方法，传入参数: %v", p.GetBuildType(), args)
-	for _, param := range p.Args {
-		log.Errorf("---------%s", param.Type)
-	}
-	p.FuncValue.Call(args)
-	return reflect.Value{}
+
+	return p.FuncValue.Call(args)[0]
 }
 
 // DependsOn 是否依赖指定类型
@@ -295,10 +292,10 @@ func (set *ProviderSet) Parse(injector container.ContainerInjector, c container.
 	// 如果实现了，那么在重新构建该接口的时候，使用自定义实例进行构建
 	replaceMap := make(map[reflect.Type]int)
 	for p := range rebuildMap {
-		log.Errorf("需要重新构建的实例，类型：%s", p.GetBuildType())
+		log.Debugf("需要重新构建的实例，类型：%s", p.GetBuildType())
 		for _, in := range cj {
 			if p.GetBuildType().Kind() == reflect.Interface && in.Type.Implements(p.GetBuildType()) {
-				log.Errorf("自定义类型 %s 实现了接口 %s", in.Type, p.GetBuildType())
+				log.Debugf("自定义类型 %s 实现了接口 %s", in.Type, p.GetBuildType())
 				p.ChangeWith(set.getProvider(in.Type))
 				replaceMap[in.Type] = 1
 			}
@@ -327,7 +324,7 @@ func (set *ProviderSet) rebuild(rebuild map[*Provider]int, injector container.Co
 	sort.Sort(rebuildArray)
 
 	for _, p := range rebuildArray {
-		log.Errorf("-----需要重新构建的实例2，类型：%s, 需要参数: %d", p.GetBuildType(), len(p.Args))
+		log.Debugf("排序后，需要重新构建的实例，类型：%s, 需要参数: %d, func: %s", p.GetBuildType(), len(p.Args), p.FuncValue)
 	}
 
 	// 判断当前重构类型中是否包括指定Provider的构建参数
@@ -372,15 +369,6 @@ func (set *ProviderSet) rebuild(rebuild map[*Provider]int, injector container.Co
 		return result
 	}
 
-	testFunc := func(current *Provider, arr Providers) (bool, int) {
-		for i, p := range arr {
-			if p.GetBuildType() == current.GetBuildType() {
-				return true, i
-			}
-		}
-		return false, -1
-	}
-
 	var toBeUsedInjector []*Injector
 	for {
 		if len(rebuildArray) == 0 {
@@ -389,17 +377,13 @@ func (set *ProviderSet) rebuild(rebuild map[*Provider]int, injector container.Co
 		for index, p := range rebuildArray {
 			if !argsContainsRebuildType(p, rebuildArray) {
 				args := getArgs(p)
-				log.Errorf("新构建的对象，类型: %s, 需要参数：%d，获取到的参数：%d", p.GetBuildType(), len(p.Args), len(args))
-				p.New(args)
-				// log.Errorf("构建新实例：%s, len=%d", p.GetBuildType(), len(args))
+				obj := p.New(args)
 				// 更新TypeInstance映射表
-				// set.TypeInstance[indirect(p.GetBuildType())] = obj
-				// toBeUsedInjector = append(toBeUsedInjector, &Injector{
-				// 	Type:  indirect(p.GetBuildType()),
-				// 	Value: obj,
-				// })
-
-				// todo 需要修改数组算法，arr减去实例后，还存在值，并没有减去
+				set.TypeInstance[indirect(p.GetBuildType())] = obj
+				toBeUsedInjector = append(toBeUsedInjector, &Injector{
+					Type:  indirect(p.GetBuildType()),
+					Value: obj,
+				})
 
 				end := index + 1
 				if end >= len(rebuildArray) {
@@ -411,18 +395,12 @@ func (set *ProviderSet) rebuild(rebuild map[*Provider]int, injector container.Co
 					rebuildArray = append(rebuildArray[:index], rebuildArray[end:]...)
 				}
 
-				exist, _ := testFunc(p, rebuildArray)
-
-				log.Errorf("删除后是否还有 %s, %t", p.GetBuildType(), exist)
+				// 跳出当前循环，重新校验
 				break
 			}
 		}
 
 	}
-
-	// for _, p := range rebuildArray {
-	// 	log.Errorf("-----需要重新构建的实例3，类型：%s, 需要参数: %d", p.GetBuildType(), len(p.Args))
-	// }
 
 	// 将容器中相关类型的值替换为新实例的值
 	set.replaceContainerValue(c, toBeUsedInjector)
@@ -433,10 +411,6 @@ func (set *ProviderSet) rebuild(rebuild map[*Provider]int, injector container.Co
 // 替换容器中的值
 // 只遍历增加label且设置container等于true的field
 func (set *ProviderSet) replaceContainerValue(c container.Container, injector []*Injector) {
-	for _, in := range injector {
-		log.Errorf("in type: %s", in.Type)
-	}
-
 	// 因为在重新构建所有实例的时候，最终都会构建对应的container
 	// 所以只需要修改container的值就可以了，不用深度遍历修改所有值
 	doReplace := func(con interface{}) {
@@ -470,7 +444,6 @@ func (set *ProviderSet) replaceContainerValue(c container.Container, injector []
 		containerField = containerType.Field(i)
 		tag = containerField.Tag.Get("container")
 		if tag == "true" {
-			log.Errorf("container %s", containerField.Name)
 			doReplace(containerValue.Field(i).Interface())
 		}
 	}
