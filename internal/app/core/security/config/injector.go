@@ -18,6 +18,7 @@ type IngotContainerInjector struct {
 	UserDetailService     service.UserDetail
 	Ignore                utils.RequestMatcher
 
+	// inject 代表自定义替换默认容器中的实例
 	ClientDetailsService             *securityService.ClientDetails             `inject:"true"`
 	UserDetailsService               *securityService.UserDetails               `inject:"true"`
 	ResourceServerAdapter            *ResourceServerAdapter                     `inject:"true"`
