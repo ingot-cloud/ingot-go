@@ -184,8 +184,13 @@ func (p *Provider) GetRowBuildType() reflect.Type {
 func (p *Provider) New(args []reflect.Value) reflect.Value {
 	if p.IsStruct {
 		value := reflect.New(indirect(p.Type)).Elem()
-		for index, val := range args {
-			value.Field(index).Set(val)
+		for _, val := range args {
+			for _, param := range p.Args {
+				if param.Type == val.Type() || param.Type.Kind() == reflect.Interface && val.Type().Implements(param.Type) {
+					// 通过名字设置参数
+					value.FieldByName(param.FieldName).Set(val)
+				}
+			}
 		}
 		return value.Addr()
 	}
@@ -205,6 +210,9 @@ func (p *Provider) DependsOn(target reflect.Type, isImplIface bool) bool {
 			return true
 		}
 		if t.Type == target {
+			return true
+		}
+		if indirect(t.Type) == target {
 			return true
 		}
 	}
@@ -331,7 +339,12 @@ func (set *ProviderSet) rebuild(rebuild map[*Provider]int, injector container.Co
 	argsContainsRebuildType := func(current *Provider, providers Providers) bool {
 		for _, p := range providers {
 			for _, arg := range current.Args {
-				if p.GetBuildType() == indirect(arg.Type) {
+				// 判断类型是否相等
+				if arg.Type == p.GetBuildType() {
+					return true
+				}
+				// 获取arg.Type指针背后的类型进行校验
+				if indirect(arg.Type) == p.GetBuildType() {
 					return true
 				}
 			}
