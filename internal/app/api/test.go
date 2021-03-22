@@ -21,11 +21,11 @@ func (t *Test) Apply(app *coreIngot.Router) {
 func (t *Test) test(ctx *gin.Context) (interface{}, error) {
 	auth := ingot.GetAuthentication(ctx)
 
-	ingotUser, ok := auth.GetPrincipal().(user.IngotUser)
-	log.Infof("ok=%t, auth=%v", ok, ingotUser)
+	ingotUser, ok := auth.GetPrincipal().(*user.IngotUser)
+	log.Infof("ok=%t, user=%v", ok, ingotUser)
 
 	var result struct {
-		Test string
+		Test string `json:"test"`
 	}
 	result.Test = "aaa"
 	return result, nil
