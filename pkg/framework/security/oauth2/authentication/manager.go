@@ -59,8 +59,9 @@ func (manager *OAuth2AuthenticationManager) Authenticate(auth core.Authenticatio
 		return nil, err
 	}
 
-	auth.SetAuthenticated(true)
-	return auth, nil
+	oauth2Auth.SetDetails(auth.GetDetails())
+	oauth2Auth.SetAuthenticated(true)
+	return oauth2Auth, nil
 }
 
 func (manager *OAuth2AuthenticationManager) checkClientDetails(auth *authentication.OAuth2Authentication) error {

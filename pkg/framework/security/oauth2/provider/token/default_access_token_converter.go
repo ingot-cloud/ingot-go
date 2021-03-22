@@ -128,10 +128,7 @@ func (converter *DefaultAccessTokenConverter) ExtractAuthentication(mapInfo map[
 	request.Authorities = authorities
 	request.Approved = true
 
-	return &authentication.OAuth2Authentication{
-		StoredRequest:      request,
-		UserAuthentication: user,
-	}, nil
+	return authentication.NewOAuth2Authentication(request, user), nil
 }
 
 func (converter *DefaultAccessTokenConverter) getUserAuthenticationConverter() UserAuthenticationConverter {

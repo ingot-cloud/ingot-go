@@ -1,6 +1,9 @@
 package clientdetails
 
 import (
+	"reflect"
+
+	"github.com/ingot-cloud/ingot-go/pkg/framework/log"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/core/userdetails"
 )
 
@@ -18,6 +21,7 @@ func NewClientDetailsUserDetailsService(service Service) *UserDetailsService {
 
 // LoadUserByUsername 加载指定 username 的用户
 func (s *UserDetailsService) LoadUserByUsername(username string) (userdetails.UserDetails, error) {
+	log.Errorf("LoadUserByUsername clientDetailsService=%s", reflect.TypeOf(s.ClientDetailsService))
 	clientDetails, err := s.ClientDetailsService.LoadClientByClientID(username)
 	if err != nil {
 		return nil, err
