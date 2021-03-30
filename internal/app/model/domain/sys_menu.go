@@ -9,7 +9,6 @@ import (
 // SysMenu 菜单
 type SysMenu struct {
 	ID        types.ID `gorm:"primary_key;size:20"`
-	Version   int64
 	TenantID  int
 	PID       types.ID
 	Name      string

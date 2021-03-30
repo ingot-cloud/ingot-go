@@ -9,7 +9,6 @@ import (
 // SysSocialDetails 社交信息
 type SysSocialDetails struct {
 	ID          types.ID `gorm:"primary_key;size:20"`
-	Version     int64
 	TenantID    int64
 	AppID       string
 	AppSecret   string

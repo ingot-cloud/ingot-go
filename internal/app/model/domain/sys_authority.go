@@ -9,7 +9,6 @@ import (
 // SysAuthority 权限
 type SysAuthority struct {
 	ID        types.ID `gorm:"primary_key;size:20"`
-	Version   int64
 	TenantID  int
 	PID       int64
 	Name      string
@@ -17,7 +16,7 @@ type SysAuthority struct {
 	Path      string
 	Method    string
 	Status    string
-	remark    string
+	Remark    string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt *time.Time

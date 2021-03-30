@@ -13,7 +13,6 @@ import (
 // SysOauthClientDetails OAuth2 Client
 type SysOauthClientDetails struct {
 	ID                    types.ID `gorm:"primary_key;size:20"`
-	Version               int64
 	TenantID              int
 	ClientID              string
 	ClientSecret          string

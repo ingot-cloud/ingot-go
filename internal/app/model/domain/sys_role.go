@@ -9,7 +9,6 @@ import (
 // SysRole 角色
 type SysRole struct {
 	ID        types.ID `gorm:"primary_key;size:20"`
-	Version   int64
 	TenantID  int
 	Name      string
 	Code      string
