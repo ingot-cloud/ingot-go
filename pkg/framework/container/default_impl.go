@@ -30,7 +30,7 @@ func (c *DefaultContainer) GetSecurityContainer() securityContainer.SecurityCont
 	return c.SecurityContainer
 }
 
-// DefaultContainerPre 默认容器 pre
+// DefaultContainerPre 默认容器 pre
 type DefaultContainerPre struct {
 	HTTPConfig        config.HTTPConfig
 	HTTPConfigurer    api.HTTPConfigurer

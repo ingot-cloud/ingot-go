@@ -20,7 +20,7 @@ func Run(ctx context.Context, options *config.Options) error {
 	return boot.Run(ctx, factory)
 }
 
-func initContainer(ctx context.Context, options *config.Options) (container.Container, func(), error) {
+func initContainer(_ context.Context, options *config.Options) (container.Container, func(), error) {
 
 	// 初始化 config
 	config, err := injector.BuildConfiguration(options)
