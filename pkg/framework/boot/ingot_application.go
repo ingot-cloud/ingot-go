@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"os/signal"
+	"syscall"
 
 	"github.com/ingot-cloud/ingot-go/pkg/framework/boot/server"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/container"
@@ -33,8 +34,8 @@ func (app *IngotApplication) Run() error {
 }
 
 func (app *IngotApplication) listeningSignal(doExit func()) {
-	quit := make(chan os.Signal)
-	signal.Notify(quit, os.Interrupt)
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 	log.WithContext(app.Context).Info("Server exiting")
 

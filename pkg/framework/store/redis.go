@@ -3,7 +3,7 @@ package store
 import (
 	"crypto/tls"
 
-	"github.com/go-redis/redis"
+	redis "github.com/redis/go-redis/v9"
 )
 
 // RedisParams for create

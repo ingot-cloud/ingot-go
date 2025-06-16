@@ -3,7 +3,7 @@ package store
 import (
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/core/utils/maputil"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/constants"
 	"github.com/ingot-cloud/ingot-go/pkg/framework/security/oauth2/errors"

@@ -6,7 +6,7 @@ package jwt
 
 // 	"github.com/ingot-cloud/ingot-go/pkg/framework/security"
 
-// 	jwt "github.com/dgrijalva/jwt-go"
+// 	jwt "github.com/golang-jwt/jwt/v5"
 // )
 
 // // NewAuthentication for jwt
