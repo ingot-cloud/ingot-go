@@ -46,7 +46,7 @@ func GetBearerToken(ctx *gin.Context) string {
 }
 
 // ParseJSON 解析请求JSON
-func ParseJSON(c *gin.Context, obj interface{}) error {
+func ParseJSON(c *gin.Context, obj any) error {
 	if err := c.ShouldBindJSON(obj); err != nil {
 		return errors.IllegalArgument(fmt.Sprintf("Error parsing request parameters - %s", err.Error()))
 	}
@@ -54,7 +54,7 @@ func ParseJSON(c *gin.Context, obj interface{}) error {
 }
 
 // ParseQuery 解析Query参数
-func ParseQuery(c *gin.Context, obj interface{}) error {
+func ParseQuery(c *gin.Context, obj any) error {
 	if err := c.ShouldBindQuery(obj); err != nil {
 		return errors.IllegalArgument(fmt.Sprintf("Error parsing request parameters - %s", err.Error()))
 	}
@@ -62,7 +62,7 @@ func ParseQuery(c *gin.Context, obj interface{}) error {
 }
 
 // ParseForm 解析Form请求
-func ParseForm(c *gin.Context, obj interface{}) error {
+func ParseForm(c *gin.Context, obj any) error {
 	if err := c.ShouldBindWith(obj, binding.Form); err != nil {
 		return errors.IllegalArgument(fmt.Sprintf("Error parsing request parameters - %s", err.Error()))
 	}

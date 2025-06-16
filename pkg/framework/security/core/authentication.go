@@ -7,9 +7,9 @@ type Authentication interface {
 	// 凭证信息
 	GetCredentials() string
 	// 额外的身份验证请求信息
-	GetDetails() interface{}
+	GetDetails() any
 	// 身份验证的主体
-	GetPrincipal() interface{}
+	GetPrincipal() any
 	// 是否已经通过身份验证
 	IsAuthenticated() bool
 	// 主动设置是否通过身份验证

@@ -26,17 +26,17 @@ func GetDB(ctx context.Context, defDB *gorm.DB) *gorm.DB {
 }
 
 // GetDBWithModel db
-func GetDBWithModel(ctx context.Context, defDB *gorm.DB, m interface{}) *gorm.DB {
+func GetDBWithModel(ctx context.Context, defDB *gorm.DB, m any) *gorm.DB {
 	return GetDB(ctx, defDB).Model(m)
 }
 
 // PageScan 分页
-func PageScan(ctx context.Context, db *gorm.DB, page commonDto.Pagination, out interface{}) (*response.Pagination, error) {
+func PageScan(ctx context.Context, db *gorm.DB, page commonDto.Pagination, out any) (*response.Pagination, error) {
 	return PageScanWithSelect(ctx, db, page, out, "")
 }
 
 // PageScanWithSelect 分页查询，设置指定查询结果
-func PageScanWithSelect(ctx context.Context, db *gorm.DB, page commonDto.Pagination, out interface{}, query string) (*response.Pagination, error) {
+func PageScanWithSelect(ctx context.Context, db *gorm.DB, page commonDto.Pagination, out any, query string) (*response.Pagination, error) {
 	var count int64
 	err := db.Count(&count).Error
 	if err != nil {
@@ -71,7 +71,7 @@ func PageScanWithSelect(ctx context.Context, db *gorm.DB, page commonDto.Paginat
 }
 
 // PageFind 分页查询
-func PageFind(ctx context.Context, db *gorm.DB, page commonDto.Pagination, out interface{}) (*response.Pagination, error) {
+func PageFind(ctx context.Context, db *gorm.DB, page commonDto.Pagination, out any) (*response.Pagination, error) {
 	var count int64
 	err := db.Count(&count).Error
 	if err != nil {

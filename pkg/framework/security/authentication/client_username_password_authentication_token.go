@@ -6,7 +6,7 @@ type ClientUsernamePasswordAuthenticationToken struct {
 }
 
 // NewClientUsernamePasswordAuthToken client token
-func NewClientUsernamePasswordAuthToken(principal interface{}, credentials string) *ClientUsernamePasswordAuthenticationToken {
+func NewClientUsernamePasswordAuthToken(principal any, credentials string) *ClientUsernamePasswordAuthenticationToken {
 	token := NewUnauthenticatedUsernamePasswordAuthToken(principal, credentials)
 	return &ClientUsernamePasswordAuthenticationToken{
 		UsernamePasswordAuthenticationToken: token,

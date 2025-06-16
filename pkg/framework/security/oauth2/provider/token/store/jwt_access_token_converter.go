@@ -15,12 +15,12 @@ import (
 type JwtAccessTokenConverter struct {
 	tokenConverter token.AccessTokenConverter
 	SigningMethod  jwt.SigningMethod
-	SigningKey     interface{}
+	SigningKey     any
 	Keyfunc        jwt.Keyfunc
 }
 
 // NewJwtAccessTokenConverter 实例化
-func NewJwtAccessTokenConverter(converter token.AccessTokenConverter, method jwt.SigningMethod, signingKey interface{}, keyfunc jwt.Keyfunc) *JwtAccessTokenConverter {
+func NewJwtAccessTokenConverter(converter token.AccessTokenConverter, method jwt.SigningMethod, signingKey any, keyfunc jwt.Keyfunc) *JwtAccessTokenConverter {
 	return &JwtAccessTokenConverter{
 		tokenConverter: converter,
 		SigningMethod:  method,
@@ -30,17 +30,17 @@ func NewJwtAccessTokenConverter(converter token.AccessTokenConverter, method jwt
 }
 
 // ConvertAccessToken 返回访问令牌映射内容
-func (c *JwtAccessTokenConverter) ConvertAccessToken(accessToken token.OAuth2AccessToken, authentication *authentication.OAuth2Authentication) (map[string]interface{}, error) {
+func (c *JwtAccessTokenConverter) ConvertAccessToken(accessToken token.OAuth2AccessToken, authentication *authentication.OAuth2Authentication) (map[string]any, error) {
 	return c.tokenConverter.ConvertAccessToken(accessToken, authentication)
 }
 
 // ExtractAccessToken 根据token value和映射内容提取访问令牌
-func (c *JwtAccessTokenConverter) ExtractAccessToken(accessToken string, mapInfo map[string]interface{}) (token.OAuth2AccessToken, error) {
+func (c *JwtAccessTokenConverter) ExtractAccessToken(accessToken string, mapInfo map[string]any) (token.OAuth2AccessToken, error) {
 	return c.tokenConverter.ExtractAccessToken(accessToken, mapInfo)
 }
 
 // ExtractAuthentication 根据token映射信息提取身份验证信息
-func (c *JwtAccessTokenConverter) ExtractAuthentication(mapInfo map[string]interface{}) (*authentication.OAuth2Authentication, error) {
+func (c *JwtAccessTokenConverter) ExtractAuthentication(mapInfo map[string]any) (*authentication.OAuth2Authentication, error) {
 	return c.tokenConverter.ExtractAuthentication(mapInfo)
 }
 
@@ -134,7 +134,7 @@ func (c *JwtAccessTokenConverter) Encode(accessToken token.OAuth2AccessToken, au
 }
 
 // Decode 解码
-func (c *JwtAccessTokenConverter) Decode(tokenString string) (map[string]interface{}, error) {
+func (c *JwtAccessTokenConverter) Decode(tokenString string) (map[string]any, error) {
 	token, err := jwt.ParseWithClaims(tokenString, jwt.MapClaims{}, c.Keyfunc)
 	if err != nil {
 		return nil, errors.InvalidToken(err.Error())

@@ -13,7 +13,7 @@ import (
 // OAuth2AccessToken OAuth2 访问令牌
 type OAuth2AccessToken interface {
 	// 获取额外信息
-	GetAdditionalInformation() map[string]interface{}
+	GetAdditionalInformation() map[string]any
 	// 获取令牌访问范围
 	GetScope() []string
 	// 获取刷新令牌
@@ -68,19 +68,19 @@ type ConsumerTokenServices interface {
 // UserAuthenticationConverter 用户map信息和身份验证信息互相转换接口
 type UserAuthenticationConverter interface {
 	// 在身份验证信息中提取访问令牌使用的信息
-	ConvertUserAuthentication(core.Authentication) (map[string]interface{}, error)
+	ConvertUserAuthentication(core.Authentication) (map[string]any, error)
 	// 从map中提取身份验证信息
-	ExtractAuthentication(map[string]interface{}) (core.Authentication, error)
+	ExtractAuthentication(map[string]any) (core.Authentication, error)
 }
 
 // AccessTokenConverter 访问令牌转换器
 type AccessTokenConverter interface {
 	// 返回访问令牌映射内容
-	ConvertAccessToken(OAuth2AccessToken, *authentication.OAuth2Authentication) (map[string]interface{}, error)
+	ConvertAccessToken(OAuth2AccessToken, *authentication.OAuth2Authentication) (map[string]any, error)
 	// 根据token value和映射内容提取访问令牌
-	ExtractAccessToken(string, map[string]interface{}) (OAuth2AccessToken, error)
+	ExtractAccessToken(string, map[string]any) (OAuth2AccessToken, error)
 	// 根据token映射信息提取身份验证信息
-	ExtractAuthentication(map[string]interface{}) (*authentication.OAuth2Authentication, error)
+	ExtractAuthentication(map[string]any) (*authentication.OAuth2Authentication, error)
 }
 
 // Enhancer token 增强接口

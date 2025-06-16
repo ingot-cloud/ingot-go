@@ -25,7 +25,7 @@ type Provider interface {
 	// 身份验证
 	Authenticate(core.Authentication) (core.Authentication, error)
 	// 该身份验证提供者是否支持指定的认证信息
-	Supports(interface{}) bool
+	Supports(any) bool
 }
 
 // Providers 所有 provider

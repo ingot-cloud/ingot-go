@@ -26,7 +26,7 @@ package jwt
 // // Params for create
 // type Params struct {
 // 	SigningMethod jwt.SigningMethod
-// 	SigningKey    interface{}
+// 	SigningKey    any
 // 	Keyfunc       jwt.Keyfunc
 // 	Expired       int
 // 	TokenType     string

@@ -39,7 +39,7 @@ func (ts TimeStamp) Value() (driver.Value, error) {
 }
 
 // Scan 实现 sql.Scanner 接口
-func (ts *TimeStamp) Scan(v interface{}) error {
+func (ts *TimeStamp) Scan(v any) error {
 	value, ok := v.(time.Time)
 	if ok {
 		*ts = TimeStamp(value)

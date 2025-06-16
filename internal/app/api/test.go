@@ -18,7 +18,7 @@ func (t *Test) Apply(app *coreIngot.Router) {
 	router.POST("/test", t.test)
 }
 
-func (t *Test) test(ctx *gin.Context) (interface{}, error) {
+func (t *Test) test(ctx *gin.Context) (any, error) {
 	auth := ingot.GetAuthentication(ctx)
 
 	ingotUser, ok := auth.GetPrincipal().(*user.IngotUser)

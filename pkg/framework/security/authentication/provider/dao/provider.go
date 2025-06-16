@@ -83,7 +83,7 @@ func (p *AuthenticationProvider) Authenticate(auth core.Authentication) (core.Au
 }
 
 // Supports 该身份验证提供者是否支持指定的认证信息
-func (p *AuthenticationProvider) Supports(auth interface{}) bool {
+func (p *AuthenticationProvider) Supports(auth any) bool {
 	_, ok := auth.(*authentication.UsernamePasswordAuthenticationToken)
 	return ok
 }
@@ -122,7 +122,7 @@ func (p *AuthenticationProvider) additionalAuthenticationChecks(userDetails user
 	return nil
 }
 
-func (p *AuthenticationProvider) createSuccessAuthentication(principal interface{}, auth core.Authentication, user userdetails.UserDetails) (core.Authentication, error) {
+func (p *AuthenticationProvider) createSuccessAuthentication(principal any, auth core.Authentication, user userdetails.UserDetails) (core.Authentication, error) {
 	result := authentication.NewAuthenticatedUsernamePasswordAuthToken(principal, auth.GetCredentials(), user.GetAuthorities())
 	result.SetDetails(auth.GetDetails())
 	return result, nil

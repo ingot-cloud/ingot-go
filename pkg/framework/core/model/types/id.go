@@ -35,7 +35,7 @@ func (id ID) String() string {
 }
 
 // NewIDFrom 实例化
-func NewIDFrom(id interface{}) ID {
+func NewIDFrom(id any) ID {
 	switch value := id.(type) {
 	case ID:
 		return value

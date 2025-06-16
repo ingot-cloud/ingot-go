@@ -81,7 +81,7 @@ func SetFormatter(format string) {
 }
 
 // WithField 设置字段
-func WithField(key string, value interface{}) *Entry {
+func WithField(key string, value any) *Entry {
 	return logrus.WithField(key, value)
 }
 
@@ -170,7 +170,7 @@ func WithContext(ctx context.Context) *Entry {
 		ctx = context.Background()
 	}
 
-	fields := map[string]interface{}{}
+	fields := map[string]any{}
 
 	if v := FromTraceIDContext(ctx); v != "" {
 		fields[TraceIDKey] = v

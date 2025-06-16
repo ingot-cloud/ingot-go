@@ -29,7 +29,7 @@ type ClientDetails interface {
 	// 指定scope是否需要用户授权批准，如果不需要用户批准则返回ture
 	IsAutoApprove(string) bool
 	// 客户端的额外附加信息
-	GetAdditionalInformation() map[string]interface{}
+	GetAdditionalInformation() map[string]any
 }
 
 // Service 获取客户端详细信息

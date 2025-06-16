@@ -10,7 +10,7 @@ import (
 )
 
 // NewSet 实例化数据集
-func NewSet(items ...interface{}) *ProviderSet {
+func NewSet(items ...any) *ProviderSet {
 	set := &ProviderSet{}
 
 	for _, i := range items {
@@ -33,7 +33,7 @@ func NewSet(items ...interface{}) *ProviderSet {
 }
 
 // Struct 构建结构体provider
-func Struct(target interface{}, fieldNames ...string) *Provider {
+func Struct(target any, fieldNames ...string) *Provider {
 	t := indirect(reflect.TypeOf(target))
 
 	if t.Kind() != reflect.Struct {
@@ -77,7 +77,7 @@ func Struct(target interface{}, fieldNames ...string) *Provider {
 }
 
 // Func 构建方法provider
-func Func(target interface{}) *Provider {
+func Func(target any) *Provider {
 	t := indirect(reflect.TypeOf(target))
 
 	if t.Kind() != reflect.Func {
@@ -111,7 +111,7 @@ func Func(target interface{}) *Provider {
 }
 
 // Bind 绑定接口和结构体的关系
-func Bind(iface, impl interface{}) *IfaceBinding {
+func Bind(iface, impl any) *IfaceBinding {
 	return &IfaceBinding{
 		Iface:    indirect(reflect.TypeOf(iface)),
 		Provider: indirect(reflect.TypeOf(impl)),
@@ -428,7 +428,7 @@ func (set *ProviderSet) rebuild(rebuild map[*Provider]int, injector container.Co
 func (set *ProviderSet) replaceContainerValue(c container.Container, injector []*Injector) {
 	// 因为在重新构建所有实例的时候，最终都会构建对应的container
 	// 所以只需要修改container的值就可以了，不用深度遍历修改所有值
-	doReplace := func(con interface{}) {
+	doReplace := func(con any) {
 		conValue := reflect.Indirect(reflect.ValueOf(con))
 		conType := conValue.Type()
 		len := conType.NumField()
@@ -493,7 +493,7 @@ func (set *ProviderSet) paddingTypeInstanceWithContainer(con container.Container
 	}
 
 	log.Debugf("[----------- 开始打印填充的类型实例映射表 -----------]")
-	var logFields log.Fields = map[string]interface{}{}
+	var logFields log.Fields = map[string]any{}
 	for t, v := range set.TypeInstance {
 		logFields["type"] = t
 		logFields["value"] = v.Type()
@@ -503,9 +503,9 @@ func (set *ProviderSet) paddingTypeInstanceWithContainer(con container.Container
 }
 
 // 填充类型实例映射表
-func (set *ProviderSet) paddingTypeInstance(con interface{}) {
+func (set *ProviderSet) paddingTypeInstance(con any) {
 
-	paddingChild := func(con interface{}) {
+	paddingChild := func(con any) {
 		originValue := reflect.ValueOf(con)
 		value := reflect.Indirect(originValue)
 		t := value.Type()
@@ -567,7 +567,7 @@ func indirect(t reflect.Type) reflect.Type {
 	return t
 }
 
-func paddingInjectFields(injector interface{}) []*Injector {
+func paddingInjectFields(injector any) []*Injector {
 	var injectFields []*Injector
 
 	inValue := reflect.Indirect(reflect.ValueOf(injector))

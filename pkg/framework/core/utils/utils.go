@@ -20,6 +20,6 @@ func PathExists(path string) (bool, error) {
 }
 
 // Copy struct to strcut
-func Copy(fromValue interface{}, toValue interface{}) error {
+func Copy(fromValue any, toValue any) error {
 	return copier.Copy(toValue, fromValue)
 }

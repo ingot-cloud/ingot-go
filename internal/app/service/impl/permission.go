@@ -31,7 +31,7 @@ func (p *Permission) GetRolePolicy(ctx context.Context) (*dto.RolePolicys, error
 	count := len(*roleList)
 	var sw sync.WaitGroup
 	sw.Add(count)
-	finishChan := make(chan interface{}, 1)
+	finishChan := make(chan any, 1)
 	errorChan := make(chan error, count)
 
 	rolePolicys := make([]*dto.RolePolicy, 0, count)
@@ -118,7 +118,7 @@ func (p *Permission) GetUserPolicy(ctx context.Context) (*dto.UserPolicys, error
 	count := len(*userList)
 	var sw sync.WaitGroup
 	sw.Add(count)
-	finishChan := make(chan interface{}, 1)
+	finishChan := make(chan any, 1)
 	errorChan := make(chan error, count)
 
 	userPolicys := make([]*dto.UserPolicy, 0, count)

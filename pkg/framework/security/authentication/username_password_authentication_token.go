@@ -3,7 +3,7 @@ package authentication
 import "github.com/ingot-cloud/ingot-go/pkg/framework/security/core"
 
 // NewUnauthenticatedUsernamePasswordAuthToken 获取未验证的token
-func NewUnauthenticatedUsernamePasswordAuthToken(principal interface{}, credentials string) *UsernamePasswordAuthenticationToken {
+func NewUnauthenticatedUsernamePasswordAuthToken(principal any, credentials string) *UsernamePasswordAuthenticationToken {
 	token := &UsernamePasswordAuthenticationToken{
 		Principal:                   principal,
 		Credentials:                 credentials,
@@ -14,7 +14,7 @@ func NewUnauthenticatedUsernamePasswordAuthToken(principal interface{}, credenti
 }
 
 // NewAuthenticatedUsernamePasswordAuthToken 获取验证的token
-func NewAuthenticatedUsernamePasswordAuthToken(principal interface{}, credentials string, authorities []core.GrantedAuthority) *UsernamePasswordAuthenticationToken {
+func NewAuthenticatedUsernamePasswordAuthToken(principal any, credentials string, authorities []core.GrantedAuthority) *UsernamePasswordAuthenticationToken {
 	token := &UsernamePasswordAuthenticationToken{
 		Principal:   principal,
 		Credentials: credentials,
@@ -28,7 +28,7 @@ func NewAuthenticatedUsernamePasswordAuthToken(principal interface{}, credential
 
 // UsernamePasswordAuthenticationToken 用户密码身份验证令牌
 type UsernamePasswordAuthenticationToken struct {
-	Principal   interface{}
+	Principal   any
 	Credentials string
 	*AbstractAuthenticationToken
 }
@@ -39,7 +39,7 @@ func (token *UsernamePasswordAuthenticationToken) GetCredentials() string {
 }
 
 // GetPrincipal 身份验证的主体
-func (token *UsernamePasswordAuthenticationToken) GetPrincipal() interface{} {
+func (token *UsernamePasswordAuthenticationToken) GetPrincipal() any {
 	return token.Principal
 }
 

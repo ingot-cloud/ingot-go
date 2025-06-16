@@ -34,7 +34,7 @@ func PrintInjectInstance(con container.ContainerPrint) container.Container {
 	return con
 }
 
-func printContainer(c interface{}) {
+func printContainer(c any) {
 	value := reflect.Indirect(reflect.ValueOf(c))
 	targetType := value.Type()
 	len := targetType.NumField()
@@ -44,7 +44,7 @@ func printContainer(c interface{}) {
 	}
 }
 
-func printContainerChild(c interface{}) {
+func printContainerChild(c any) {
 	value := reflect.Indirect(reflect.ValueOf(c))
 	targetType := value.Type()
 	len := targetType.NumField()

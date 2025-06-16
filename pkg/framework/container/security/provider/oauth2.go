@@ -25,7 +25,7 @@ func JwtAccessTokenConverter(config config.OAuth2, tokenConverter token.AccessTo
 		method = jwt.SigningMethodHS512
 	}
 	signingKey := []byte(config.Jwt.SigningKey)
-	keyfunc := func(t *jwt.Token) (interface{}, error) {
+	keyfunc := func(t *jwt.Token) (any, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.InvalidToken("Token invalid")
 		}

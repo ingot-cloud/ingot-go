@@ -1,8 +1,8 @@
 package maputil
 
-// CopyStringInterfaceMap 复制 map[string]interface{}
-func CopyStringInterfaceMap(origin map[string]interface{}) map[string]interface{} {
-	copy := make(map[string]interface{})
+// CopyStringInterfaceMap 复制 map[string]any
+func CopyStringInterfaceMap(origin map[string]any) map[string]any {
+	copy := make(map[string]any)
 	for k, v := range origin {
 		copy[k] = v
 	}

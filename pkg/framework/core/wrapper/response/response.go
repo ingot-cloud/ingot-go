@@ -10,7 +10,7 @@ import (
 )
 
 // Result for api request
-func Result(ctx *gin.Context, statusCode int, code string, data interface{}, message string) {
+func Result(ctx *gin.Context, statusCode int, code string, data any, message string) {
 	ctx.JSON(statusCode, &R{
 		code,
 		data,
@@ -24,7 +24,7 @@ func PaginationResult(ctx *gin.Context, data *P) {
 }
 
 // PaginationWith list and pagination
-func PaginationWith(ctx *gin.Context, list interface{}, page *Pagination) {
+func PaginationWith(ctx *gin.Context, list any, page *Pagination) {
 	PaginationResult(ctx, &P{
 		List:       list,
 		Pagination: page,
@@ -32,7 +32,7 @@ func PaginationWith(ctx *gin.Context, list interface{}, page *Pagination) {
 }
 
 // OK response struct
-func OK(ctx *gin.Context, data interface{}) {
+func OK(ctx *gin.Context, data any) {
 	Result(ctx, http.StatusOK, code.SUCCESS, data, "Success")
 }
 

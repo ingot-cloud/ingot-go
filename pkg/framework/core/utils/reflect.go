@@ -7,7 +7,7 @@ import (
 
 // GetType 获取类型
 // 返回的 string 为 PkgPath + type
-func GetType(target interface{}) string {
+func GetType(target any) string {
 	value := reflect.ValueOf(target)
 	targetType := reflect.Indirect(value).Type()
 	var builder strings.Builder

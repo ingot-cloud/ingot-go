@@ -26,8 +26,8 @@ func NewDefaultAccessTokenConverter(userConverter UserAuthenticationConverter) *
 }
 
 // ConvertAccessToken 返回访问令牌映射内容
-func (converter *DefaultAccessTokenConverter) ConvertAccessToken(token OAuth2AccessToken, authentication *authentication.OAuth2Authentication) (map[string]interface{}, error) {
-	response := make(map[string]interface{})
+func (converter *DefaultAccessTokenConverter) ConvertAccessToken(token OAuth2AccessToken, authentication *authentication.OAuth2Authentication) (map[string]any, error) {
+	response := make(map[string]any)
 	clientToken := authentication.GetOAuth2Request()
 
 	if !authentication.IsClientOnly() {
@@ -81,7 +81,7 @@ func (converter *DefaultAccessTokenConverter) ConvertAccessToken(token OAuth2Acc
 }
 
 // ExtractAccessToken 根据token value和映射内容提取访问令牌
-func (converter *DefaultAccessTokenConverter) ExtractAccessToken(token string, mapInfo map[string]interface{}) (OAuth2AccessToken, error) {
+func (converter *DefaultAccessTokenConverter) ExtractAccessToken(token string, mapInfo map[string]any) (OAuth2AccessToken, error) {
 	accessToken := NewDefaultOAuth2AccessToken(token)
 	info := maputil.CopyStringInterfaceMap(mapInfo)
 
@@ -103,7 +103,7 @@ func (converter *DefaultAccessTokenConverter) ExtractAccessToken(token string, m
 }
 
 // ExtractAuthentication 根据token映射信息提取身份验证信息
-func (converter *DefaultAccessTokenConverter) ExtractAuthentication(mapInfo map[string]interface{}) (*authentication.OAuth2Authentication, error) {
+func (converter *DefaultAccessTokenConverter) ExtractAuthentication(mapInfo map[string]any) (*authentication.OAuth2Authentication, error) {
 	parameters := make(map[string]string)
 	scope := converter.extractScope(mapInfo)
 	user, err := converter.getUserAuthenticationConverter().ExtractAuthentication(mapInfo)
@@ -138,7 +138,7 @@ func (converter *DefaultAccessTokenConverter) getUserAuthenticationConverter() U
 	return converter.UserAuthenticationConverter
 }
 
-func (converter *DefaultAccessTokenConverter) extractScope(mapInfo map[string]interface{}) []string {
+func (converter *DefaultAccessTokenConverter) extractScope(mapInfo map[string]any) []string {
 	if scope, ok := mapInfo[string(constants.TokenScope)]; ok {
 		switch value := scope.(type) {
 		case string:
@@ -150,7 +150,7 @@ func (converter *DefaultAccessTokenConverter) extractScope(mapInfo map[string]in
 	return nil
 }
 
-func (converter *DefaultAccessTokenConverter) getAudience(mapInfo map[string]interface{}) []string {
+func (converter *DefaultAccessTokenConverter) getAudience(mapInfo map[string]any) []string {
 	auds, ok := mapInfo[string(constants.TokenAud)]
 	if !ok {
 		return nil

@@ -8,12 +8,12 @@ import (
 // AuthenticationToken 预身份验证令牌
 type AuthenticationToken struct {
 	*authentication.AbstractAuthenticationToken
-	Principal   interface{}
+	Principal   any
 	Credentials string
 }
 
 // NewAuthenticationToken 创建预验证令牌
-func NewAuthenticationToken(principal interface{}, credentials string, authorities []core.GrantedAuthority) *AuthenticationToken {
+func NewAuthenticationToken(principal any, credentials string, authorities []core.GrantedAuthority) *AuthenticationToken {
 	auth := &AuthenticationToken{
 		Principal:   principal,
 		Credentials: credentials,
@@ -33,7 +33,7 @@ func (token *AuthenticationToken) GetCredentials() string {
 }
 
 // GetPrincipal 身份验证的主体
-func (token *AuthenticationToken) GetPrincipal() interface{} {
+func (token *AuthenticationToken) GetPrincipal() any {
 	return token.Principal
 }
 

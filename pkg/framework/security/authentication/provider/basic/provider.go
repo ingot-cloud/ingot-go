@@ -28,7 +28,7 @@ func NewProvider(encoder password.Encoder, service clientdetails.Service, cache 
 }
 
 // Supports 该身份验证提供者是否支持指定的认证信息
-func (p *AuthenticationProvider) Supports(auth interface{}) bool {
+func (p *AuthenticationProvider) Supports(auth any) bool {
 	_, ok := auth.(*authentication.ClientUsernamePasswordAuthenticationToken)
 	return ok
 }

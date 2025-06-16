@@ -19,13 +19,13 @@ func NewRouter(routerGroup *gin.RouterGroup) *Router {
 }
 
 // Use adds middleware to the group, see example code in GitHub.
-func (router *Router) Use(middleware ...interface{}) gin.IRoutes {
+func (router *Router) Use(middleware ...any) gin.IRoutes {
 	return router.ginRouter.Use(transformHandlers(middleware...)...)
 }
 
 // Group creates a new router group. You should add all the routes that have common middlewares or the same path prefix.
 // For example, all the routes that use a common middleware for authorization could be grouped.
-func (router *Router) Group(relativePath string, handlers ...interface{}) *Router {
+func (router *Router) Group(relativePath string, handlers ...any) *Router {
 	return NewRouter(router.ginRouter.Group(relativePath, transformHandlers(handlers...)...))
 }
 
@@ -45,48 +45,48 @@ func (router *Router) BasePath() string {
 // This function is intended for bulk loading and to allow the usage of less
 // frequently used, non-standardized or custom methods (e.g. for internal
 // communication with a proxy).
-func (router *Router) Handle(httpMethod, relativePath string, handlers ...interface{}) gin.IRoutes {
+func (router *Router) Handle(httpMethod, relativePath string, handlers ...any) gin.IRoutes {
 	return router.ginRouter.Handle(httpMethod, relativePath, transformHandlers(handlers...)...)
 }
 
 // POST is a shortcut for router.Handle("POST", path, handle).
-func (router *Router) POST(relativePath string, handlers ...interface{}) gin.IRoutes {
+func (router *Router) POST(relativePath string, handlers ...any) gin.IRoutes {
 	return router.ginRouter.POST(relativePath, transformHandlers(handlers...)...)
 }
 
 // GET is a shortcut for router.Handle("GET", path, handle).
-func (router *Router) GET(relativePath string, handlers ...interface{}) gin.IRoutes {
+func (router *Router) GET(relativePath string, handlers ...any) gin.IRoutes {
 	return router.ginRouter.GET(relativePath, transformHandlers(handlers...)...)
 }
 
 // DELETE is a shortcut for router.Handle("DELETE", path, handle).
-func (router *Router) DELETE(relativePath string, handlers ...interface{}) gin.IRoutes {
+func (router *Router) DELETE(relativePath string, handlers ...any) gin.IRoutes {
 	return router.ginRouter.DELETE(relativePath, transformHandlers(handlers...)...)
 }
 
 // PATCH is a shortcut for router.Handle("PATCH", path, handle).
-func (router *Router) PATCH(relativePath string, handlers ...interface{}) gin.IRoutes {
+func (router *Router) PATCH(relativePath string, handlers ...any) gin.IRoutes {
 	return router.ginRouter.PATCH(relativePath, transformHandlers(handlers...)...)
 }
 
 // PUT is a shortcut for router.Handle("PUT", path, handle).
-func (router *Router) PUT(relativePath string, handlers ...interface{}) gin.IRoutes {
+func (router *Router) PUT(relativePath string, handlers ...any) gin.IRoutes {
 	return router.ginRouter.PUT(relativePath, transformHandlers(handlers...)...)
 }
 
 // OPTIONS is a shortcut for router.Handle("OPTIONS", path, handle).
-func (router *Router) OPTIONS(relativePath string, handlers ...interface{}) gin.IRoutes {
+func (router *Router) OPTIONS(relativePath string, handlers ...any) gin.IRoutes {
 	return router.ginRouter.OPTIONS(relativePath, transformHandlers(handlers...)...)
 }
 
 // HEAD is a shortcut for router.Handle("HEAD", path, handle).
-func (router *Router) HEAD(relativePath string, handlers ...interface{}) gin.IRoutes {
+func (router *Router) HEAD(relativePath string, handlers ...any) gin.IRoutes {
 	return router.ginRouter.HEAD(relativePath, transformHandlers(handlers...)...)
 }
 
 // Any registers a route that matches all the HTTP methods.
 // GET, POST, PUT, PATCH, HEAD, OPTIONS, DELETE, CONNECT, TRACE.
-func (router *Router) Any(relativePath string, handlers ...interface{}) gin.IRoutes {
+func (router *Router) Any(relativePath string, handlers ...any) gin.IRoutes {
 	return router.ginRouter.Any(relativePath, transformHandlers(handlers...)...)
 }
 
@@ -101,7 +101,8 @@ func (router *Router) StaticFile(relativePath, filepath string) gin.IRoutes {
 // of the Router's NotFound handler.
 // To use the operating system's file system implementation,
 // use :
-//     router.Static("/static", "/var/www")
+//
+//	router.Static("/static", "/var/www")
 func (router *Router) Static(relativePath, root string) gin.IRoutes {
 	return router.ginRouter.Static(relativePath, root)
 }

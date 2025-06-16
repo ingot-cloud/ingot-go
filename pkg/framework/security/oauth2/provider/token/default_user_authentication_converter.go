@@ -30,11 +30,11 @@ func (converter *DefaultUserAuthenticationConverter) SetDefaultAuthorities(defau
 }
 
 // ConvertUserAuthentication 在身份验证信息中提取访问令牌使用的信息
-func (converter *DefaultUserAuthenticationConverter) ConvertUserAuthentication(auth core.Authentication) (map[string]interface{}, error) {
+func (converter *DefaultUserAuthenticationConverter) ConvertUserAuthentication(auth core.Authentication) (map[string]any, error) {
 	if auth == nil {
 		return nil, nil
 	}
-	response := make(map[string]interface{})
+	response := make(map[string]any)
 	response[string(constants.TokenUsername)] = auth.GetName(auth)
 	authorities := auth.GetAuthorities()
 	if len(authorities) != 0 {
@@ -44,7 +44,7 @@ func (converter *DefaultUserAuthenticationConverter) ConvertUserAuthentication(a
 }
 
 // ExtractAuthentication 从map中提取身份验证信息
-func (converter *DefaultUserAuthenticationConverter) ExtractAuthentication(mapInfo map[string]interface{}) (core.Authentication, error) {
+func (converter *DefaultUserAuthenticationConverter) ExtractAuthentication(mapInfo map[string]any) (core.Authentication, error) {
 	principal, ok := mapInfo[string(constants.TokenUsername)]
 	if ok {
 		authorities := converter.getAuthorities(mapInfo)
@@ -64,7 +64,7 @@ func (converter *DefaultUserAuthenticationConverter) ExtractAuthentication(mapIn
 	return nil, nil
 }
 
-func (converter *DefaultUserAuthenticationConverter) getAuthorities(mapInfo map[string]interface{}) []core.GrantedAuthority {
+func (converter *DefaultUserAuthenticationConverter) getAuthorities(mapInfo map[string]any) []core.GrantedAuthority {
 	authorities, ok := mapInfo[string(constants.TokenAuthorities)]
 	if !ok {
 		return converter.DefaultAuthorities

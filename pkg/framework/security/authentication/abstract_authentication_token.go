@@ -9,7 +9,7 @@ import (
 type AbstractAuthenticationToken struct {
 	Authorities   []core.GrantedAuthority
 	authenticated bool
-	details       interface{}
+	details       any
 }
 
 // NewAbstractAuthenticationToken 创建基本实现
@@ -30,12 +30,12 @@ func (token *AbstractAuthenticationToken) GetCredentials() string {
 }
 
 // GetDetails 额外的身份验证请求信息
-func (token *AbstractAuthenticationToken) GetDetails() interface{} {
+func (token *AbstractAuthenticationToken) GetDetails() any {
 	return token.details
 }
 
 // GetPrincipal 身份验证的主体
-func (token *AbstractAuthenticationToken) GetPrincipal() interface{} {
+func (token *AbstractAuthenticationToken) GetPrincipal() any {
 	return nil
 }
 
@@ -73,12 +73,12 @@ func (token *AbstractAuthenticationToken) EraseCredentials() {
 }
 
 // SetDetails 设置额外的信息
-func (token *AbstractAuthenticationToken) SetDetails(details interface{}) {
+func (token *AbstractAuthenticationToken) SetDetails(details any) {
 	token.details = details
 }
 
 // EraseSecret 擦除敏感信息
-func (token *AbstractAuthenticationToken) EraseSecret(object interface{}) {
+func (token *AbstractAuthenticationToken) EraseSecret(object any) {
 	if object == nil {
 		return
 	}

@@ -16,7 +16,7 @@ type DefaultOAuth2AccessToken struct {
 	TokenType             enums.TokenType
 	RefreshToken          OAuth2RefreshToken
 	Scope                 []string
-	AdditionalInformation map[string]interface{}
+	AdditionalInformation map[string]any
 }
 
 // MarshalJSON 自定义序列化
@@ -40,7 +40,7 @@ func (token *DefaultOAuth2AccessToken) MarshalJSON() ([]byte, error) {
 func NewDefaultOAuth2AccessToken(value string) *DefaultOAuth2AccessToken {
 	return &DefaultOAuth2AccessToken{
 		Value:                 value,
-		AdditionalInformation: make(map[string]interface{}),
+		AdditionalInformation: make(map[string]any),
 	}
 }
 
@@ -57,7 +57,7 @@ func NewDefaultOAuth2AccessTokenWith(token OAuth2AccessToken) *DefaultOAuth2Acce
 }
 
 // GetAdditionalInformation 获取额外信息
-func (token *DefaultOAuth2AccessToken) GetAdditionalInformation() map[string]interface{} {
+func (token *DefaultOAuth2AccessToken) GetAdditionalInformation() map[string]any {
 	return token.AdditionalInformation
 }
 

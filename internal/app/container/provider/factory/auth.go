@@ -26,7 +26,7 @@ package factory
 // authParms := &jwtAuth.Params{
 // 	SigningMethod: method,
 // 	SigningKey:    []byte(authCfg.SigningKey),
-// 	Keyfunc: func(t *jwt.Token) (interface{}, error) {
+// 	Keyfunc: func(t *jwt.Token) (any, error) {
 // 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 // 			return nil, security.ErrInvalidToken
 // 		}

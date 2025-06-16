@@ -16,7 +16,7 @@ type OAuth2Request struct {
 	Refresh       *TokenRequest
 	RedirectURI   string
 	ResponseTypes []string
-	Extensions    map[string]interface{}
+	Extensions    map[string]any
 }
 
 // NewOAuth2Request 创建OAuth2Request
@@ -27,7 +27,7 @@ func NewOAuth2Request(params map[string]string, clientID string, scope []string)
 			Scope:             scope,
 			RequestParameters: params,
 		},
-		Extensions: make(map[string]interface{}),
+		Extensions: make(map[string]any),
 	}
 }
 
@@ -57,7 +57,7 @@ func (r *OAuth2Request) GetResourceIDs() []string {
 }
 
 // GetExtensions 扩展信息
-func (r *OAuth2Request) GetExtensions() map[string]interface{} {
+func (r *OAuth2Request) GetExtensions() map[string]any {
 	return r.Extensions
 }
 

@@ -3,7 +3,7 @@ package authority
 import "github.com/ingot-cloud/ingot-go/pkg/framework/security/core"
 
 // CreateAuthorityList 创建授权列表
-func CreateAuthorityList(authorities interface{}) []core.GrantedAuthority {
+func CreateAuthorityList(authorities any) []core.GrantedAuthority {
 	if authorities == nil {
 		return nil
 	}

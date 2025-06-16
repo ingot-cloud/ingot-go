@@ -27,6 +27,6 @@ func (a *OAuth2Api) Apply(app *ingot.Router) {
 }
 
 // AccessToken 获取Token
-func (a *OAuth2Api) AccessToken(ctx *gin.Context) (interface{}, error) {
+func (a *OAuth2Api) AccessToken(ctx *gin.Context) (any, error) {
 	return a.TokenEndpoint.AccessToken(ctx)
 }

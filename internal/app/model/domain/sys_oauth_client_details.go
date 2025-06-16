@@ -130,8 +130,8 @@ func (c *SysOauthClientDetails) IsAutoApprove(scope string) bool {
 }
 
 // GetAdditionalInformation 客户端的额外附加信息
-func (c *SysOauthClientDetails) GetAdditionalInformation() map[string]interface{} {
-	info := make(map[string]interface{})
+func (c *SysOauthClientDetails) GetAdditionalInformation() map[string]any {
+	info := make(map[string]any)
 	json.Unmarshal([]byte(c.AdditionalInformation), &info)
 	return info
 }

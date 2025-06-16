@@ -1,18 +1,18 @@
 package response
 
-// D is a shortcut for map[string]interface{}
-type D map[string]interface{}
+// D is a shortcut for map[string]any
+type D map[string]any
 
 // R is the Response struct
 type R struct {
-	Code    string      `json:"code"`
-	Data    interface{} `json:"data"`
-	Message string      `json:"message"`
+	Code    string `json:"code"`
+	Data    any    `json:"data"`
+	Message string `json:"message"`
 }
 
 // P is a shortcut for Pagination
 type P struct {
-	List       interface{} `json:"list"`
+	List       any         `json:"list"`
 	Pagination *Pagination `json:"pagination"`
 }
 

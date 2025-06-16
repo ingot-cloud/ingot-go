@@ -38,7 +38,7 @@ func (auth *OAuth2Authentication) GetCredentials() string {
 }
 
 // GetPrincipal 获取身份验证信息主体
-func (auth *OAuth2Authentication) GetPrincipal() interface{} {
+func (auth *OAuth2Authentication) GetPrincipal() any {
 	if auth.UserAuthentication == nil {
 		return auth.StoredRequest.GetClientID()
 	}
