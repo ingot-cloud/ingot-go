@@ -14,7 +14,7 @@ server:
 # logger configuration
 log:
   # 日志级别 1:fatal 2:error,3:warn,4:info,5:debug,6:trace
-  level: 5
+  level: 6
   # 日志格式（text/json）
   format: "text" 
   # 日志输出(stdout/stderr/file)
@@ -46,7 +46,7 @@ mysql:
   # 连接端口
   port: 3306
   # 用户名
-  user: "root"
+  user: "dev"
   # 密码
   password: "123456"
   # 数据库
